@@ -11,7 +11,7 @@
 carpentry: "ea"
 
 # Overall title for pages.
-title: "Lesson Title"
+title: "GPU Programming"
 
 # Life cycle stage of the lesson
 # possible values: "pre-alpha", "alpha", "beta", "stable"
@@ -30,7 +30,7 @@ kind: "lesson"
 repository: <USERNAME>/<PROJECT>
 
 # Email address, no mailto:
-email: "team@carpentries.org"
+email: "instructors@esciencecenter.nl"
 
 # Sites.
 amy_site: "https://amy.carpentries.org/workshops"
