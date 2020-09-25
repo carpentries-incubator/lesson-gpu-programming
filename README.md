@@ -1,8 +1,6 @@
-# FIXME Lesson title
+# GPU Programming
 
-[![Create a Slack Account with us](https://img.shields.io/badge/Create_Slack_Account-The_Carpentries-071159.svg)](https://swc-slack-invite.herokuapp.com/)
-
-This repository generates the corresponding lesson website from [The Carpentries](https://carpentries.org/) repertoire of lessons. 
+This repository contains the Netherlands eScience Center's GPU programming lesson.
 
 ## Contributing
 
