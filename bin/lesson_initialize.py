@@ -13,6 +13,7 @@ BOILERPLATE = (
     'README.md',
     '_config.yml',
     os.path.join('_episodes', '01-introduction.md'),
+    os.path.join('_episodes', '02-first_program.md'),
     os.path.join('_extras', 'about.md'),
     os.path.join('_extras', 'discuss.md'),
     os.path.join('_extras', 'figures.md'),
