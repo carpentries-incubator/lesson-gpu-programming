@@ -1,16 +1,31 @@
 ---
-title: "Your First GPU Code"
+title: "Your First GPU Program"
 teaching: 0
 exercises: 0
 questions:
+- "How to write a basic GPU program?"
 - "What is CUDA?"
 - "What is OpenCL?"
-- "How to write a basic GPU program?"
 objectives:
 - ""
 keypoints:
 - ""
 ---
+
+# Summing Two Vectors
+
+We start by introducing a program that, given two input vectors of the same size, returns a third vector containing the sum of the corresponding elements of the two input vectors.
+
+~~~python
+def vector_add(A, B, C, size):
+    for item in range(0, size):
+        C[item] = A[item] + B[item]
+    
+    return C
+~~~
+
+One of the characteristics of this program is that each iteration of the *for* loop is independent from the other iterations.
+In other words, we could not only reorder the iterations and still produce the same output, but also compute part of the iterations on one device and part of the iterations on another device, and still end up with the same result.
 
 {% include links.md %}
 
