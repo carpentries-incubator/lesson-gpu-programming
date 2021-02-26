@@ -1,6 +1,6 @@
 # GPU Programming
 
-This repository contains the Netherlands eScience Center's GPU programming lesson.
+Work in progress on developing a lesson on programming Graphics Processing Units (GPUs).
 
 ## Contributing
 
