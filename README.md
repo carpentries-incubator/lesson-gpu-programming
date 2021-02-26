@@ -22,9 +22,7 @@ Look for the tag ![good_first_issue](https://img.shields.io/badge/-good%20first%
 
 Current maintainers of this lesson are 
 
-* FIXME
-* FIXME
-* FIXME
+* Alessio Sclocco [@isazi](https://github.com/isazi)
 
 
 ## Authors
