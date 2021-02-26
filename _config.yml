@@ -7,8 +7,7 @@
 # dc: Data Carpentry
 # lc: Library Carpentry
 # cp: Carpentries (to use for instructor traning for instance)
-# ea: eScience Academy
-carpentry: "ea"
+carpentry: "cp"
 
 # Overall title for pages.
 title: "GPU Programming"
