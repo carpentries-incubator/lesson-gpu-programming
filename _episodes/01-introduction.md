@@ -44,3 +44,38 @@ In June 2020 edition of the TOP500 list, 6 out of the top 10 supercomputers have
 
 {% include links.md %}
 
+# Speed benefits
+
+Let's start with a very simple example: sorting a long array. We will use the [Cupy](https://cupy.dev/) library to sort on a GPU and `Numpy` to sort on a CPU.
+We will time the operations using the `timeit` command from the iPython shell.
+
+~~~python
+%import numpy as np
+%length = 4096*4096
+%rnd = np.random.random((length,))
+%timeit sorted = np.sort(rnd)
+~~~
+{: .source}
+
+Which returned on my CPU:
+~~~
+1.61 s ± 313 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+~~~
+{: .output}
+
+Okay, let's try to do the same calculation on a GPU.
+
+~~~python
+%import cupy as cp
+%rnd_cp = cp.asarray(rnd)
+%timeit sorted_cp = cp.ndarray.sort(rnd_cp)
+~~~
+{: .source}
+
+Which returned,  on my GPU:
+~~~
+12.1 ms ± 1.19 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+~~~
+{: .output}
+
+So that is tremendous speedup of a factor 133, with very little work, provided you have a GPU at your disposal and the Cupy library installed.
