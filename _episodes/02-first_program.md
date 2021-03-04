@@ -3,11 +3,13 @@ title: "Your First GPU Program"
 teaching: 0
 exercises: 0
 questions:
-- "How to write a basic GPU program?"
+- "How can I parallelize a Python application on GPUs?"
+- "How to write a GPU program?"
 - "What is CUDA?"
-- "What is OpenCL?"
 objectives:
-- ""
+- "Recognize possible data parallelism in Python code"
+- "Understand the structure of a CUDA program"
+- "Execute a CUDA program from Python"
 keypoints:
 - ""
 ---
