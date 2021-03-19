@@ -148,6 +148,7 @@ In this particular case we are working on a one dimensional array, and therefore
 >
 > > ## Solution
 > > The correct answer is number 3.
+> {: .solution}
 {: .challenge}
 
 # Threads Hierarchy in CUDA
