@@ -85,7 +85,6 @@ if numpy.allclose(c_cpu, c_gpu):
 We can now move back to the CUDA code and analyze it line by line to highlight the differences between CUDA-C and normal C.
 
 ~~~c++
-extern "C"
 __global__ void vector_add(const float * A, const float * B, float * C, const int size)
 ~~~
 
@@ -101,6 +100,34 @@ Functions annotated with the "*\_\_host\_\_*" specifier will run on the host, an
 int item = threadIdx.x;
 C[item] = A[item] + B[item];
 ~~~
+
+This is the part of the code in which we do the actual work.
+As you may see, it looks similar to the innermost loop of our *vector_add* Python function, with the main difference being in how the value of the *item* variable is evaluated.
+
+In fact, while in Python the content of *item* is the result of the *range* function, in CUDA we are reading a special variable, i.e. *threadIdx*, containing a triplet that indicates the id of a thread inside a three-dimensional CUDA block.
+In this particular case we are working on a one dimensional array, and therefore only interested in the first dimension, that is stored in the *x* field of this variable.
+
+**TODO**: explain the CUDA hierarchy of grid, block, thread.
+
+We know enough now to pause for a moment and do a little exercise.
+Assume that in our *vector_add* kernel we change the following line:
+
+~~~c
+int item = threadIdx.x;
+~~~
+
+With this other line of code:
+
+~~~c
+int item = 1;
+~~~
+
+Which of the following options is the correct answer?
+
+1) Nothing changes
+2) Only the thread with id 1 is working
+3) Only C[1] is written
+4) All elements of C are zero
 
 {% include links.md %}
 
