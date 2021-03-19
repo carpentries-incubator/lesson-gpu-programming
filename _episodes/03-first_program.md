@@ -146,8 +146,8 @@ In this particular case we are working on a one dimensional array, and therefore
 >
 > 4) All elements of C are zero
 >
-> ## Solution
-> The correct answer is number 3.
+> > ## Solution
+> > The correct answer is number 3.
 {: .challenge}
 
 # Threads Hierarchy in CUDA
