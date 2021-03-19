@@ -157,19 +157,34 @@ In this particular case we are working on a one dimensional array, and therefore
 
 **TODO**: introduce blockIdx, gridDim, blockDim.
 
-In the following code, fill in the blank to work with arrays that are larger than the largest CUDA block.
-
-~~~
-extern "C"
-__global__ void vector_add(const float * A, const float * B, float * C, const int size)
-{
-    int item = ______________;
-    C[item] = A[item] + B[item];
-}
-~~~
-{: .language-c}
-
-The correct answer is *(blockIdx.x * blockDim.x) + threadIdx.x*.
+> ## Challenge
+>
+> In the following code, fill in the blank to work with arrays that are larger than the largest CUDA block.
+>
+> ~~~
+> extern "C"
+> __global__ void vector_add(const float * A, const float * B, float * C, const int size)
+> {
+>    int item = ______________;
+>    C[item] = A[item] + B[item];
+>}
+>~~~
+>{: .language-c}
+>
+> > ## Solution
+> > The correct answer is *(blockIdx.x * blockDim.x) + threadIdx.x*.
+> >
+> > ~~~
+> > extern "C"
+> > __global__ void vector_add(const float * A, const float * B, float * C, const int size)
+> > {
+> >    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+> >    C[item] = A[item] + B[item];
+> >}
+> >~~~
+> >{: .language-c}
+> {: .solution}
+{: .challenge}
 
 # Input of Arbitrary Size
 
