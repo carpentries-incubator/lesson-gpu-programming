@@ -107,8 +107,6 @@ As you may see, it looks similar to the innermost loop of our *vector_add* Pytho
 In fact, while in Python the content of *item* is the result of the *range* function, in CUDA we are reading a special variable, i.e. *threadIdx*, containing a triplet that indicates the id of a thread inside a three-dimensional CUDA block.
 In this particular case we are working on a one dimensional array, and therefore only interested in the first dimension, that is stored in the *x* field of this variable.
 
-**TODO**: explain the CUDA hierarchy of grid, block, thread.
-
 We know enough now to pause for a moment and do a little exercise.
 Assume that in our *vector_add* kernel we change the following line:
 
@@ -128,6 +126,26 @@ Which of the following options is the correct answer?
 2) Only the thread with id 1 is working
 3) Only C[1] is written
 4) All elements of C are zero
+
+The correct answer is number 3.
+
+
+**TODO**: explain the CUDA hierarchy of grid, block, thread.
+
+**TODO**: introduce blockIdx, gridDim, blockDim.
+
+In the following code, fill in the blank to work with arrays that are larger than the largest CUDA block.
+
+~~~c
+extern "C"
+__global__ void vector_add(const float * A, const float * B, float * C, const int size)
+{
+    int item = ______________;
+    C[item] = A[item] + B[item];
+}
+~~~
+
+The correct answer is *(blockIdx.x * blockDim.x) + threadIdx.x*.
 
 {% include links.md %}
 
