@@ -154,4 +154,8 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 
 The correct answer is *(blockIdx.x * blockDim.x) + threadIdx.x*.
 
+# Input of Arbitrary Size
+
+**TODO**: Another exercise will be a Parson's problem, reordering the lines of the vector_add to work on arrays of any size.
+
 {% include links.md %}
