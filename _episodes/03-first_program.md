@@ -14,7 +14,7 @@ keypoints:
 - ""
 ---
 
-# Summing Two Vectors
+# Summing Two Vectors in Python
 
 We start by introducing a program that, given two input vectors of the same size, returns a third vector containing the sum of the corresponding elements of the two input vectors.
 
@@ -29,6 +29,8 @@ def vector_add(A, B, C, size):
 One of the characteristics of this program is that each iteration of the *for* loop is independent from the other iterations.
 In other words, we can not just reorder the iterations and still produce the same output, but also compute part of the iterations on one device and part of the iterations on another device, and still end up with the same result.
 
+# Summing Two Vectors in CUDA
+
 The CUDA-C language is a GPU programming language and API developed by NVIDIA.
 It is mostly equivalent to C/C++, with some special keywords and built-in variables and functions.
 
@@ -42,6 +44,8 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
     C[item] = A[item] + B[item];
 }
 ~~~
+
+# Running Code on the GPU with CuPy
 
 Before delving deeper into the meaning of all lines of code, let us try to execute the code on a GPU.
 To compile the code and manage the GPU in Python we are going to use the interface provided by CuPy.
@@ -81,6 +85,8 @@ vector_add(a_cpu, b_cpu, c_cpu, size)
 if numpy.allclose(c_cpu, c_gpu):
     print("Correct results!")
 ~~~
+
+# Understanding the CUDA Code
 
 We can now move back to the CUDA code and analyze it line by line to highlight the differences between CUDA-C and normal C.
 
@@ -129,6 +135,7 @@ Which of the following options is the correct answer?
 
 The correct answer is number 3.
 
+# Threads Hierarchy in CUDA
 
 **TODO**: explain the CUDA hierarchy of grid, block, thread.
 
@@ -148,4 +155,3 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 The correct answer is *(blockIdx.x * blockDim.x) + threadIdx.x*.
 
 {% include links.md %}
-
