@@ -139,11 +139,14 @@ In this particular case we are working on a one dimensional array, and therefore
 > Which of the following options is the correct answer?
 >
 > 1) Nothing changes
+>
 > 2) Only the thread with id 1 is working
+>
 > 3) Only C[1] is written
+>
 > 4) All elements of C are zero
 >
-> ### Solution
+> ## Solution
 > The correct answer is number 3.
 {: .challenge}
 
