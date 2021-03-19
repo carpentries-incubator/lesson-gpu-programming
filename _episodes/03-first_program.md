@@ -18,13 +18,14 @@ keypoints:
 
 We start by introducing a program that, given two input vectors of the same size, returns a third vector containing the sum of the corresponding elements of the two input vectors.
 
-~~~python
+~~~
 def vector_add(A, B, C, size):
     for item in range(0, size):
         C[item] = A[item] + B[item]
     
     return C
 ~~~
+{: .language-python}
 
 One of the characteristics of this program is that each iteration of the *for* loop is independent from the other iterations.
 In other words, we can not just reorder the iterations and still produce the same output, but also compute part of the iterations on one device and part of the iterations on another device, and still end up with the same result.
@@ -36,7 +37,7 @@ It is mostly equivalent to C/C++, with some special keywords and built-in variab
 
 We begin our introduction to CUDA by writing a small kernel, i.e. a GPU program, that computes the same function that we just described in Python.
 
-~~~c++
+~~~
 extern "C"
 __global__ void vector_add(const float * A, const float * B, float * C, const int size)
 {
@@ -44,13 +45,14 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
     C[item] = A[item] + B[item];
 }
 ~~~
+{: .language-cuda}
 
 # Running Code on the GPU with CuPy
 
 Before delving deeper into the meaning of all lines of code, let us try to execute the code on a GPU.
 To compile the code and manage the GPU in Python we are going to use the interface provided by CuPy.
 
-~~~python
+~~~
 # size of the arrays
 size = 1024
 
@@ -71,10 +73,11 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 
 vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
 ~~~
+{: .language-python}
 
 And to be sure that the CUDA code does exactly what we want, we can execute our sequential Python code and compare the results.
 
-~~~python
+~~~
 a_cpu = a_gpu
 b_cpu = b_gpu
 c_cpu = numpy.zeros(size, dtype=numpy.float32)
@@ -85,14 +88,16 @@ vector_add(a_cpu, b_cpu, c_cpu, size)
 if numpy.allclose(c_cpu, c_gpu):
     print("Correct results!")
 ~~~
+{: .language-python}
 
 # Understanding the CUDA Code
 
 We can now move back to the CUDA code and analyze it line by line to highlight the differences between CUDA-C and normal C.
 
-~~~c++
+~~~
 __global__ void vector_add(const float * A, const float * B, float * C, const int size)
 ~~~
+{: .language-cuda}
 
 This is the definition of our *vector_add* function.
 The "*\_\_global\_\_*" keyword is specific to CUDA, and all the definitions of our kernels will be preceded by this keyword.
@@ -102,10 +107,11 @@ Therefore the use of the word global, to specify the execution scope of the func
 Other execution space specifiers in CUDA-C are "*\_\_host\_\_*", and "*\_\_device\_\_*".
 Functions annotated with the "*\_\_host\_\_*" specifier will run on the host, and be only callable from the host, while functions annotated with the "*\_\_device\_\_*" specifier will run on the GPU, but can only be called from the GPU itself.
 
-~~~c++
+~~~
 int item = threadIdx.x;
 C[item] = A[item] + B[item];
 ~~~
+{: .language-cuda}
 
 This is the part of the code in which we do the actual work.
 As you may see, it looks similar to the innermost loop of our *vector_add* Python function, with the main difference being in how the value of the *item* variable is evaluated.
@@ -116,15 +122,17 @@ In this particular case we are working on a one dimensional array, and therefore
 We know enough now to pause for a moment and do a little exercise.
 Assume that in our *vector_add* kernel we change the following line:
 
-~~~c
+~~~
 int item = threadIdx.x;
 ~~~
+{: .language-cuda}
 
 With this other line of code:
 
-~~~c
+~~~
 int item = 1;
 ~~~
+{: .language-cuda}
 
 Which of the following options is the correct answer?
 
@@ -143,7 +151,7 @@ The correct answer is number 3.
 
 In the following code, fill in the blank to work with arrays that are larger than the largest CUDA block.
 
-~~~c
+~~~
 extern "C"
 __global__ void vector_add(const float * A, const float * B, float * C, const int size)
 {
@@ -151,6 +159,7 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
     C[item] = A[item] + B[item];
 }
 ~~~
+{: .language-cuda}
 
 The correct answer is *(blockIdx.x * blockDim.x) + threadIdx.x*.
 
