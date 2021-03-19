@@ -119,29 +119,33 @@ As you may see, it looks similar to the innermost loop of our *vector_add* Pytho
 In fact, while in Python the content of *item* is the result of the *range* function, in CUDA we are reading a special variable, i.e. *threadIdx*, containing a triplet that indicates the id of a thread inside a three-dimensional CUDA block.
 In this particular case we are working on a one dimensional array, and therefore only interested in the first dimension, that is stored in the *x* field of this variable.
 
-We know enough now to pause for a moment and do a little exercise.
-Assume that in our *vector_add* kernel we change the following line:
-
-~~~
-int item = threadIdx.x;
-~~~
-{: .language-c}
-
-With this other line of code:
-
-~~~
-int item = 1;
-~~~
-{: .language-c}
-
-Which of the following options is the correct answer?
-
-1) Nothing changes
-2) Only the thread with id 1 is working
-3) Only C[1] is written
-4) All elements of C are zero
-
-The correct answer is number 3.
+> ## Challenge
+>
+> We know enough now to pause for a moment and do a little exercise.
+> Assume that in our *vector_add* kernel we change the following line:
+>
+> ~~~
+> int item = threadIdx.x;
+> ~~~
+> {: .language-c}
+> 
+> With this other line of code:
+>
+> ~~~
+> int item = 1;
+> ~~~
+> {: .language-c}
+>
+> Which of the following options is the correct answer?
+>
+> 1) Nothing changes
+> 2) Only the thread with id 1 is working
+> 3) Only C[1] is written
+> 4) All elements of C are zero
+>
+> ### Solution
+> The correct answer is number 3.
+{: .challenge}
 
 # Threads Hierarchy in CUDA
 
