@@ -45,7 +45,7 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
     C[item] = A[item] + B[item];
 }
 ~~~
-{: .language-cuda}
+{: .language-c}
 
 # Running Code on the GPU with CuPy
 
@@ -97,7 +97,7 @@ We can now move back to the CUDA code and analyze it line by line to highlight t
 ~~~
 __global__ void vector_add(const float * A, const float * B, float * C, const int size)
 ~~~
-{: .language-cuda}
+{: .language-c}
 
 This is the definition of our *vector_add* function.
 The "*\_\_global\_\_*" keyword is specific to CUDA, and all the definitions of our kernels will be preceded by this keyword.
@@ -111,7 +111,7 @@ Functions annotated with the "*\_\_host\_\_*" specifier will run on the host, an
 int item = threadIdx.x;
 C[item] = A[item] + B[item];
 ~~~
-{: .language-cuda}
+{: .language-c}
 
 This is the part of the code in which we do the actual work.
 As you may see, it looks similar to the innermost loop of our *vector_add* Python function, with the main difference being in how the value of the *item* variable is evaluated.
@@ -125,14 +125,14 @@ Assume that in our *vector_add* kernel we change the following line:
 ~~~
 int item = threadIdx.x;
 ~~~
-{: .language-cuda}
+{: .language-c}
 
 With this other line of code:
 
 ~~~
 int item = 1;
 ~~~
-{: .language-cuda}
+{: .language-c}
 
 Which of the following options is the correct answer?
 
@@ -159,7 +159,7 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
     C[item] = A[item] + B[item];
 }
 ~~~
-{: .language-cuda}
+{: .language-c}
 
 The correct answer is *(blockIdx.x * blockDim.x) + threadIdx.x*.
 
