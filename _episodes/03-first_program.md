@@ -27,7 +27,7 @@ def vector_add(A, B, C, size):
 ~~~
 {: .language-python}
 
-One of the characteristics of this program is that each iteration of the *for* loop is independent from the other iterations.
+One of the characteristics of this program is that each iteration of the `for` loop is independent from the other iterations.
 In other words, we can not just reorder the iterations and still produce the same output, but also compute part of the iterations on one device and part of the iterations on another device, and still end up with the same result.
 
 # Summing Two Vectors in CUDA
@@ -99,13 +99,13 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 ~~~
 {: .language-c}
 
-This is the definition of our *vector_add* function.
-The "*\_\_global\_\_*" keyword is specific to CUDA, and all the definitions of our kernels will be preceded by this keyword.
+This is the definition of our `vector_add` function.
+The `__global__` keyword is specific to CUDA, and all the definitions of our kernels will be preceded by this keyword.
 What the keyword means is that the defined function will run on the GPU, but can be called from the host, and in some cases also from the GPU itself.
 Therefore the use of the word global, to specify the execution scope of the function.
 
-Other execution space specifiers in CUDA-C are "*\_\_host\_\_*", and "*\_\_device\_\_*".
-Functions annotated with the "*\_\_host\_\_*" specifier will run on the host, and be only callable from the host, while functions annotated with the "*\_\_device\_\_*" specifier will run on the GPU, but can only be called from the GPU itself.
+Other execution space specifiers in CUDA-C are `__host__`, and `__device__`.
+Functions annotated with the `__host__` specifier will run on the host, and be only callable from the host, while functions annotated with the `__device__` specifier will run on the GPU, but can only be called from the GPU itself.
 
 ~~~
 int item = threadIdx.x;
@@ -114,15 +114,15 @@ C[item] = A[item] + B[item];
 {: .language-c}
 
 This is the part of the code in which we do the actual work.
-As you may see, it looks similar to the innermost loop of our *vector_add* Python function, with the main difference being in how the value of the *item* variable is evaluated.
+As you may see, it looks similar to the innermost loop of our `vector_add` Python function, with the main difference being in how the value of the `item` variable is evaluated.
 
-In fact, while in Python the content of *item* is the result of the *range* function, in CUDA we are reading a special variable, i.e. *threadIdx*, containing a triplet that indicates the id of a thread inside a three-dimensional CUDA block.
-In this particular case we are working on a one dimensional array, and therefore only interested in the first dimension, that is stored in the *x* field of this variable.
+In fact, while in Python the content of `item` is the result of the `range` function, in CUDA we are reading a special variable, i.e. `threadIdx`, containing a triplet that indicates the id of a thread inside a three-dimensional CUDA block.
+In this particular case we are working on a one dimensional array, and therefore only interested in the first dimension, that is stored in the `x` field of this variable.
 
 > ## Challenge
 >
 > We know enough now to pause for a moment and do a little exercise.
-> Assume that in our *vector_add* kernel we change the following line:
+> Assume that in our `vector_add` kernel we change the following line:
 >
 > ~~~
 > int item = threadIdx.x;
@@ -140,20 +140,93 @@ In this particular case we are working on a one dimensional array, and therefore
 >
 > 1) Nothing changes
 >
-> 2) Only the thread with id 1 is working
+> 2) Only the first thread is working
 >
-> 3) Only C[1] is written
+> 3) Only `C[1]` is written
 >
-> 4) All elements of C are zero
+> 4) All elements of `C` are zero
 >
 > > ## Solution
 > > The correct answer is number 3.
 > {: .solution}
 {: .challenge}
 
-# Threads Hierarchy in CUDA
+# Computing Hierarchy in CUDA
 
-**TODO**: explain the CUDA hierarchy of grid, block, thread.
+In the previous example we had a small vector of size 1024, and each of the 1024 threads we generated was working on one of the element.
+
+What would happen if we changed the size of the array to a larger number, such as 2048?
+We modify the value of the variable size and try again.
+
+~~~
+# size of the arrays
+size = 2048
+
+# allocating and populating the arrays
+a_gpu = cupy.random.rand(size, dtype=cupy.float32)
+b_gpu = cupy.random.rand(size, dtype=cupy.float32)
+c_gpu = cupy.zeros(size, dtype=cupy.float32)
+
+# CUDA vector_add
+vector_add_gpu = cupy.RawKernel(r'''
+extern "C"
+__global__ void vector_add(const float * A, const float * B, float * C, const int size)
+{
+    int item = threadIdx.x;
+    C[item] = A[item] + B[item];
+}
+''', "vector_add")
+
+vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+~~~
+{: .language-python}
+
+This is how the output should look like when running the code in a Jupyter Notebook:
+
+~~~
+---------------------------------------------------------------------------
+
+CUDADriverError                           Traceback (most recent call last)
+
+<ipython-input-4-a26bc8acad2f> in <module>()
+     19 ''', "vector_add")
+     20 
+---> 21 vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+     22 
+     23 print(c_gpu)
+
+cupy/core/raw.pyx in cupy.core.raw.RawKernel.__call__()
+
+cupy/cuda/function.pyx in cupy.cuda.function.Function.__call__()
+
+cupy/cuda/function.pyx in cupy.cuda.function._launch()
+
+cupy_backends/cuda/api/driver.pyx in cupy_backends.cuda.api.driver.launchKernel()
+
+cupy_backends/cuda/api/driver.pyx in cupy_backends.cuda.api.driver.check_status()
+
+CUDADriverError: CUDA_ERROR_INVALID_VALUE: invalid argument
+~~~
+{: .output}
+
+The reason for this error is that most GPUs will not allow us to execute a block composed of more than 1024 threads.
+If we look at the parameters of our functions we see that the first two parameters are two triplets.
+
+~~~
+vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+~~~
+{: .language-python}
+
+The first triplet specifies the size of the CUDA **grid**, while the second triplet specifies the size of the CUDA **block**.
+The grid is a three-dimensional structure in the CUDA programming model and it represent the organization of a whole kernel execution.
+A grid is made of one or more independent blocks, and in the case of previous code we have a grid composed by a single block `(1, 1, 1)`.
+The size of this block is specified by the second triplet, in our case `(size, 1, 1)`.
+While blocks are independent of each other, the thread composing a block are not completely independent, they share resources and can also communicate with each other.
+
+To go back to our example, we can modify che grid specification from `(1, 1, 1)` to `(2, 1, 1)`, and the block specification from `(size, 1, 1)` to `(size // 2, 1, 1)`.
+If we run the code again, we should again get the correct output.
+
+We already introduced the special variable `threadIdx`.
 
 **TODO**: introduce blockIdx, gridDim, blockDim.
 
@@ -172,7 +245,7 @@ In this particular case we are working on a one dimensional array, and therefore
 >{: .language-c}
 >
 > > ## Solution
-> > The correct answer is *(blockIdx.x * blockDim.x) + threadIdx.x*.
+> > The correct answer is `(blockIdx.x * blockDim.x) + threadIdx.x`.
 > >
 > > ~~~
 > > extern "C"
