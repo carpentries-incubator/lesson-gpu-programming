@@ -226,13 +226,85 @@ While blocks are independent of each other, the thread composing a block are not
 To go back to our example, we can modify che grid specification from `(1, 1, 1)` to `(2, 1, 1)`, and the block specification from `(size, 1, 1)` to `(size // 2, 1, 1)`.
 If we run the code again, we should again get the correct output.
 
-We already introduced the special variable `threadIdx`.
+We already introduced the special variable `threadIdx` when introducing the CUDA code, and we said it contains a triplet specifying the coordinates of a thread in a thread block.
+CUDA has other variables that are important to understand the coordinates of each thread and block in the overall structure of the computation.
 
-**TODO**: introduce blockIdx, gridDim, blockDim.
+These special variables are `blockDim`, `blockIdx`, and `gridDim`, and they are all triplets.
+The triplet contained in `blockDim` represents the size of the calling thread's block in three dimensions.
+While the content of `threadIdx` is different for each thread in the same block, the content of `blockDim` is the same because the size of the block is the same for all threads.
+The coordinates of a block in the computational grid are contained in `blockIdx`, therefore the content of this variable will be the same for all threads in the same block, but different for threads in different blocks.
+Finally, `gridDim` contains the size of the grid in three dimensions, and it is again the same for all threads.
 
 > ## Challenge
 >
-> In the following code, fill in the blank to work with arrays that are larger than the largest CUDA block.
+> Given the following snippet of code:
+>
+> ~~~
+> size = 512
+> vector_add_gpu((4, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+> ~~~
+> {: .language-python}
+> 
+> What is the content of the `blockDim` and `gridDim` variables?
+>
+> > ## Solution
+> > The content of `blockDim` is `(512, 1, 1)` and the content of `gridDim` is `(4, 1, 1)` for all threads.
+> {: .solution}
+{: .challenge}
+
+What happens if we run the code that we just fixed to work on an array of 2048 elements, and compare the results with our CPU version?
+
+~~~
+# size of the arrays
+size = 2048
+
+# allocating and populating the arrays
+a_gpu = cupy.random.rand(size, dtype=cupy.float32)
+b_gpu = cupy.random.rand(size, dtype=cupy.float32)
+c_gpu = cupy.zeros(size, dtype=cupy.float32)
+a_cpu = a_gpu
+b_cpu = b_gpu
+c_cpu = numpy.zeros(size, dtype=numpy.float32)
+
+# CPU code
+def vector_add(A, B, C, size):
+    for item in range(0, size):
+        C[item] = A[item] + B[item]
+    
+    return C
+
+# CUDA vector_add
+vector_add_gpu = cupy.RawKernel(r'''
+extern "C"
+__global__ void vector_add(const float * A, const float * B, float * C, const int size)
+{
+    int item = threadIdx.x;
+    C[item] = A[item] + B[item];
+}
+''', "vector_add")
+
+# Execute the code
+vector_add_gpu((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+vector_add(a_cpu, b_cpu, c_cpu, size)
+
+# test
+if numpy.allclose(c_cpu, c_gpu):
+    print("Correct results!")
+else:
+    print("Wrong results!")
+~~~
+{: .language-python}
+
+~~~
+Wrong results!
+~~~
+{: .output}
+
+The results are wrong!
+In fact, while we increased the number of threads we launch, we did not modify the kernel code to compute the correct results using the new builtin variables we just introduced.
+> ## Challenge
+>
+> In the following code, fill in the blank to work with arrays that are larger than the largest CUDA block (i.e. 1024).
 >
 > ~~~
 > extern "C"
