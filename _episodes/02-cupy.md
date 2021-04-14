@@ -1,16 +1,22 @@
 ---
 title: "CuPy"
+
 teaching: 0
+
 exercises: 0
+
 questions:
+
 - "How can I copy my data to the GPU?"
 - "How can I do a calculation on a GPU?"
 - "How can I copy the result back to my computer?"
+
 objectives:
-- "Understand the concepts of host and device"
-- "Understand how CPU and GPU are separated"
-- "Understand how they can be connected, how data can be transferred back and forth"
-- "Understand how to execute a simple computation on a GPU"
+- "Be able to indicate if an array, represented by a variable in an iPython shell, is stored in host or device memory."
+- "Be able to copy the contents of this array from host to device memory and vice versa."
+- "Be able to select the appropriate function to either convolve an image using either CPU or GPU compute power."
+- "Be able to quickly estimate the speed benefits for a simple calculation by moving it from the CPU to the GPU."
+
 keypoints:
 - ""
 ---
@@ -85,7 +91,7 @@ When you display the image, zoom in a bit to see that the "ones" surrounded by z
 
 # Copy the input image and convolving function to the GPU and convolve using the power of the GPU
 
-This is part of a course on GPU programming, so let's use the GPU. We need to copy our data, the input image and the convolving function to the GPU first, so "deltas" and "gauss".
+This is part of a course on GPU programming, so let's use the GPU. Although there is a physical connection - i.e. a cable - between the CPU and the GPU, they do not share the same memory space. This means that an array created from e.g. an iPython shell using Numpy is physically loaded into the RAM of the CPU. It is not yet present in GPU memory, which means that we need to copy our data, the input image and the convolving function to the GPU first. We have "deltas" and "gauss" in the host's RAM now and we need to copy it using the CuPy library.
 
 ~~~python
 %import cupy as cp
