@@ -33,6 +33,8 @@ These are the kind of programs that we would call *naturally parallel*, and they
 
 # Summing Two Vectors in CUDA
 
+While we could just use CuPy to run something equivalent to our `vector_add` on a GPU, our goal is to learn how to write code that can be executed by GPUs, therefore we now begin learning CUDA.
+
 The CUDA-C language is a GPU programming language and API developed by NVIDIA.
 It is mostly equivalent to C/C++, with some special keywords, built-in variables, and functions.
 
@@ -47,6 +49,12 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 }
 ~~~
 {: .language-c}
+
+~~~
+We are aware that CUDA is a proprietary solution, and that there are open-source alternatives such as OpenCL.
+However, CUDA is the most used platform for GPU programming and therefore we decided to use it for our teaching material.
+~~~
+{: .callout}
 
 # Running Code on the GPU with CuPy
 
@@ -91,22 +99,27 @@ if numpy.allclose(c_cpu, c_gpu):
 ~~~
 {: .language-python}
 
+~~~
+Correct results!
+~~~
+{: .output}
+
 # Understanding the CUDA Code
 
-We can now move back to the CUDA code and analyze it line by line to highlight the differences between CUDA-C and normal C.
+We can now move back to the CUDA code and analyze it line by line to highlight the differences between CUDA-C and standard C.
 
 ~~~
 __global__ void vector_add(const float * A, const float * B, float * C, const int size)
 ~~~
 {: .language-c}
 
-This is the definition of our `vector_add` function.
+This is the definition of our CUDA `vector_add` function.
 The `__global__` keyword is specific to CUDA, and all the definitions of our kernels will be preceded by this keyword.
-What the keyword means is that the defined function will run on the GPU, but can be called from the host, and in some cases also from the GPU itself.
-Therefore the use of the word global, to specify the execution scope of the function.
+What the keyword means is that the defined function will run on the GPU, but can be called from the host (the Python interpreter running on the CPU, in our case), and in some cases also from the GPU itself.
 
 Other execution space specifiers in CUDA-C are `__host__`, and `__device__`.
 Functions annotated with the `__host__` specifier will run on the host, and be only callable from the host, while functions annotated with the `__device__` specifier will run on the GPU, but can only be called from the GPU itself.
+We are not going to use these qualifiers as often as `__global__`.
 
 ~~~
 int item = threadIdx.x;
@@ -123,7 +136,7 @@ In this particular case we are working on a one dimensional vector, and therefor
 > ## Challenge
 >
 > We know enough now to pause for a moment and do a little exercise.
-> Assume that in our `vector_add` kernel we change the following line:
+> Assume that in our `vector_add` kernel we replace the following line:
 >
 > ~~~
 > int item = threadIdx.x;
@@ -137,7 +150,7 @@ In this particular case we are working on a one dimensional vector, and therefor
 > ~~~
 > {: .language-c}
 >
-> Which of the following options is the correct answer?
+> What will the result of this change be?
 >
 > 1) Nothing changes
 >
@@ -148,7 +161,7 @@ In this particular case we are working on a one dimensional vector, and therefor
 > 4) All elements of `C` are zero
 >
 > > ## Solution
-> > The correct answer is number 3.
+> > The correct answer is number 3, only the element `C[1]` is written, and we do not even know by which thread!
 > {: .solution}
 {: .challenge}
 
@@ -220,14 +233,14 @@ vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
 
 The first triplet specifies the size of the CUDA **grid**, while the second triplet specifies the size of the CUDA **block**.
 The grid is a three-dimensional structure in the CUDA programming model and it represent the organization of a whole kernel execution.
-A grid is made of one or more independent blocks, and in the case of previous code we have a grid composed by a single block `(1, 1, 1)`.
+A grid is made of one or more independent blocks, and in the case of our previous snippet of code we have a grid composed by a single block `(1, 1, 1)`.
 The size of this block is specified by the second triplet, in our case `(size, 1, 1)`.
 While blocks are independent of each other, the thread composing a block are not completely independent, they share resources and can also communicate with each other.
 
 To go back to our example, we can modify che grid specification from `(1, 1, 1)` to `(2, 1, 1)`, and the block specification from `(size, 1, 1)` to `(size // 2, 1, 1)`.
-If we run the code again, we should again get the correct output.
+If we run the code again, we should now get the expected output.
 
-We already introduced the special variable `threadIdx` when introducing the CUDA code, and we said it contains a triplet specifying the coordinates of a thread in a thread block.
+We already introduced the special variable `threadIdx` when introducing the `vector_add` CUDA code, and we said it contains a triplet specifying the coordinates of a thread in a thread block.
 CUDA has other variables that are important to understand the coordinates of each thread and block in the overall structure of the computation.
 
 These special variables are `blockDim`, `blockIdx`, and `gridDim`, and they are all triplets.
@@ -246,14 +259,14 @@ Finally, `gridDim` contains the size of the grid in three dimensions, and it is 
 > ~~~
 > {: .language-python}
 > 
-> What is the content of the `blockDim` and `gridDim` variables?
+> What is the content of the `blockDim` and `gridDim` variables inside the CUDA `vector_add` kernel?
 >
 > > ## Solution
-> > The content of `blockDim` is `(512, 1, 1)` and the content of `gridDim` is `(4, 1, 1)` for all threads.
+> > The content of `blockDim` is `(512, 1, 1)` and the content of `gridDim` is `(4, 1, 1)`, for all threads.
 > {: .solution}
 {: .challenge}
 
-What happens if we run the code that we just fixed to work on an vector of 2048 elements, and compare the results with our CPU version?
+What happens if we run the code that we just modified to work on an vector of 2048 elements, and compare the results with our CPU version?
 
 ~~~
 # size of the vectors
@@ -340,7 +353,7 @@ However, in a real world scenario we may have to process vectors of arbitrary si
 
 > ## Challenge
 >
-> We modified the `vector_add` kernel to include a check for the size of the vector, so that we only compute elements that are inside the vector boundaries.
+> We modified the `vector_add` kernel to include a check for the size of the vector, so that we only compute elements that are within the vector boundaries.
 > However the code is not correct as it is written now.
 > Can you reorder the lines of the source code to make it work?
 >
@@ -406,7 +419,7 @@ CUDADriverError: CUDA_ERROR_INVALID_VALUE: invalid argument
 This error is telling us that CUDA cannot launch a block with `size // 2` threads, because the maximum amount of threads in a kernel is 1024 and we are requesting 5000 threads.
 
 What we need to do is to make grid and block more flexible, so that they can adapt to vectors of arbitrary size.
-To do that, we can replace the line in which we call `vector_add_gpu` with the following code.
+To do that, we can replace the Python code to call `vector_add_gpu` with the following code.
 
 ~~~
 grid_size = (int(math.ceil(size / 1024)), 1, 1)
@@ -415,8 +428,13 @@ vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))
 ~~~
 {: .language-python}
 
-With these changes we always have blocks of 1024 threads, but we adapt the number of blocks so that we always have enough to threads to compute all elements in the vector.
+With these changes we always have blocks composed of 1024 threads, but we adapt the number of blocks so that we always have enough to threads to compute all elements in the vector.
+
+~~~
 We also need to add an `import math` in our Python code to be able to call the `math.ceil()` function.
+~~~
+{: .callout}
+
 
 We can now execute the code again.
 
