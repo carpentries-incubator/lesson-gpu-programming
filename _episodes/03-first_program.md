@@ -312,9 +312,9 @@ In fact, while we increased the number of threads we launch, we did not modify t
 > {
 >    int item = ______________;
 >    C[item] = A[item] + B[item];
->}
->~~~
->{: .language-c}
+> }
+> ~~~
+> {: .language-c}
 >
 > > ## Solution
 > > The correct answer is `(blockIdx.x * blockDim.x) + threadIdx.x`.
@@ -325,9 +325,9 @@ In fact, while we increased the number of threads we launch, we did not modify t
 > > {
 > >    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
 > >    C[item] = A[item] + B[item];
-> >}
-> >~~~
-> >{: .language-c}
+> > }
+> > ~~~
+> > {: .language-c}
 > {: .solution}
 {: .challenge}
 
