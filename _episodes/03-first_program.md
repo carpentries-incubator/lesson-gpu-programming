@@ -1,7 +1,7 @@
 ---
 title: "Your First GPU Kernel"
-teaching: 0
-exercises: 0
+teaching: 45
+exercises: 25
 questions:
 - "How can I parallelize a Python application on a GPU?"
 - "How to write a GPU program?"
