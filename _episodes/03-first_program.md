@@ -9,7 +9,7 @@ questions:
 objectives:
 - "Recognize possible data parallelism in Python code"
 - "Understand the structure of a CUDA program"
-- "Execute a CUDA program from Python"
+- "Execute a CUDA program in Python using CuPy"
 keypoints:
 - ""
 ---
@@ -283,7 +283,7 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 }
 ''', "vector_add")
 
-# Execute the code
+# execute the code
 vector_add_gpu((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size))
 vector_add(a_cpu, b_cpu, c_cpu, size)
 
@@ -302,6 +302,7 @@ Wrong results!
 
 The results are wrong!
 In fact, while we increased the number of threads we launch, we did not modify the kernel code to compute the correct results using the new builtin variables we just introduced.
+
 > ## Challenge
 >
 > In the following code, fill in the blank to work with arrays that are larger than the largest CUDA block (i.e. 1024).
@@ -331,8 +332,96 @@ In fact, while we increased the number of threads we launch, we did not modify t
 > {: .solution}
 {: .challenge}
 
-# Input of Arbitrary Size
+# Arrays of Arbitrary Size
 
-**TODO**: Another exercise will be a Parson's problem, reordering the lines of the vector_add to work on arrays of any size.
+So far we have worked with a number of threads that is the same as the elements in the array.
+However, in a real world scenario we may have to process arrays of arbitrary size, and to do this we need to modify both the kernel and the way it is launched.
+
+> ## Challenge
+>
+> We modified the `vector_add` kernel to include a check for the size of the array, so that we only compute elements that are inside the array boundaries.
+> However the code is not correct as it is written now.
+> Can you reorder the lines of the source code to make it work?
+>
+> ~~~
+> extern "C"
+> __global__ void vector_add(const float * A, const float * B, float * C, const int size)
+> {
+>    if ( item < size )
+>    {
+>       int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+>    }
+>    C[item] = A[item] + B[item];
+> }
+> ~~~
+> {: .language-c}
+>
+> > ## Solution
+> > The correct way to modify the `vector_add` to work on arrays of arbitrary size is to first compute the coordinates of each thread, and then perform the sum only on elements that are within the array boundaries.
+> >
+> > ~~~
+> > extern "C"
+> > __global__ void vector_add(const float * A, const float * B, float * C, const int size)
+> > {
+> >    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+> >    if ( item < size )
+> >    {
+> >       C[item] = A[item] + B[item];
+> >    }
+> > }
+> > ~~~
+> > {: .language-c}
+> {: .solution}
+{: .challenge}
+
+To test our changes we can modify the `size` of the arrays from 2048 to 10000, and execute the code again.
+
+~~~
+---------------------------------------------------------------------------
+
+CUDADriverError                           Traceback (most recent call last)
+
+<ipython-input-20-00d938215d28> in <module>()
+     31 
+     32 # Execute the code
+---> 33 vector_add_gpu((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+     34 vector_add(a_cpu, b_cpu, c_cpu, size)
+     35 
+
+cupy/core/raw.pyx in cupy.core.raw.RawKernel.__call__()
+
+cupy/cuda/function.pyx in cupy.cuda.function.Function.__call__()
+
+cupy/cuda/function.pyx in cupy.cuda.function._launch()
+
+cupy/cuda/driver.pyx in cupy.cuda.driver.launchKernel()
+
+cupy/cuda/driver.pyx in cupy.cuda.driver.check_status()
+
+CUDADriverError: CUDA_ERROR_INVALID_VALUE: invalid argument
+~~~
+{: .output}
+
+This error is telling us that CUDA cannot launch a block with `size // 2` threads, because the maximum amount of threads in a kernel is 1024 and we are requesting 5000 threads.
+
+What we need to do is to make grid and block more flexible, so that they can adapt to arrays of arbitrary size.
+To do that, we can replace the line in which we call `vector_add_gpu` with the following code.
+
+~~~
+grid_size = (int(math.ceil(size / 1024)), 1, 1)
+block_size = (1024, 1, 1)
+vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))
+~~~
+{: .language-python}
+
+With these changes we always have blocks of 1024 threads, but we adapt the number of blocks so that we always have enough to threads to compute all elements in the array.
+We also need to add an `import math` in our Python code to be able to call the `math.ceil()` function.
+
+We can now execute the code again.
+
+~~~
+Correct results!
+~~~
+{: .output}
 
 {% include links.md %}
