@@ -114,12 +114,13 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 {: .language-c}
 
 This is the definition of our CUDA `vector_add` function.
-The `__global__` keyword is specific to CUDA, and all the definitions of our kernels will be preceded by this keyword.
-What the keyword means is that the defined function will run on the GPU, but can be called from the host (the Python interpreter running on the CPU, in our case), and in some cases also from the GPU itself.
+The `__global__` keyword is an execution space identifier, and it is specific to CUDA.
+What this keyword means is that the defined function will be able to run on the GPU, but can also be called from the host (in our case the Python interpreter running on the CPU).
+All of our kernel definitions will be preceded by this keyword.
 
-Other execution space specifiers in CUDA-C are `__host__`, and `__device__`.
-Functions annotated with the `__host__` specifier will run on the host, and be only callable from the host, while functions annotated with the `__device__` specifier will run on the GPU, but can only be called from the GPU itself.
-We are not going to use these qualifiers as often as `__global__`.
+Other execution space identifiers in CUDA-C are `__host__`, and `__device__`.
+Functions annotated with the `__host__` identifier will run on the host, and be only callable from the host, while functions annotated with the `__device__` identifier will run on the GPU, but can only be called from the GPU itself.
+We are not going to use these identifiers as often as `__global__`.
 
 ~~~
 int item = threadIdx.x;
