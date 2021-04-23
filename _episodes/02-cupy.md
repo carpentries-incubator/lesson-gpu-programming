@@ -23,7 +23,7 @@ keypoints:
 
 # CuPy - principles
 
-[CuPy](https://docs.cupy.dev) is a GPU array backend that implements a subset of NumPy interface, through Cuda, the GPU programming language designed by NVIDIA, the largest producer of GPUs in the world. This makes it a very convenient tool to use the compute power of GPUs for people that have some experience with Numpy.
+[CuPy](https://docs.cupy.dev) is a GPU array backend that implements a subset of the NumPy interface, through Cuda, the GPU programming language designed by NVIDIA, the largest producer of GPUs in the world. This makes it a very convenient tool to use the compute power of GPUs for people that have some experience with Numpy.
 
 # Generate some data and do a computation on the host (=CPU)
 
@@ -118,6 +118,27 @@ Similar to above, the time to perform this convolution will depend very much on 
 {: .output}
 
 This is a lot faster than on the CPU, I found a speedup factor of 125. Impressive!
+
+> ## Challenge: Try to convolve the Numpy array deltas with the Numpy array gauss directly on the GPU, so without using CuPy arrays.
+> If we succeed, this should save us the time and effort of transferring deltas and gauss to the GPU.
+>
+> > ## Solution
+> > We can again use the GPU convolution function from the cupyx library: signal.convolve2d and use deltas and gauss as input.
+> > ~~~python
+> > signal.convolve2d(deltas, gauss)
+> > ~~~
+> > 
+> > However, this gives a long error message with this last line:
+> > ~~~
+> > TypeError: Unsupported type <class 'numpy.ndarray'>
+> > ~~~
+> > {: .output}
+> >
+> > It is unfortunately not possible to access Numpy arrays from the GPU directly. Numpy arrays exist in the 
+> > Random Access Memory (RAM) of the host and not in GPU memory. These types of memory are not united, but transfers are possible.
+> >
+> {: .solution}
+{: .challenge}
 
 # Compare the results. Copy the convolved image from the device back to the host
 
