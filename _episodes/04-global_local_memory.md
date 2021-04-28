@@ -78,7 +78,7 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
    {
        temp[0] = A[item];
        temp[1] = B[item];
-       temp[2] = temp_a + temp_b;
+       temp[2] = temp[0] + temp[1];
        C[item] = temp[2];
    }
 }
@@ -123,6 +123,55 @@ In CUDA there is no particular keyword to specify for global memory allocation.
 
 Only accessible by the thread allocating it.
 All threads allocate their own local memory, but cannot see the content of the memory of the other threads.
+
+> ## Challenge: use local memory
+>
+> Modify the code of `vector_add` so that intermediate data products are stored in local memory, and only the final result is saved to global memory.
+>
+> ~~~
+> extern "C"
+> __global__ void vector_add(const float * A, const float * B, float * C, const int size)
+> {
+>    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+>    
+>    if ( item < size )
+>    {
+>       C[item] = A[item] + B[item];
+>    }
+> }
+> ~~~
+> {: .language-c}
+> Hint: have a look at the example using an array of registers.
+> > ## Solution
+> > 
+> > We need to pass the size of the local array as a new parameter to the kernel, because if we just specified `3` in the code, the compiler would allocate registers and not local memory.
+> > 
+> > ~~~
+> > extern "C"
+> > __global__ void vector_add(const float * A, const float * B, float * C, const int size, const int local_memory_size)
+> > {
+> >    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+> >    float local_memory[local_memory_size];
+> >    
+> >    if ( item < size )
+> >    {
+> >       local_memory[0] = A[item];
+> >       local_memory[1] = B[item];
+> >       local_memory[2] = local_memory[0] + local_memory[1];
+> >       C[item] = local_memory[2];
+> >    }
+> > }
+> > ~~~
+> > {: .language-c}
+> > 
+> > The host code could be modified adding one line and changing the way the kernel is called.
+> > ~~~
+> > local_memory_size = 3
+> > vector_add_gpu((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size, local_memory_size))
+> > ~~~
+> > {: .language-python}
+> {: .solution}
+{: .challenge}
 
 It is not a fast memory, it has the same throughput and latency of global memory, but it is much larger than registers.
 It is automatically used by the CUDA compiler to store spilled registers, i.e. variables that cannot be kept in registers because there is not enough space.
