@@ -1,5 +1,5 @@
 ---
-title: "Registers, Global and Local Memory"
+title: "Registers, Global, and Local Memory"
 teaching: 0
 exercises: 0
 questions:
@@ -8,7 +8,7 @@ objectives:
 - "Understanding the difference between registers and device memory"
 - "Understanding the difference between local and global memory"
 keypoints:
-- "Registers can be used to save memory operations"
+- "Registers can be used to store data and avoid repeated memory operations"
 ---
 
 In this episode we are going to look at three different memories: registers, global memory, and local memory.
@@ -175,7 +175,5 @@ All threads allocate their own local memory, but cannot see the content of the m
 
 It is not a fast memory, it has the same throughput and latency of global memory, but it is much larger than registers.
 It is automatically used by the CUDA compiler to store spilled registers, i.e. variables that cannot be kept in registers because there is not enough space.
-
-# Constant Memory
 
 {% include links.md %}
