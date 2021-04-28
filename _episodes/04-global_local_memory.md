@@ -1,7 +1,7 @@
 ---
 title: "Registers, Global, and Local Memory"
-teaching: 0
-exercises: 0
+teaching: 25
+exercises: 20
 questions:
 - "Question"
 objectives:
