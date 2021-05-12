@@ -214,7 +214,7 @@ You could arrive at something similar to this timing result:
 ~~~
 {: .output}
 
-Now let us try something bold. We will transfer the 1D arrays to the GPU and use the Numpy (!) routine to do the convolution. Again, we have to issue three commands:
+We have performed a regular linear convolution using our CPU. Now let us try something bold. We will transfer the 1D arrays to the GPU and use the Numpy (!) routine to do the convolution. Again, we have to issue three commands:
 
 ~~~python
 deltas_1d_gpu = cp.asarray(deltas_1d)
