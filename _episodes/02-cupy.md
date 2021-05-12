@@ -75,9 +75,9 @@ pyl.show()
 This should show you a symmetrical two-dimensional Gaussian. Now we are ready to do the convolution using the CPU of our machine. We do not have to write this convolution function ourselves, it is very conveniently provided by Scipy. Let us also record the time to perform this convolution and inspect the top left corner of the convolved image.
 
 ~~~python
-from scipy.signal import convolve2d
-convolved_image_using_CPU = convolve2d(deltas, gauss)
-%timeit convolve2d(deltas, gauss)
+from scipy.signal import convolve2d as convolve2d_cpu
+convolved_image_using_CPU = convolve2d_cpu(deltas, gauss)
+%timeit convolve2d_cpu(deltas, gauss)
 pyl.imshow(convolved_image_using_CPU[0:32, 0;32])
 pyl.show()
 ~~~
@@ -105,9 +105,9 @@ gauss_gpu = cp.asarray(gauss)
 Now it is time to do the convolution on the GPU. Scipy does not provide for functions that use the GPU, so we need to import the convolution function from another library, called "cupyx". cupyx.scipy contains a subset of all Scipy routines. You will see that the GPU convolution function from the "cupyx" library looks very much like the convolution function from Scipy we used previously. In general, Numpy and Cupy look very similar as well as the Scipy and "cupyx" libraries, as intended by the authors of those two libraries. Let us again record the time to do the job, so we can compare with the time it took on the CPU to perform the convolution.
 
 ~~~python
-from cupyx.scipy import signal
-convolved_image_using_GPU = signal.convolve2d(deltas_gpu, gauss_gpu)
-%timeit signal.convolve2d(deltas_gpu, gauss_gpu)
+from cupyx.scipy.signal import convolve2d as convolve2d_gpu
+convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
+%timeit convolve2d_gpu(deltas_gpu, gauss_gpu)
 ~~~
 {: .source}
 
@@ -123,9 +123,9 @@ This is a lot faster than on the CPU, I found a speedup factor of 125. Impressiv
 > If we succeed, this should save us the time and effort of transferring deltas and gauss to the GPU.
 >
 > > ## Solution
-> > We can again use the GPU convolution function from the cupyx library: signal.convolve2d and use deltas and gauss as input.
+> > We can again use the GPU convolution function from the cupyx library: convolve2d_gpu and use deltas and gauss as input.
 > > ~~~python
-> > signal.convolve2d(deltas, gauss)
+> > convolve2d_gpu(deltas, gauss)
 > > ~~~
 > > 
 > > However, this gives a long error message with this last line:
@@ -142,11 +142,10 @@ This is a lot faster than on the CPU, I found a speedup factor of 125. Impressiv
 
 # Compare the results. Copy the convolved image from the device back to the host
 
-Let us first check that we have the exact same output. To do so, we first need to copy the output from the device (GPU) to the host (CPU):
+Let us first check that we have the exact same output. 
 
 ~~~python
-convolved_image_using_GPU_copied_to_host = cp.asnumpy(convolved_image_using_GPU)
-np.allclose(convolved_image_using_GPU_copied_to_host, convolved_image_using_CPU)
+np.allclose(convolved_image_using_GPU, convolved_image_using_CPU)
 ~~~
 {: .source}
 
@@ -167,7 +166,7 @@ we have the same output from our convolution on the CPU and the GPU and we shoul
 > > def transfer_compute_transferback():
 > >     deltas_gpu = cp.asarray(deltas)
 > >     gauss_gpu = cp.asarray(gauss)
-> >     convolved_image_using_GPU = convolve2d(deltas_gpu, gauss_gpu)
+> >     convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
 > >     convolved_image_using_GPU_copied_to_host = cp.asnumpy(convolved_image_using_GPU)
 > >    
 > > %timeit transfer_compute_transferback()
@@ -182,6 +181,60 @@ we have the same output from our convolution on the CPU and the GPU and we shoul
 > {: .solution}
 {: .challenge}
 
+# A shortcut: performing Numpy routines on the GPU.
+
+We saw above that we cannot execute routines from the "cupyx" library directly on Numpy arrays. First, a transfer of data needs to take place, from the host to the device (GPU). Vice versa, if we try to execute a regular Scipy routine (i.e. designed for the CPU) on a CuPy array, we will also encounter an error. Try the following:
+
+~~~python
+convolve2d_cpu(deltas_gpu, gauss_gpu)
+~~~
+{: .source}
+
+This results in 
+~~~
+......
+......
+......
+TypeError: Implicit conversion to a NumPy array is not allowed. Please use `.get()` to construct a NumPy array explicitly.
+~~~
+{: .output}
+
+So Scipy routines cannot have CuPy arrays as input. We can, however, execute a simpler command that does not require Scipy. Instead of 2D convolution, we can do 1D convolution. For that we can use a Numpy routine instead of a Scipy routine. The "convolve" routine from Numpy performs linear (1D) convolution. To generate some input for a linear convolution, we can flatten our image from 2D to 1D (using ravel()), but we also need a 1D kernel. For the latter we will take the diagonal elements of our 2D Gaussian kernel. Try the following three instructions for linear convolution on the CPU:
+
+~~~python
+deltas_1d = deltas.ravel()
+gauss_1d = gauss.diagonal()
+%timeit np.convolve(deltas_1d, gauss_1d)
+~~~
+{: .source}
+
+You could arrive at something similar to this timing result:
+~~~
+104 ms ± 32.9 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+~~~
+{: .output}
+
+Now let us try something bold. We will transfer the 1D arrays to the GPU and use the Numpy (!) routine to do the convolution. Again, we have to issue three commands:
+
+~~~python
+deltas_1d_gpu = cp.asarray(deltas_1d)
+gauss_1d_gpu = cp.asarray(gauss_1d)
+%timeit np.convolve(deltas_1d, gauss_1d)
+~~~
+{: .source}
+
+You may be surprised that we can issue these commands without error. Contrary to Scipy routines, Numpy accepts CuPy arrays, i.e. arrays that exist in GPU memory, as input. [Here](https://docs.cupy.dev/en/v8.2.0/reference/interoperability.html#numpy) you can find some background on why Numpy routines can handle CuPy arrays. 
+
+Also, remember the "np.allclose" command above? With a Numpy and a CuPy array as input. That worked for the same reason.
+
+The linear convolution is actually performed on the GPU, which is shown by a nice speedup:
+
+~~~
+731 µs ± 106 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+~~~
+{: .output}
+
+So this implies a speedup of a factor 104/0.731 = 142. Impressive.
 
 {% include links.md %}
 
