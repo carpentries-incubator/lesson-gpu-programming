@@ -236,5 +236,103 @@ The linear convolution is actually performed on the GPU, which is shown by a nic
 
 So this implies a speedup of a factor 104/0.731 = 142. Impressive.
 
+# Using Numba to execute Python code on the GPU
+
+[Numba](http://numba.pydata.org/) is a Python library that "translates Python functions to optimized machine code at runtime using the industry-standard LLVM compiler library". You might want to try it to speed up your code on a CPU. However, Numba also [compiles a subset of Python code into CUDA kernels](https://numba.pydata.org/numba-doc/latest/cuda/overview.html) which is what we will use here. So the idea is that we can do what we are used to, i.e. write Python code and still benefit from the speed that GPUs offer us.
+
+The code we want to run is straightforward. Let us compute all prime numbers between 1 and 10000 on the CPU and see if we can speed it up.
+This is code that you can find on many websites. Small variations are possible, but it will look something like this:
+
+~~~python
+def check_prime_cpu(upper):
+    all_prime_numbers=[]
+    for num in range(2, upper):
+        # all prime numbers are greater than 1
+        for i in range(2, num):
+            if (num % i) == 0:
+                break
+        else:
+            all_prime_numbers.append(num)
+    return all_prime_numbers
+~~~
+{: .source}
+
+Calling "check_prime_cpu(10000)" will return all prime numbers between 1 and 10000 as a list. Let us time it:
+
+~~~python
+%timeit check_prime_cpu(10000) 
+~~~
+{: .source}
+
+You will probably find that "check_prime_cpu" takes several hundreds of milliseconds to complete:
+
+~~~
+378 ms ± 45.6 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+~~~
+{: .output}
+
+As a quick sidestep, add Numba's JIT (Just in Time compilation) decorator to the "check_prime_cpu" function. You can either add it to the function definition or to the call, so either in this way:
+
+~~~python
+@jit(nopython=True)
+def check_prime_cpu(upper):
+    all_prime_numbers=[]
+    ....
+    ....
+~~~
+{: .source}
+
+or in this way:
+
+~~~python
+%timeit jit(nopython=True)(check_prime_cpu)(upper_limit)
+~~~
+{: .source}
+
+which can give you a timing result similar to this:
+
+~~~
+165 ms ± 19 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+~~~
+{: .output}
+
+So twice as fast, by using a simple decorator. The speedup is much larger for upper = 100000, but that takes a little too much waiting time for this course. Despite the "jit(nopython=True)" decorator the computation is still performed on the CPU. Let us move the computation to the GPU. There are a number of ways to achieve this, one of them is the usage of the "jit(device=True)" decorator, but it depends very much on the nature of the computation. For this example of computing primes we can best use the "vectorize" decorator for a "check_prime_gpu" function that takes an array as input instead of "upper". This is the array we have to use as input for our new "check_prime_gpu" function, instead of upper, a single integer:
+
+~~~python
+np.arange(2, 10000, dtype=np.int32)
+~~~
+{: .source}
+
+So that input to the new "check_prime_gpu" function is simply the array of numbers we need to check for primes. "check_prime_gpu" looks similar to "check_prime_cpu":
+
+~~~python
+@nb.vectorize(['int32(int32)'], target='cuda')
+def check_prime_gpu(num):
+   for i in range(2, num):
+       if (num % i) == 0:
+           return 0
+   else:
+       return num
+~~~
+{: .source}
+
+where we have added the "vectorize" decorator from Numba. The argument of "check_prime_gpu" is still a scalar (single integer in this case), but the "vectorize" decorator will allow us to use an array as input. That array should consist of 4B (byte) of 32b (bit) integers, indicated by "(int32)". The return array will also consist of 32b integers, with zeros for the non-primes. The nonzero values are the primes. 
+
+Let us run it and record the elapsed time:
+
+~~~python
+%timeit check_prime_gpu(np.arange(2, upper_limit, dtype=np.int32))
+~~~
+{: .source}
+
+which should show you a significant speedup:
+
+~~~
+3.25 ms ± 138 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+~~~
+{: .output}
+
+This amounts to an accelleration of our code of a factor 165/3.25 = 50.8 compared to the "jit(nopython=True)" decorated code on the CPU.
+
 {% include links.md %}
 
