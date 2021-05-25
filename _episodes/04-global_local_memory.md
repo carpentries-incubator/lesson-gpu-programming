@@ -145,12 +145,13 @@ However, all memory operations are finalized when the kernel terminates.
 
 # Local Memory
 
-Only accessible by the thread allocating it.
-All threads allocate their own local memory, but cannot see the content of the memory of the other threads.
+Memory can also be statically allocated from within a kernel, and according to the CUDA programming model such memory will not be global but *local* memory.
+Local memory is only visible, and therefore accessible, by the thread allocating it.
+So all threads executing a kernel will have their own privately allocated local memory.
 
 > ## Challenge: use local memory
 >
-> Modify the code of `vector_add` so that intermediate data products are stored in local memory, and only the final result is saved to global memory.
+> Modify the code of `vector_add` so that intermediate data products are stored in local memory, and only the final result is saved into global memory.
 >
 > ~~~
 > extern "C"
@@ -197,7 +198,7 @@ All threads allocate their own local memory, but cannot see the content of the m
 > {: .solution}
 {: .challenge}
 
-It is not a fast memory, it has the same throughput and latency of global memory, but it is much larger than registers.
-It is automatically used by the CUDA compiler to store spilled registers, i.e. variables that cannot be kept in registers because there is not enough space.
+Local memory is not not a particularly fast memory, and in fact it has similar throughput and latency of global memory, but it is much larger than registers.
+As an example, local memory is automatically used by the CUDA compiler to store spilled registers, i.e. to temporarily store variables that cannot be kept in registers anymore because there is not enough space in the register file, but that will be used again in the future and so cannot be erased.
 
 {% include links.md %}
