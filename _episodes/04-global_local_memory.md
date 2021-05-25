@@ -134,6 +134,15 @@ This memory space does not require any special memory space identifier.
 
 Memory allocated on the host, and passed as a parameter to a kernel, is by default allocated in global memory.
 
+Global memory is accessible by all threads, from all thread blocks.
+This means that a thread can read and write any value in global memory.
+
+~~~
+While global memory is visible to all threads, remember that global memory is not coherent, and changes made by one thread block may not be available to other thread blocks during the kernel execution.
+However, all memory operations are finalized when the kernel terminates.
+~~~
+{: .callout}
+
 # Local Memory
 
 Only accessible by the thread allocating it.
