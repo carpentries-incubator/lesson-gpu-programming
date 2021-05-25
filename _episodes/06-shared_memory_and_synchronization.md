@@ -5,7 +5,8 @@ exercises: 0
 questions:
 - "Question"
 objectives:
-- "Objective"
+- "Learn how to share data between threads"
+- "Learn how to synchronize threads"
 keypoints:
 - ""
 ---
