@@ -3,7 +3,9 @@ title: "Registers, Global, and Local Memory"
 teaching: 25
 exercises: 20
 questions:
-- "Question"
+- "What are registers?"
+- "How to share data between host and GPU?"
+- "Which memory is accessible to threads and thread blocks?"
 objectives:
 - "Understanding the difference between registers and device memory"
 - "Understanding the difference between local and global memory"
