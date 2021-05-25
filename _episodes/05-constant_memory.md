@@ -5,7 +5,7 @@ exercises: 0
 questions:
 - "Question"
 objectives:
-- "Objective"
+- "Understanding when to use constant memory"
 keypoints:
 - ""
 ---
