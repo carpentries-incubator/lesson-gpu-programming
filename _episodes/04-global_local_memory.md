@@ -101,7 +101,7 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 ~~~
 {: .language-c}
 
-Once again, this is not something that we would normally do, and it provided only as an example of how to work with arrays of registers.
+Once again, this is not something that we would normally do, and it is provided only as an example of how to work with arrays of registers.
 
 # Global Memory
 
