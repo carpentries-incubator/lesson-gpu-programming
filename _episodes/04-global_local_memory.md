@@ -8,7 +8,9 @@ objectives:
 - "Understanding the difference between registers and device memory"
 - "Understanding the difference between local and global memory"
 keypoints:
-- "Registers can be used to store data and avoid repeated memory operations"
+- "Registers can be used to locally store data and avoid repeated memory operations"
+- "Global memory is the main memory space and it is used to share data between host and GPU"
+- "Local memory is a particular type of memory that can be used to store data that does not fit in registers and is private to a thread"
 ---
 
 Now that we know how to write a CUDA kernel to run code on the GPU, and how to use the Python interface provided by CuPy to execute it, it is time to look at the different memory spaces in the CUDA programming model.
