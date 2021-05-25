@@ -105,8 +105,10 @@ Once again, this is not something that we would normally do, and it is provided 
 
 # Global Memory
 
-Accessible by the host and all threads on the GPU.
-Only way to exchange data between CPU and GPU.
+Global memory can be considered the main memory space of the GPU in CUDA.
+It is allocated, and managed, by the host, and it is accessible to both the host and the GPU, and for this reason the global memory space can be used to exchange data between the two.
+It is the largest memory space available, and therefore it can contain much more data than registers, but it is also slower to access.
+This memory space does not require any special memory space identifier.
 
 > ## Challenge: identify when global memory is used
 >
@@ -126,12 +128,11 @@ Only way to exchange data between CPU and GPU.
 > ~~~
 > {: .language-c}
 > > ## Solution
-> > The vectors `A`, `B`, and `C` are in global memory.
+> > The vectors `A`, `B`, and `C` are stored in global memory.
 > {: .solution}
 {: .challenge}
 
-Memory allocated on the host, and passed to the kernel as a function parameter, is allocated in global memory.
-In CUDA there is no particular keyword to specify for global memory allocation.
+Memory allocated on the host, and passed as a parameter to a kernel, is by default allocated in global memory.
 
 # Local Memory
 
