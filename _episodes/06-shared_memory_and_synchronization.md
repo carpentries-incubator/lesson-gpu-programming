@@ -81,6 +81,38 @@ The reason is that the `temp` array is not anymore private to the thread allocat
 > {: .solution}
 {: .challenge}
 
+To fix the previous kernel we should allocate enough shared memory for each thread to store three values, so that each thread has its own section of the shared memory array to work with.
+
+To allocate enough memory we need to replace the constant 3 in `__shared__ float temp[3];` with something else.
+If we know that each thread block has 1024 threads, we can write something like the following:
+
+```
+__shared__ float temp[3 * 1024];
+```
+{: .language-c}
+
+But we know by experience that having constants in the code is not a scalable and maintainable solution.
+The problem is that we need to have a constant value if we want to declare a shared memory array, because the compiler needs to know how much memory to allocate.
+
+A solution to this problem is to declare our array as a pointer, such as:
+
+```
+__shared__ float * temp;
+```
+{: .language-c}
+
+And then use CuPy to instruct the compiler about how much shared memory each thread block needs:
+
+```
+# execute the code
+vector_add_gpu.attributes.max_dynamic_shared_size_bytes = (size // 2) * 3 * cupy.dtype(cupy.float32).itemsize
+vector_add_gpu((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+```
+{: .language-python}
+
+So before compiling and executing the kernel, we need to set `attributes.max_dynamic_shared_size_bytes` with the number of bytes necessary.
+As you may notice, we had to retrieve the size in bytes of the data type `cupy.float32`, and this is done with `cupy.dtype(cupy.float32).itemsize`.
+
 # Thread Synchronization
 
 {% include links.md %}
