@@ -22,7 +22,7 @@ In this case *shared* means that all threads in a thread block can write and rea
 
 To allocate an array in shared memory we need to preface the definition with the identifier `__shared__`.
 
-> ## Challenge: use shared memory
+> ## Challenge: use of shared memory
 >
 > Modify the following code to use shared memory for the `temp` array.
 >
@@ -68,7 +68,18 @@ To allocate an array in shared memory we need to preface the definition with the
 {: .challenge}
 
 While syntactically correct, the previous example is functionally wrong.
-The reason is that the `temp` array is not anymore private to the thread allocating it, but it is now shared by the whole thread block, and so threads overwrite each other results making the final result wrong.
+The reason is that the `temp` array is not anymore private to the thread allocating it, but it is now shared by the whole thread block.
+
+> ## Challenge: what is the result of the previous code block?
+>
+> The previous code example is functionally wrong. Do you know what the result of its execution will be?
+>
+> > ## Solution
+> >
+> > The result is non deterministic, and definitely not the same as the previous versions of `vector_add`.
+> > Threads will overwrite each other temporary values,and there will be no guarantee on which value is visible by each thread.
+> {: .solution}
+{: .challenge}
 
 # Thread Synchronization
 
