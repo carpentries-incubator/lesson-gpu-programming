@@ -113,6 +113,18 @@ vector_add_gpu((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size))
 So before compiling and executing the kernel, we need to set `attributes.max_dynamic_shared_size_bytes` with the number of bytes necessary.
 As you may notice, we had to retrieve the size in bytes of the data type `cupy.float32`, and this is done with `cupy.dtype(cupy.float32).itemsize`.
 
+After these changes, the body of the kernel needs to be modified to use the right indices:
+
+```
+temp[item * 3] = A[item];
+temp[(item * 3) + 1] = B[item];
+temp[(item * 3) + 2] = temp[item * 3] + temp[(item * 3) + 1];
+C[item] = temp[(item * 3) + 2];
+```
+{: .language-c}
+
+The code is now correct.
+
 # Thread Synchronization
 
 {% include links.md %}
