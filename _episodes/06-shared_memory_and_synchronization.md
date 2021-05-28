@@ -123,7 +123,70 @@ C[item] = temp[(item * 3) + 2];
 ```
 {: .language-c}
 
-The code is now correct.
+The code is now correct, although it is still not very useful.
+We are definitely using shared memory, and we are using it the correct way, but there is no performance gain we achieved by doing so.
+In practice, we are making our code slower, not faster, because shared memory is slower than registers.
+
+Let us, therefore, work on an example where using shared memory is actually useful.
+We start again with some Python code.
+
+```
+def histogram(input_array, output_array):
+    for item in input_array:
+        output_array[item] = output_array[item] + 1
+    return output_array
+```
+{: .language-python}
+
+The `histogram` function, as the name suggests, computes the histogram of an array of integers, i.e. counts how many instances of each integer are in `input_array`, and writes the count in `output_array`.
+We can now generate some data and run the code.
+
+```
+input_array = numpy.random.randint(256, size=2048, dtype=numpy.int32)
+output_array = numpy.zeros(256, dtype=numpy.int32)
+output_array = histogram(input_array, output_array)
+```
+{: .language-python}
+
+Everything as expected.
+We can now write equivalent code in CUDA.
+
+```
+__global__ void histogram(const int * input, int * output)
+{
+    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+
+    output[input[item]] = input[item] + 1;
+}
+```
+{: .language-c}
+
+> ## Challenge: error in the histogram
+>
+> If you look at the CUDA `histogram` code, there is a logical error that prevents the code to produce the right result.
+> Can you spot it?
+>
+> > ## Solution
+> >
+> > The GPU is a highly parallel device, executing multiple threads at the same time.
+> > In the previous code different threads could be updating the same output item at the same time, producing wrong results.
+> {: .solution}
+{: .challenge}
+
+To solve this problem, we need to use a function from the CUDA library named `atomicAdd`.
+This function ensures that the increment of `output_array` happens in an atomic way, so that there are no conflicts in case multiple threads want to update the same item at the same time.
+
+```
+__global__ void histogram(const int * input, int * output)
+{
+    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+
+    atomicAdd(&(output[input[item]]), 1);
+}
+```
+{: .language-c}
+
+
 
 # Thread Synchronization
 
