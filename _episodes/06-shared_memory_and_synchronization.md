@@ -186,8 +186,65 @@ __global__ void histogram(const int * input, int * output)
 ```
 {: .language-c}
 
+The CUDA code is now correct, and computes the same result as the Python code.
+However, we are accumulating the results directly in global memory, and the more conflicts we have in global memory, the lower performance our `histogram` will have.
+Moreover, the access pattern to the output array is very irregular, being dependent on the content of the input array.
+The best performance is obtained on the GPU when consecutive threads access consecutive addresses in memory, and this is not the case in our code.
 
+As you may expect, we can improve performance by using shared memory.
+
+> ## Challenge: use shared memory to speed up the histogram
+>
+> Implement a new version of the `histogram` function that uses shared memory.
+>
+> Hint: try to reduce conflicts, and improve the memory access pattern.
+> Hint: for this exercise, assume that the size of `output` is the same as the number of threads in a block.
+>
+> > ## Solution
+> >
+> > ```
+> > __global__ void histogram(const int * input, int * output)
+> > {
+> >     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+> >     __shared__ int * temp_histogram;
+> > 
+> >     atomicAdd(&(temp_histogram[input[item]]), 1);
+> >     atomicAdd(&(output[threadIdx.x]), temp_histogram[threadIdx.x]);
+> > }
+> > ```
+> > {: .language-c}
+> >
+> {: .solution}
+{: .challenge}
 
 # Thread Synchronization
+
+There is still one potentially big issue in the `histogram` code we just wrote, and the issue is that shared memory is not coherent without explicit synchronization.
+The problem lies in the following two lines of code:
+
+```
+atomicAdd(&(temp_histogram[input[item]]), 1);
+atomicAdd(&(output[threadIdx.x]), temp_histogram[threadIdx.x]);
+```
+{: .language-c}
+
+In the first line each thread updates one arbitrary position in shared memory, depending on the value of the input, while in the second line each thread reads the element in shared memory corresponding to its thread ID.
+However, the changes to shared memory are not automatically available to all other threads, and therefore the final result may not be correct.
+
+To solve this issue, we need to explicitly synchronize all threads in a block, so that memory operations are also finalized and visible to all.
+To synchronize threads in a block, we use the `__syncthreads()` CUDA function.
+
+```
+__global__ void histogram(const int * input, int * output)
+{
+    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+    __shared__ int * temp_histogram;
+ 
+    atomicAdd(&(temp_histogram[input[item]]), 1);
+    __syncthreads();
+    atomicAdd(&(output[threadIdx.x]), temp_histogram[threadIdx.x]);
+}
+```
+{: .language-c}
 
 {% include links.md %}
