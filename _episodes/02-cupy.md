@@ -102,7 +102,7 @@ gauss_gpu = cp.asarray(gauss)
 ~~~
 {: .source}
 
-Now it is time to do the convolution on the GPU. Scipy does not provide for functions that use the GPU, so we need to import the convolution function from another library, called "cupyx". cupyx.scipy contains a subset of all Scipy routines. You will see that the GPU convolution function from the "cupyx" library looks very much like the convolution function from Scipy we used previously. In general, Numpy and Cupy look very similar as well as the Scipy and "cupyx" libraries, as intended by the authors of those two libraries. Let us again record the time to do the job, so we can compare with the time it took on the CPU to perform the convolution.
+Now it is time to do the convolution on the GPU. Scipy does not provide for functions that use the GPU, so we need to import the convolution function from another library, called "cupyx". cupyx.scipy contains a subset of all Scipy routines. You will see that the GPU convolution function from the "cupyx" library looks very much like the convolution function from Scipy we used previously. In general, Numpy and CuPy look very similar as well as the Scipy and "cupyx" libraries, as intended by the authors of those two libraries. Let us again record the time to do the job, so we can compare with the time it took on the CPU to perform the convolution.
 
 ~~~python
 from cupyx.scipy.signal import convolve2d as convolve2d_gpu
@@ -159,6 +159,7 @@ we have the same output from our convolution on the CPU and the GPU and we shoul
 
 > ## Challenge: Compute the CPU vs GPU speedup while taking into account the transfers of data to the GPU and back.
 > You should now find a lower speedup from taking the overhead of the transfer of arrays into account.
+> Hint: To copy a CuPy array back to the host (CPU), use cp.asnumpy().
 >
 > > ## Solution
 > > For timing, it is most convenient to define a function that completes all the steps.
