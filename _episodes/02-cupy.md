@@ -239,9 +239,9 @@ So this implies a speedup of a factor 104/0.731 = 142. Impressive.
 
 # Using Numba to execute Python code on the GPU
 
-[Numba](http://numba.pydata.org/) is a Python library that "translates Python functions to optimized machine code at runtime using the industry-standard LLVM compiler library". You might want to try it to speed up your code on a CPU. However, Numba also [compiles a subset of Python code into CUDA kernels](https://numba.pydata.org/numba-doc/latest/cuda/overview.html) which is what we will use here. So the idea is that we can do what we are used to, i.e. write Python code and still benefit from the speed that GPUs offer us.
+[Numba](http://numba.pydata.org/) is a Python library that "translates Python functions to optimized machine code at runtime using the industry-standard LLVM compiler library". You might want to try it to speed up your code on a CPU. However, Numba [can also translate a subset of the Python language into CUDA](https://numba.pydata.org/numba-doc/latest/cuda/overview.html), which is what we will be using here. So the idea is that we can do what we are used to, i.e. write Python code and still benefit from the speed that GPUs offer us.
 
-The code we want to run is straightforward. Let us compute all prime numbers between 1 and 10000 on the CPU and see if we can speed it up.
+We want to compute all prime numbers - i.e. numbers that have only 1 or itself as divisors without a remainder - between 1 and 10000 on the CPU and see if we can speed it up, by deploying a similar algorithm on a GPU. 
 This is code that you can find on many websites. Small variations are possible, but it will look something like this:
 
 ~~~python
