@@ -63,6 +63,8 @@ Before delving deeper into the meaning of all lines of code, let us try to execu
 To compile the code and manage the GPU in Python we are going to use the interface provided by CuPy.
 
 ~~~
+import cupy
+
 # size of the vectors
 size = 1024
 
@@ -72,14 +74,15 @@ b_gpu = cupy.random.rand(size, dtype=cupy.float32)
 c_gpu = cupy.zeros(size, dtype=cupy.float32)
 
 # CUDA vector_add
-vector_add_gpu = cupy.RawKernel(r'''
+vector_add_cuda_code = r'''
 extern "C"
 __global__ void vector_add(const float * A, const float * B, float * C, const int size)
 {
     int item = threadIdx.x;
     C[item] = A[item] + B[item];
 }
-''', "vector_add")
+'''
+vector_add_gpu = cupy.RawKernel(vector_add_cuda_code, "vector_add")
 
 vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
 ~~~
@@ -88,8 +91,10 @@ vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
 And to be sure that the CUDA code does exactly what we want, we can execute our sequential Python code and compare the results.
 
 ~~~
-a_cpu = a_gpu
-b_cpu = b_gpu
+import numpy
+
+a_cpu = cupy.asnumpy(a_gpu)
+b_cpu = cupy.asnumpy(b_gpu)
 c_cpu = numpy.zeros(size, dtype=numpy.float32)
 
 vector_add(a_cpu, b_cpu, c_cpu, size)
@@ -278,8 +283,8 @@ size = 2048
 a_gpu = cupy.random.rand(size, dtype=cupy.float32)
 b_gpu = cupy.random.rand(size, dtype=cupy.float32)
 c_gpu = cupy.zeros(size, dtype=cupy.float32)
-a_cpu = a_gpu
-b_cpu = b_gpu
+a_cpu = cupy.asnumpy(a_gpu)
+b_cpu = cupy.asnumpy(b_gpu)
 c_cpu = numpy.zeros(size, dtype=numpy.float32)
 
 # CPU code
@@ -424,19 +429,26 @@ What we need to do is to make grid and block more flexible, so that they can ada
 To do that, we can replace the Python code to call `vector_add_gpu` with the following code.
 
 ~~~
+import math
+
 grid_size = (int(math.ceil(size / 1024)), 1, 1)
 block_size = (1024, 1, 1)
+
 vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))
 ~~~
 {: .language-python}
 
 With these changes we always have blocks composed of 1024 threads, but we adapt the number of blocks so that we always have enough to threads to compute all elements in the vector.
+If we want to be able to easily modify the number of threads per block, we can even rewrite the code like the following:
 
 ~~~
-We also need to add an `import math` in our Python code to be able to call the `math.ceil()` function.
-~~~
-{: .callout}
+threads_per_block = 1024
+grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
+block_size = (threads_per_block, 1, 1)
 
+vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))
+~~~
+{: .language-python}
 
 We can now execute the code again.
 
