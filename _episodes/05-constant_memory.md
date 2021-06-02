@@ -20,7 +20,7 @@ Although constant memory is declared on the host, it is not accessible by the ho
 extern "C" {
 #define BLOCKS 2
 
-__constant__ factors[BLOCKS];
+__constant__ float factors[BLOCKS];
 
 __global__ void sum_and_multiply(const float * A, const float * B, float * C, const int size)
 {
@@ -41,17 +41,21 @@ size = 2048
 a_gpu = cupy.random.rand(size, dtype=cupy.float32)
 b_gpu = cupy.random.rand(size, dtype=cupy.float32)
 c_gpu = cupy.zeros(size, dtype=cupy.float32)
+# prepare arguments
+args = (a_gpu, b_gpu, c_gpu, size)
 
 # CUDA code
 cuda_code = r'''
-extern "C"
-__constant__ float factors[2];
+extern "C" {
+#define BLOCKS 2
 
-extern "C"
+__constant__ factors[BLOCKS];
+
 __global__ void sum_and_multiply(const float * A, const float * B, float * C, const int size)
 {
     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
     C[item] = (A[item] + B[item]) * factors[blockIdx.x];
+}
 }
 '''
 
@@ -63,7 +67,7 @@ factors_ptr = module.get_global("factors")
 factors_gpu = cupy.ndarray(2, cupy.float32, factors_ptr)
 factors_gpu[...] = cupy.random.random(2, dtype=cupy.float32)
 
-sum_and_multiply((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+sum_and_multiply((2, 1, 1), (size // 2, 1, 1), args)
 ~~~
 {: .language-python}
 
