@@ -97,7 +97,7 @@ The problem is that we need to have a constant value if we want to declare a sha
 A solution to this problem is to declare our array as a pointer, such as:
 
 ```
-extern __shared__ float * temp;
+extern __shared__ float temp[];
 ```
 {: .language-c}
 
@@ -120,7 +120,7 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 {
   int item = (blockIdx.x * blockDim.x) + threadIdx.x;
   int offset = threadIdx.x * 3;
-  __shared__ float * temp;
+  extern __shared__ float temp[];
 
   if ( item < size )
   {
@@ -239,6 +239,38 @@ __global__ void histogram(const int * input, int * output)
 ```
 {: .language-c}
 
+And the full Python code snippet.
+
+```
+size = 2048
+
+input_gpu = cupy.random.randint(256, size=size, dtype=cupy.int32)
+input_cpu = cupy.asnumpy(input_gpu)
+output_gpu = cupy.zeros(256, dtype=cupy.int32)
+output_cpu = cupy.asnumpy(output_gpu)
+
+histogram_cuda_code = r'''
+extern "C"
+__global__ void histogram(const int * input, int * output)
+{
+    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+
+    atomicAdd(&(output[input[item]]), 1);
+}
+'''
+histogram_gpu = cupy.RawKernel(histogram_cuda_code, "histogram")
+
+threads_per_block = 32
+grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
+block_size = (threads_per_block, 1, 1)
+
+histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
+histogram(input_cpu, output_cpu)
+
+numpy.allclose(output_cpu, output_gpu)
+```
+{: .language-python}
+
 The CUDA code is now correct, and computes the same result as the Python code.
 However, we are accumulating the results directly in global memory, and the more conflicts we have in global memory, the lower performance our `histogram` will have.
 Moreover, the access pattern to the output array is very irregular, being dependent on the content of the input array.
@@ -259,7 +291,7 @@ As you may expect, we can improve performance by using shared memory.
 > > __global__ void histogram(const int * input, int * output)
 > > {
 > >     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
-> >     __shared__ int * temp_histogram;
+> >     extern __shared__ int temp_histogram[];
 > > 
 > >     atomicAdd(&(temp_histogram[input[item]]), 1);
 > >     atomicAdd(&(output[threadIdx.x]), temp_histogram[threadIdx.x]);
@@ -291,7 +323,7 @@ To synchronize threads in a block, we use the `__syncthreads()` CUDA function.
 __global__ void histogram(const int * input, int * output)
 {
     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
-    __shared__ int * temp_histogram;
+    extern __shared__ int temp_histogram[];
  
     atomicAdd(&(temp_histogram[input[item]]), 1);
     __syncthreads();
