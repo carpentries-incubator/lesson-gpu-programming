@@ -49,7 +49,7 @@ cuda_code = r'''
 extern "C" {
 #define BLOCKS 2
 
-__constant__ factors[BLOCKS];
+__constant__ float factors[BLOCKS];
 
 __global__ void sum_and_multiply(const float * A, const float * B, float * C, const int size)
 {
