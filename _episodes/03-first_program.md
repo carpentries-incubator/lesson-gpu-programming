@@ -457,4 +457,81 @@ Correct results!
 ~~~
 {: .output}
 
+> ## Challenge: compute prime numbers with CUDA
+>
+> Given the following Python code, similar to what we have seen in the previous episode about Numba, write the missing CUDA kernel that computes all the prime numbers up to a certain upper bound.
+>
+> ~~~
+> # CPU
+> def all_primes_to(upper : int, prime_list : list):
+>     for num in range(2, upper):
+>         prime = True
+>         for i in range(2, num // 2):
+>             if (num % i) == 0:
+>                 prime = False
+>                 break
+>         if prime:
+>             prime_list[num] = 1
+> 
+> upper_bound = 100000
+> all_primes_cpu = numpy.zeros(upper_bound, dtype=numpy.int32)
+> all_primes_cpu[0] = 1
+> all_primes_cpu[1] = 1
+> %timeit all_primes_to(upper_bound, all_primes_cpu)
+> 
+> # GPU
+> check_prime_gpu_code = r'''
+> extern "C"
+> __global__ void all_primes_to(int size, int * const all_prime_numbers)
+> {
+> }
+> '''
+> # Allocate memory
+> all_primes_gpu = cupy.zeros(upper_bound, dtype=cupy.int32)
+> 
+> # Compile and execute code
+> all_primes_to_gpu = cupy.RawKernel(check_prime_gpu_code, "all_primes_to")
+> grid_size = (int(math.ceil(upper_bound / 1024)), 1, 1)
+> block_size = (1024, 1, 1)
+> %timeit all_primes_to_gpu(grid_size, block_size, (upper_bound, all_primes_gpu))
+> 
+> # Test
+> if numpy.allclose(all_primes_cpu, all_primes_gpu):
+>     print("Correct results!")
+> else:
+>     print("Wrong results!")
+> ~~~
+> {: .language-python}
+> >
+> > ### Solution
+> >
+> > One possible solution is the following one:
+> > ~~~
+> > check_prime_gpu_code = r'''
+> > extern "C"
+> > __global__ void all_primes_to(int size, int * const all_prime_numbers)
+> > {
+> >     int number = (blockIdx.x * blockDim.x) + threadIdx.x;
+> >     int result = 1;
+> > 
+> >     if ( number < size )
+> >     {
+> >         for ( int factor = 2; factor < number / 2; factor++ )
+> >         {
+> >             if ( number % factor == 0 )
+> >             {
+> >                 result = 0;
+> >                 break;
+> >             }
+> >         }
+> > 
+> >         all_prime_numbers[number] = result;
+> >     }
+> > }
+> > '''
+> > ~~~
+> > {: .language-c}
+> {: .solution}
+{: .challenge}
+
 {% include links.md %}
