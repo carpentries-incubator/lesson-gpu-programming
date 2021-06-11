@@ -61,7 +61,7 @@ We then time the execution of the NumPy `sort()` function, to see how long sorti
 ~~~
 {: .language-python}
 
-While the timing of this operation will differ depending on the system on which you run the code, these are the results for one experiment running on a Jupyter Notebook on Google Colab.
+While the timing of this operation will differ depending on the system on which you run the code, these are the results for one experiment running on a Jupyter notebook on Google Colab.
 
 ~~~
 1 loop, best of 5: 1.84 s per loop
@@ -77,7 +77,7 @@ input_gpu = cp.asarray(input)
 ~~~
 {: .language-python}
 
-We also report the output, obtained on the same Notebook on Google Colab.
+We also report the output, obtained on the same notebook on Google Colab.
 
 ~~~
 100 loops, best of 5: 6.83 ms per loop
