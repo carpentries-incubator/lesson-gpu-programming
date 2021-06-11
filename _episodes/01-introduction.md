@@ -5,7 +5,7 @@ exercises: 0
 questions:
 - "What is a Graphics Processing Unit?"
 - "Can a GPU be used for anything else than graphics?"
-- "Are GPUs useful for the development of scientific software?"
+- "Are GPUs faster than CPUs?"
 objectives:
 - "Learn how a GPU works"
 - "Understand the differences between CPU and GPU"
