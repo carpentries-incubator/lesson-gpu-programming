@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-teaching: 0
+teaching: 20
 exercises: 0
 questions:
 - "What is a Graphics Processing Unit?"
