@@ -54,7 +54,7 @@ input = np.random.random(size)
 ~~~
 {: .language-python}
 
-We then time the execution of the Numpy `sort()` function, to see how long sorting this array takes on the CPU.
+We then time the execution of the NumPy `sort()` function, to see how long sorting this array takes on the CPU.
 
 ~~~
 %timeit output = np.sort(input)
@@ -68,7 +68,7 @@ While the timing of this operation will differ depending on the system on which 
 ~~~
 {: .output}
 
-We now perform the same sorting operation, but this time we will be using Cupy to execute the `sort()` on the GPU.
+We now perform the same sorting operation, but this time we will be using CuPy to execute the `sort()` on the GPU.
 
 ~~~
 import cupy as cp
