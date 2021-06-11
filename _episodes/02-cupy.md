@@ -21,69 +21,89 @@ keypoints:
 - ""
 ---
 
-# CuPy - principles
+# Introduction to CuPy
 
-[CuPy](https://docs.cupy.dev) is a GPU array backend that implements a subset of the NumPy interface, through Cuda, the GPU programming language designed by NVIDIA, the largest producer of GPUs in the world. This makes it a very convenient tool to use the compute power of GPUs for people that have some experience with Numpy.
+[CuPy](https://docs.cupy.dev) is a GPU array backend that implements a subset of the NumPy interface.
+This makes it a very convenient tool to use the compute power of GPUs for people that have some experience with NumPy, without the need to write code in a GPU programming language such as CUDA, OpenCL, or HIP.
 
-# Generate some data and do a computation on the host (=CPU)
+# Convolution in Python
 
-Start by generating some data on the host (i.e. your laptop, desktop or CPU cluster node) from an **iPython shell or a Jupyter notebook**. An artificial "image", for instance, will do. For this example, we will quickly generate a large image from scratch. The image will be all zeros, except for isolated pixels with value one, on a regular grid. We will convolve it with a Gaussian and inspect the result. We will also record the time to do this convolution on the CPU. Enter these commands in either an iPython shell or a cell in a Jupyter notebook running or your computer or a notebook from Google Colab.
+We start by generating an artificial "image" on the host using Python and NumPy; the host is the CPU on the laptop, desktop, or cluster node you are using right now.
+The image will be all zeros, except for isolated pixels with value one, on a regular grid.
+We will convolve it with a Gaussian and inspect the result.
+We will also record the time to do this convolution on the CPU.
 
-~~~python
+We can interactively write and executed the code in an iPython shell or a Jupyter notebook.
+
+~~~
 import numpy as np
-#Construct a subimage with all zeros and one in the middle.
-primary_unit = np.zeros((16,16))
-primary_unit[8,8]=1
-#Now duplicate this subimage many times to construct a large image.
+
+# Construct a subimage with all zeros and a single one in the middle
+primary_unit = np.zeros((16, 16))
+primary_unit[8, 8] = 1
+
+# Now duplicate this subimage many times to construct a larger image
 deltas = np.tile(primary_unit, (128, 128))
 print(deltas.shape)
 ~~~
-{: .source}
+{: .language-python}
 
-This should show that you have indeed built a large image.
+The final `print` should show that you have indeed built a large image.
+
 ~~~
 Out[7]: (2048, 2048)
 ~~~
 {: .output}
 
-To get some feeling for what you have just constucted, display a corner of this large image.
+To get a feeling of how the whole image looks like, we can display the top-left corner of it.
 
-~~~python
+~~~
 import pylab as pyl
-#Display the image and you can seize the opportunity to zoom in using the menu in the window that will appear.
-pyl.imshow(deltas[0:32, 0;32])
+
+#Display the image
+# You can zoom in using the menu in the window that will appear
+pyl.imshow(deltas[0:32, 0:32])
 pyl.show()
 ~~~
-{: .source}
+{: .language-python}
 
-You should see four times primary_unit concatenated.
+The result of this should be four times the content of `primary_unit`.
 
-The computation we want to perform is convolution (think of it as blurring), both on the host (CPU) and device (GPU) and compare the results and runtimes.
-To do so, we need to convolve the input with some blurring a function. We will use a Gaussian, because it is very common. Let us construct the Gaussian and display it. Remember that at this point we are still doing everything in the normal way, no use of a GPU yet.
+The computation we want to perform on this image is a convolution, both on the host (CPU) and device (GPU) and compare the results and runtimes.
+**TODO** explains in simple language what the convolution does.
+To do so, we need to convolve the input with some blurring function.
+We will use a Gaussian, because it is very common.
+Let us first construct the Gaussian, and then display it.
+Remember that at this point we are still doing everything in the normal way, no use of a GPU yet.
 
-~~~python
-x, y = np.meshgrid(np.linspace(-2,2,15), np.linspace(-2,2,15))
-dst = np.sqrt(x*x+y*y)
+~~~
+x, y = np.meshgrid(np.linspace(-2, 2, 15), np.linspace(-2, 2, 15))
+dst = np.sqrt(x*x + y*y)
 sigma = 1
 muu = 0.000
 gauss = np.exp(-((dst-muu)**2/(2.0 * sigma**2)))
 pyl.imshow(gauss)
 pyl.show()
 ~~~
-{: .source}
+{: .language-python}
 
-This should show you a symmetrical two-dimensional Gaussian. Now we are ready to do the convolution using the CPU of our machine. We do not have to write this convolution function ourselves, it is very conveniently provided by Scipy. Let us also record the time to perform this convolution and inspect the top left corner of the convolved image.
+This should show you a symmetrical two-dimensional Gaussian.
+Now we are ready to do the convolution using the CPU.
+We do not have to write this convolution function ourselves, it is very conveniently provided by SciPy.
+Let us also record the time it takes to perform this convolution and inspect the top left corner of the convolved image.
 
-~~~python
+~~~
 from scipy.signal import convolve2d as convolve2d_cpu
+
 convolved_image_using_CPU = convolve2d_cpu(deltas, gauss)
 %timeit convolve2d_cpu(deltas, gauss)
 pyl.imshow(convolved_image_using_CPU[0:32, 0;32])
 pyl.show()
 ~~~
-{: .source}
+{: .language-python}
 
-Obviously, the time to perform this convolution will depend very much on the power of your CPU, but I expect you to find it will take a couple of seconds.
+Obviously, the time to perform this convolution will depend very much on the power of your CPU, but I expect you to find that it takes a couple of seconds.
+
 ~~~
 1 loop, best of 5: 2.52 s per loop
 ~~~
@@ -91,33 +111,47 @@ Obviously, the time to perform this convolution will depend very much on the pow
 
 When you display corner of the image, you can see that the "ones" surrounded by zeros have actually been blurred by a Gaussian, so we end up with a regular grid of Gaussians.
 
-# Copy the input image and convolving function to the GPU and convolve using the power of the GPU
+# Convolution on the GPU Using CuPy
 
-This is part of a course on GPU programming, so let's use the GPU. Although there is a physical connection - i.e. a cable - between the CPU and the GPU, they do not share the same memory space. This means that an array created from e.g. an iPython shell using Numpy is physically loaded into the RAM of the CPU. It is not yet present in GPU memory, which means that we need to copy our data, the input image and the convolving function to the GPU first. We have "deltas" and "gauss" in the host's RAM now and we need to copy it to GPU memory using the CuPy library.
+This is part of a course on GPU programming, so let us use the GPU.
+Although there is a physical connection - i.e. a cable - between the CPU and the GPU, they do not share the same memory space.
+This means that an array created from e.g. an iPython shell using NumPy is physically located into the main memory of the host, with a connection to the CPU.
+It is not yet present in GPU memory, which means that we need to copy our data, the input image and the convolving function to the GPU, before we can execute any code on it.
+So, we have `deltas` and `gauss` in the host's RAM, and we need to copy them to GPU memory using the CuPy library.
 
-~~~python
+~~~
 import cupy as cp
+
 deltas_gpu = cp.asarray(deltas)
 gauss_gpu = cp.asarray(gauss)
 ~~~
-{: .source}
+{: .language-python}
 
-Now it is time to do the convolution on the GPU. Scipy does not provide for functions that use the GPU, so we need to import the convolution function from another library, called "cupyx". cupyx.scipy contains a subset of all Scipy routines. You will see that the GPU convolution function from the "cupyx" library looks very much like the convolution function from Scipy we used previously. In general, Numpy and CuPy look very similar as well as the Scipy and "cupyx" libraries, as intended by the authors of those two libraries. Let us again record the time to do the job, so we can compare with the time it took on the CPU to perform the convolution.
+Now it is time to do the convolution on the GPU.
+SciPy does not offer functions that can use the GPU, so we need to import the convolution function from another library, called `cupyx`.
+`cupyx.scipy` contains a subset of all SciPy routines.
+You will see that the GPU convolution function from the `cupyx` library looks very much like the convolution function from SciPy we used previously.
+In general, NumPy and CuPy look very similar, as well as the SciPy and `cupyx` libraries, and this is on purpose to facilitate the use of the GPU by programmers that are already familiar with NumPy and SciPy.
+Let us again record the time to execute the convolution, so that we can compare it with the time it took on the CPU.
 
 ~~~python
 from cupyx.scipy.signal import convolve2d as convolve2d_gpu
+
 convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
 %timeit convolve2d_gpu(deltas_gpu, gauss_gpu)
 ~~~
 {: .source}
 
-Similar to above, the time to perform this convolution will depend very much on the power of your GPU, but I expect you to find it will take about 10ms. This is what I got on a TITAN X (Pascal) GPU:
+Similar to what we had previously on the CPU, the execution time of the GPU convolution will depend very much on the GPU used, but I expect you to find it will take about 10ms.
+This is what I got on a TITAN X (Pascal) GPU:
+
 ~~~
 1000 loops, best of 5: 20.2 ms per loop
 ~~~
 {: .output}
 
-This is a lot faster than on the CPU, I found a speedup factor of 125. Impressive!
+This is a lot faster than on the CPU, a performance improvement of 125 times.
+Impressive!
 
 > ## Challenge: Try to convolve the Numpy array deltas with the Numpy array gauss directly on the GPU, so without using CuPy arrays.
 > If we succeed, this should save us the time and effort of transferring deltas and gauss to the GPU.
