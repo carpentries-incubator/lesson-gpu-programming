@@ -140,7 +140,7 @@ As you may see, it looks similar to the innermost loop of our `vector_add` Pytho
 In fact, while in Python the content of `item` is the result of the `range` function, in CUDA we are reading a special variable, i.e. `threadIdx`, containing a triplet that indicates the id of a thread inside a three-dimensional CUDA block.
 In this particular case we are working on a one dimensional vector, and therefore only interested in the first dimension, that is stored in the `x` field of this variable.
 
-> ## Challenge
+> ## Challenge: Loose threads
 >
 > We know enough now to pause for a moment and do a little exercise.
 > Assume that in our `vector_add` kernel we replace the following line:
@@ -256,7 +256,7 @@ While the content of `threadIdx` is different for each thread in the same block,
 The coordinates of a block in the computational grid are contained in `blockIdx`, therefore the content of this variable will be the same for all threads in the same block, but different for threads in different blocks.
 Finally, `gridDim` contains the size of the grid in three dimensions, and it is again the same for all threads.
 
-> ## Challenge
+> ## Challenge: Hidden variables
 >
 > Given the following snippet of code:
 >
@@ -324,7 +324,7 @@ Wrong results!
 The results are wrong!
 In fact, while we increased the number of threads we launch, we did not modify the kernel code to compute the correct results using the new builtin variables we just introduced.
 
-> ## Challenge
+> ## Challenge: Scaling up
 >
 > In the following code, fill in the blank to work with vectors that are larger than the largest CUDA block (i.e. 1024).
 >
@@ -358,7 +358,7 @@ In fact, while we increased the number of threads we launch, we did not modify t
 So far we have worked with a number of threads that is the same as the elements in the vector.
 However, in a real world scenario we may have to process vectors of arbitrary size, and to do this we need to modify both the kernel and the way it is launched.
 
-> ## Challenge
+> ## Challenge: More work than necessary
 >
 > We modified the `vector_add` kernel to include a check for the size of the vector, so that we only compute elements that are within the vector boundaries.
 > However the code is not correct as it is written now.
@@ -457,7 +457,7 @@ Correct results!
 ~~~
 {: .output}
 
-> ## Challenge: compute prime numbers with CUDA
+> ## Challenge: Compute prime numbers with CUDA
 >
 > Given the following Python code, similar to what we have seen in the previous episode about Numba, write the missing CUDA kernel that computes all the prime numbers up to a certain upper bound.
 >
