@@ -42,15 +42,16 @@ With many compute units available, the GPU can run massively parallel programs, 
 
 # Speed Benefits
 
-So, GPUs are massively parallel devices that can execute thousands of threads at the same time, providing large performance benefits for their users, but what does this mean in practice?
-
+So, GPUs are massively parallel devices that can execute thousands of threads at the same time.
+But what does it mean in practice for the user? Why anyone would need to use a GPU to compute something that can be easily computed on a CPU?
 We begin with an example: sorting a large array in Python.
+
 First we need to create an array of random single precision floating point numbers.
 
 ~~~
 import numpy as np
 size = 4096 * 4096
-input = np.random.random(size)
+input = np.random.random(size).astype(np.float32)
 ~~~
 {: .language-python}
 
@@ -69,6 +70,7 @@ While the timing of this operation will differ depending on the system on which 
 {: .output}
 
 We now perform the same sorting operation, but this time we will be using CuPy to execute the `sort()` on the GPU.
+CuPy is an open-source library, compatible with NumPy, for GPU computing in Python.
 
 ~~~
 import cupy as cp
@@ -77,28 +79,29 @@ input_gpu = cp.asarray(input)
 ~~~
 {: .language-python}
 
-We also report the output, obtained on the same notebook on Google Colab.
+We also report the output, obtained on the same notebook on Google Colab; as always note that your result will vary based on the environment and GPU you are using.
 
 ~~~
 100 loops, best of 5: 6.83 ms per loop
 ~~~
 {: .output}
 
-And we finish by computing how much faster the GPU code is compared with the CPU one.
-We do this by dividing the execution time of the sequential execution by the time of the parallel execution, both in seconds.
+Sorting an array using CuPy, and therefore the GPU, is clearly much faster than using NumPy; but how much faster?
+Having recorded the average execution time of both operations, we can then compute the speedup of using CuPy over NumPy.
+The speedup is defined as the ratio between the sequential (NumPy in our case) and parallel (CuPy in our case) execution time; beware that both execution times need to be in the same unit, this is why we had to convert the GPU execution time from milliseconds to seconds.
 
 ~~~
 1.84 / 0.00683
 ~~~
 {: .language-python}
 
-With the result being the following.
+With the result of the previous operation being the following.
 
 ~~~
 269.39970717423137
 ~~~
 {: .output}
 
-Using the GPU to sort the array we obtained an increase in performance of 269 times.
+We can therefore say that by using the GPU with CuPy for our `sort()` operation we obtained a speedup of 269, or simply put an improvement in performance of 269 times.
 
 {% include links.md %}
