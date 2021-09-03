@@ -16,20 +16,20 @@ keypoints:
 # Graphics Processing Unit
 
 The Graphics Processing Unit (**GPU**) is one of the components of a computer's video card, together with specialized memory and different Input/Output (I/O) units.
-In the context of the video card, the GPU fulfills a role similar to the one that the Central Processing Unit (CPU) has in a general purpose computing system: it processes input data data to generate some kind of output.
+In the context of the video card, the GPU fulfills a role similar to the one that the Central Processing Unit (**CPU**) has in a general purpose computing system: it processes input data data to generate some kind of output.
 In the traditional context of video cards, GPUs process data in order to render images on an output device, such as a screen or monitor.
 However, current GPUs are general purpose computing devices able to perform any kind of computation.
 
 # Parallel by Design
 
 But what is the reason to use GPUs to perform general purpose computation, when computers already have fast CPUs that are able to perform any kind of computation?
-One way to answer this question is to go back to the roots of what a GPU is designed to efficiently do.
+One way to answer this question is to go back to the roots of what a GPU is designed to do.
 
 An image can be seen as a matrix of points called **pixels** (a portmanteau of the words *picture* and *element*), with each pixel representing the color the image should have in that particular point, and the traditional task performed by video cards is to produce the images a user will see on the screen.
 So GPUs are designed with this particular task in mind: render multiple pixels at the same time.
 
-A single 4K UHD image contains more than 8 million pixels
-If a GPU has to generate a fluid stream of 25 4K frames (images) per second, enough for a user to not experience delays in a videogame, movie, or any other video output, it needs to process over 200 million pixels per second.
+A single 4K UHD image contains more than 8 million pixels.
+If a GPU needs to generate a continuous stream of 25 4K frames (images) per second, enough for a user to not experience delays in a videogame, movie, or any other video output, it must process over 200 million pixels per second.
 So GPUs are not only designed to render multiple pixels at the same time, they are designed to do it efficiently.
 
 This design principle results in the GPU being, from a hardware point of view, a very different device than a CPU.
@@ -37,8 +37,8 @@ The CPU is a very general purpose device, good at different tasks, being them pa
 The result is a device where most of the silicon is used for memory caches and control-flow logic, not just compute units.
 By contrast, most of the silicon on a GPU is actually used for compute units.
 
-The GPU does not need an overly complicated cache hierarchy, nor it does need complex control logic, because the overall goal is not to maximize the latency of any given thread, but to maximize the throughput of the whole computation.
-With many compute units available, the GPU can run massively parallel programs, programs in which thousands of threads are executed at the same time, while thousands more are ready for execution to hide the latency of memory operations.
+The GPU does not need an overly complicated cache hierarchy, nor it does need complex control logic, because the overall goal is not to minimize the latency of any given thread, but to maximize the throughput of the whole computation.
+With many compute units available, the GPU can run massively parallel programs, programs in which thousands of threads are executed at the same time, while thousands more are ready for execution to hide the cost of memory operations.
 
 # Speed Benefits
 
