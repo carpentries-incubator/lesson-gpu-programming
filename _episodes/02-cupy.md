@@ -71,6 +71,11 @@ The result of this should be four times the content of `primary_unit`.
 
 The computation we want to perform on this image is a convolution, both on the host and device and compare the results and execution times.
 **TODO** explain in simple language what a convolution is and what it does.
+
+An example of a convolution can be seen on the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
+
+![convolution example](../fig/2D_Convolution_Animation.gif)
+
 To do so, we need to convolve the input with some blurring function.
 We will use a Gaussian, because it is very common.
 **TODO** explain in simple language what a Gaussian is.
