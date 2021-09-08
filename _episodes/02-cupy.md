@@ -76,10 +76,14 @@ The Convolution Operation takes an input image and a feature detector(i.e, filte
 The filter is then slid across the image mapping it into a resultant output image.i.e, the output of the convolution Operation
 
 ![Convolution Operation](https://upload.wikimedia.org/wikipedia/commons/1/19/2D_Convolution_Animation.gif)
+
 <a href="https://commons.wikimedia.org/wiki/File:2D_Convolution_Animation.gif">Michael Plotke</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>, via Wikimedia Commons
 To do so, we need to convolve the input with some blurring function.
 We will use a Gaussian, because it is very common.
-**TODO** explain in simple language what a Gaussian is.
+
+![Gaussian Function](https://wikimedia.org/api/rest_v1/media/math/render/svg/dd16b16869269dba008d19c0969515a1d50b3ae2)
+
+wikepedia
 Let us first construct the Gaussian, and then display it.
 Remember that at this point we are still doing everything with standard Python, and not using the GPU yet.
 
