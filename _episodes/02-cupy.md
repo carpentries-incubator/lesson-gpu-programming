@@ -82,7 +82,7 @@ To do so, we need to convolve the input with some blurring function.
 We will use a Gaussian, because it is very common.
 
 ![Gaussian Function](https://wikimedia.org/api/rest_v1/media/math/render/svg/dd16b16869269dba008d19c0969515a1d50b3ae2)
-
+<math>G(x,y) = \frac{1}{{2\pi \sigma^2}} e^{-\frac{x^2 + y^2}{2 \sigma^2}}</math>
 wikepedia
 Let us first construct the Gaussian, and then display it.
 Remember that at this point we are still doing everything with standard Python, and not using the GPU yet.
