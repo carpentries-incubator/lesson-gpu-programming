@@ -74,7 +74,7 @@ The computation we want to perform on this image is a convolution, both on the h
 
 An example of convolution can be seen in the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
 
-![Example of a convolution](../fig/2D_Convolution_Animation.gif)
+![Example of convolution](../fig/2D_Convolution_Animation.gif)
 
 To do so, we need to convolve the input with some blurring function.
 We will use a Gaussian, because it is very common.
