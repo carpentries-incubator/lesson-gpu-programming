@@ -75,9 +75,10 @@ The Convolution Operation takes an input image and a feature detector(i.e, filte
 
 The filter is then slid across the image mapping it into a resultant output image.i.e, the output of the convolution Operation
 
-![Convolution Operation](https://upload.wikimedia.org/wikipedia/commons/1/19/2D_Convolution_Animation.gif)
+An example of convolution can be seen in the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
 
-<a href="https://commons.wikimedia.org/wiki/File:2D_Convolution_Animation.gif">Michael Plotke</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>, via Wikimedia Commons
+![Example of convolution](../fig/2D_Convolution_Animation.gif)
+
 To do so, we need to convolve the input with some blurring function.
 We will use a Gaussian, because it is very common.
 
