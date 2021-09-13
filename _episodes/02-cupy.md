@@ -70,7 +70,10 @@ pyl.show()
 The result of this should be four times the content of `primary_unit`.
 
 The computation we want to perform on this image is a convolution, both on the host and device and compare the results and execution times.
-**TODO** explain in simple language what a convolution is and what it does.
+
+The Convolution Operation takes an input image and a feature detector(i.e, filter). The feature detector is placed on the input image and dot product of the feature detector and the overlapping image is calculated.
+
+The filter is then slid across the image mapping it into a resultant output image.i.e, the output of the convolution Operation
 
 An example of convolution can be seen in the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
 
@@ -78,7 +81,9 @@ An example of convolution can be seen in the figure below (illustration by Micha
 
 To do so, we need to convolve the input with some blurring function.
 We will use a Gaussian, because it is very common.
-**TODO** explain in simple language what a Gaussian is.
+
+<img src="https://render.githubusercontent.com/render/math?math=G(x,y) = \frac{1}{{2\pi \sigma^2}} e^{-\frac{x^2 + y^2}{2 \sigma^2}}">
+
 Let us first construct the Gaussian, and then display it.
 Remember that at this point we are still doing everything with standard Python, and not using the GPU yet.
 
