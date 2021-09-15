@@ -69,20 +69,20 @@ pyl.show()
 
 The result of this should be four times the content of `primary_unit`.
 
-The computation we want to perform on this image is a convolution, both on the host and device and compare the results and execution times.
-
-The Convolution Operation takes an input image and a feature detector(i.e, filter). The feature detector is placed on the input image and dot product of the feature detector and the overlapping image is calculated.
-
-The filter is then slid across the image mapping it into a resultant output image.i.e, the output of the convolution Operation
-
-An example of convolution can be seen in the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
+### Background
+The computation we want to perform on this image is a convolution, once on the host and once on the device so we can compare the results and execution times.
+In computer vision applications, convolutions are often used to filter images and if you want to know more about them, we encourage you to check out [this github repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin with some great animations. We have already seen that we can think of an image as a matrix of color values, when we convolve that image with a particular filter, we generate a new matrix with different color values. An example of convolution can be seen in the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
 
 ![Example of convolution](../fig/2D_Convolution_Animation.gif)
 
-To do so, we need to convolve the input with some blurring function.
-We will use a Gaussian, because it is very common.
+In our example, we will convolve our image with a 2D Gaussian function shown below:
 
-<img src="https://render.githubusercontent.com/render/math?math=G(x,y) = \frac{1}{{2\pi \sigma^2}} e^{-\frac{x^2 + y^2}{2 \sigma^2}}">
+<div style="font-size:1.5em">$$G(x,y) = \frac{1}{2\pi \sigma^2} e^{-\frac{x^2 + y^2}{2 \sigma^2}}$$</div>
+
+Where x and y are the "coordinates in our matrix, i.e. our row and columns. $$\sigma$$ controls the width of the Gaussian distribution. Convolving images with 2D Gaussian funcitons will change the value of each pixel to be a weighted average of the pixels around it, thereby "smoothing" the image. Convolving images with a Gaussian function denoises the image, which is often required in [edge-detection](https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection) since most algorithms to do this are sensitive to noise.
+
+# Convolution on the CPU Using SciPy
+
 
 Let us first construct the Gaussian, and then display it.
 Remember that at this point we are still doing everything with standard Python, and not using the GPU yet.
