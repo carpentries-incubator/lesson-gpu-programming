@@ -75,7 +75,7 @@ In computer vision applications, convolutions are often used to filter images an
 
 ![Example of convolution](../fig/2D_Convolution_Animation.gif)
 
-In this example, we will convolve our image with a 2D Gaussian function shown below:
+In our example, we will convolve our image with a 2D Gaussian function shown below:
 
 <div style="font-size:1.5em">$$G(x,y) = \frac{1}{2\pi \sigma^2} e^{-\frac{x^2 + y^2}{2 \sigma^2}}$$</div>
 
