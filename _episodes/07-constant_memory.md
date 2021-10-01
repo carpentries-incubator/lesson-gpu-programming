@@ -34,6 +34,7 @@ __global__ void sum_and_multiply(const float * A, const float * B, float * C, co
 In the previous code snippet we implemented a kernel that, given two vectors `A` and `B`, stores their element-wise sum in a third vector, `C`, scaled by a certain factor; this factor is the same for all threads in the same thread block.
 Because these factors are shared, i.e. all threads in the same thread block use the same factor for scaling their sums, it is a good idea to use constant memory for the `factors` array.
 In fact you can see that the definition of `factors` is preceded by the `__constant__` keyword, and said definition is in the global scope.
+It is important to note that the size of the constant array needs to be known at compile time, therefore the use of the `define` preprocessor statement.
 On the kernel side there is no need to do more, the `factors` vector can be normally accessed inside the code as any other vector, and because it is a global variable it does not need to be passed to the kernel as a function argument.
 
 The initialization of constant memory happens on the host side, and we show how this is done in the next code snippet.
