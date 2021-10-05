@@ -1,5 +1,5 @@
 ---
-title: "CuPy"
+title: "Programming your GPU using CuPy"
 
 teaching: 0
 
