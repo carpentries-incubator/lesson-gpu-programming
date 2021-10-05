@@ -1,5 +1,5 @@
 ---
-title: "Numba"
+title: "Programming your GPU using Numba"
 
 teaching: 0
 
