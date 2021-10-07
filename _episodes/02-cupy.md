@@ -164,7 +164,8 @@ This is what I got on a TITAN X (Pascal) GPU:
 This is a lot faster than on the host, a performance improvement, or speedup, of 125 times.
 Impressive!
 
-> ## Challenge: Try to convolve the Numpy array deltas with the Numpy array gauss directly on the GPU, so without using CuPy arrays.
+> ## Challenge: Try a shortcut: convolution on the GPU without CuPy 
+> Try to convolve the Numpy array deltas with the Numpy array gauss directly on the GPU, so without using CuPy arrays. 
 > If we succeed, this should save us the time and effort of transferring deltas and gauss to the GPU.
 >
 > > ## Solution
@@ -202,7 +203,8 @@ array(True)
 ~~~
 {: .output}
 
-> ## Challenge: Compute the CPU vs GPU speedup while taking into account the transfers of data to the GPU and back.
+> ## Challenge: Fairer runtime comparison CPU vs. GPU
+> Compute the CPU vs GPU speedup while taking into account the transfers of data to the GPU and back. 
 > You should now find a lower speedup from taking the overhead of the transfer of arrays into account.
 > Hint: To copy a CuPy array back to the host (CPU), use cp.asnumpy().
 >
