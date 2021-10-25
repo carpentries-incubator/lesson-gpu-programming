@@ -167,6 +167,8 @@ np.arange(2, 10000, dtype=np.int32)
 So that input to the new "check_prime_gpu" function is simply the array of numbers we need to check for primes. "check_prime_gpu" looks similar to "check_prime_gpu_kernel", but it is not a kernel, so it can return values:
 
 ~~~python
+import numba as nb
+
 @nb.vectorize(['int32(int32)'], target='cuda')
 def check_prime_gpu(num):
    for i in range(2, num):
@@ -182,7 +184,7 @@ where we have added the "vectorize" decorator from Numba. The argument of "check
 Let us run it and record the elapsed time:
 
 ~~~python
-%timeit check_prime_gpu(np.arange(2, upper_limit, dtype=np.int32))
+%timeit check_prime_gpu(np.arange(2, 10000, dtype=np.int32))
 ~~~
 {: .source}
 
