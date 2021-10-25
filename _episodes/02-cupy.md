@@ -108,7 +108,7 @@ from scipy.signal import convolve2d as convolve2d_cpu
 
 convolved_image_using_CPU = convolve2d_cpu(deltas, gauss)
 %timeit convolve2d_cpu(deltas, gauss)
-pyl.imshow(convolved_image_using_CPU[0:32, 0;32])
+pyl.imshow(convolved_image_using_CPU[0:32, 0:32])
 pyl.show()
 ~~~
 {: .language-python}
