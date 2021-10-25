@@ -59,17 +59,25 @@ You will probably find that "find_all_primes_cpu" takes several hundreds of mill
 As a quick sidestep, add Numba's JIT (Just in Time compilation) decorator to the "find_all_primes_cpu" function. You can either add it to the function definition or to the call, so either in this way:
 
 ~~~python
+from numba import jit
 @jit(nopython=True)
 def find_all_primes_cpu(upper):
     all_prime_numbers=[]
-    ....
-    ....
+    for num in range(2, upper):
+        # all prime numbers are greater than 1
+        for i in range(2, num):
+            if (num % i) == 0:
+                break
+        else:
+            all_prime_numbers.append(num)
+    return all_prime_numbers
 ~~~
 {: .source}
 
 or in this way:
 
 ~~~python
+from numba import jit
 %timeit jit(nopython=True)(find_all_primes_cpu)(upper_limit)
 ~~~
 {: .source}
