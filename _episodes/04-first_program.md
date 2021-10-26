@@ -502,7 +502,7 @@ Correct results!
 >     print("Wrong results!")
 > ~~~
 > {: .language-python}
-> >
+>
 > > ### Solution
 > >
 > > One possible solution is the following one:
