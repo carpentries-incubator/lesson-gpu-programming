@@ -362,7 +362,7 @@ However, in a real world scenario we may have to process vectors of arbitrary si
 >
 > We modified the `vector_add` kernel to include a check for the size of the vector, so that we only compute elements that are within the vector boundaries.
 > However the code is not correct as it is written now.
-> Can you reorder the lines of the source code to make it work?
+> Can you rewrite the code to make it work?
 >
 > ~~~
 > extern "C"
