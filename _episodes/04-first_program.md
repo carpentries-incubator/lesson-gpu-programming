@@ -503,6 +503,22 @@ Correct results!
 > ~~~
 > {: .language-python}
 >
+> > ## Solution
+> > The correct way to modify the `vector_add` to work on vectors of arbitrary size is to first compute the coordinates of each thread, and then perform the sum only on elements that are within the vector boundaries.
+> >
+> > ~~~
+> > extern "C"
+> > __global__ void vector_add(const float * A, const float * B, float * C, const int size)
+> > {
+> >    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+> >    if ( item < size )
+> >    {
+> >       C[item] = A[item] + B[item];
+> >    }
+> > }
+> > ~~~
+> > {: .language-c}
+> {: .solution}
 {: .challenge}
 
 {% include links.md %}
