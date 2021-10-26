@@ -506,31 +506,6 @@ Correct results!
 > > ### Solution
 > >
 > > One possible solution is the following one:
-> > ~~~
-> > check_prime_gpu_code = r'''
-> > extern "C"
-> > __global__ void all_primes_to(int size, int * const all_prime_numbers)
-> > {
-> >     int number = (blockIdx.x * blockDim.x) + threadIdx.x;
-> >     int result = 1;
-> > 
-> >     if ( number < size )
-> >     {
-> >         for ( int factor = 2; factor < number / 2; factor++ )
-> >         {
-> >             if ( number % factor == 0 )
-> >             {
-> >                 result = 0;
-> >                 break;
-> >             }
-> >         }
-> > 
-> >         all_prime_numbers[number] = result;
-> >     }
-> > }
-> > '''
-> > ~~~
-> > {: .language-c}
 > {: .solution}
 {: .challenge}
 
