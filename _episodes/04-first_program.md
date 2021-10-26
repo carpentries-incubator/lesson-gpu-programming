@@ -503,10 +503,6 @@ Correct results!
 > ~~~
 > {: .language-python}
 >
-> > ### Solution
-> >
-> > One possible solution is the following one:
-> {: .solution}
 {: .challenge}
 
 {% include links.md %}
