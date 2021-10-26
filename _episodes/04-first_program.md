@@ -59,7 +59,7 @@ However, CUDA is the most used platform for GPU programming and therefore we dec
 
 # Running Code on the GPU with CuPy
 
-Before delving deeper into the meaning of all lines of code, let us try to execute the code on a GPU.
+Before delving deeper into the meaning of all lines of code, and before starting to understand how CUDA works, let us execute the code on a GPU and check if it is correct or not.
 To compile the code and manage the GPU in Python we are going to use the interface provided by CuPy.
 
 ~~~
