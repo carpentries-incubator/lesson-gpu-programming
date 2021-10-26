@@ -1,16 +1,18 @@
 ---
 title: "Introduction"
-teaching: 20
+teaching: 15
 exercises: 0
 questions:
 - "What is a Graphics Processing Unit?"
 - "Can a GPU be used for anything else than graphics?"
 - "Are GPUs faster than CPUs?"
 objectives:
-- "Learn how a GPU works"
 - "Understand the differences between CPU and GPU"
+- "See the possible performance benefits of GPU acceleration"
 keypoints:
-- ""
+- "Using GPUs to accelerate computation can provide large performance gains"
+- "Accessing the GPU using Python is not particularly difficult"
+- "CPUs and GPUs are both useful and each has its own place in our toolbox"
 ---
 
 # Graphics Processing Unit
@@ -44,9 +46,10 @@ With many compute units available, the GPU can run massively parallel programs, 
 
 So, GPUs are massively parallel devices that can execute thousands of threads at the same time.
 But what does it mean in practice for the user? Why anyone would need to use a GPU to compute something that can be easily computed on a CPU?
-We begin with an example: sorting a large array in Python.
+We can try to answer this question with an example.
 
-First we need to create an array of random single precision floating point numbers.
+Suppose we want to sort a large array in Python.
+Using NumPy, we first need to create an array of random single precision floating point numbers.
 
 ~~~
 import numpy as np
@@ -69,7 +72,7 @@ While the timing of this operation will differ depending on the system on which 
 ~~~
 {: .output}
 
-We now perform the same sorting operation, but this time we will be using CuPy to execute the `sort()` on the GPU.
+We now perform the same sorting operation, but this time we will be using CuPy to execute the `sort()` function on the GPU.
 CuPy is an open-source library, compatible with NumPy, for GPU computing in Python.
 
 ~~~
@@ -86,12 +89,13 @@ We also report the output, obtained on the same notebook on Google Colab; as alw
 ~~~
 {: .output}
 
-Sorting an array using CuPy, and therefore the GPU, is clearly much faster than using NumPy; but how much faster?
+Sorting an array using CuPy, and therefore using the GPU, is clearly much faster than using NumPy, but can we quantify how much faster?
 Having recorded the average execution time of both operations, we can then compute the speedup of using CuPy over NumPy.
-The speedup is defined as the ratio between the sequential (NumPy in our case) and parallel (CuPy in our case) execution time; beware that both execution times need to be in the same unit, this is why we had to convert the GPU execution time from milliseconds to seconds.
+The speedup is defined as the ratio between the sequential (NumPy in our case) and parallel (CuPy in our case) execution times; beware that both execution times need to be in the same unit, this is why we had to convert the GPU execution time from milliseconds to seconds.
 
 ~~~
-1.84 / 0.00683
+speedup = 1.84 / 0.00683
+print(speedup)
 ~~~
 {: .language-python}
 
@@ -102,6 +106,6 @@ With the result of the previous operation being the following.
 ~~~
 {: .output}
 
-We can therefore say that by using the GPU with CuPy for our `sort()` operation we obtained a speedup of 269, or simply put an improvement in performance of 269 times.
+We can therefore say that just by using the GPU with CuPy to sort an array of size `4096 * 4096` we achieved a performance improvement of 269 times.
 
 {% include links.md %}
