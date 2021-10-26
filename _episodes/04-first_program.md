@@ -508,13 +508,24 @@ Correct results!
 > >
 > > ~~~
 > > extern "C"
-> > __global__ void vector_add(const float * A, const float * B, float * C, const int size)
+> > __global__ void all_primes_to(int size, int * const all_prime_numbers)
 > > {
-> >    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
-> >    if ( item < size )
-> >    {
-> >       C[item] = A[item] + B[item];
-> >    }
+> >     int number = (blockIdx.x * blockDim.x) + threadIdx.x;
+> >     int result = 1;
+> > 
+> >     if ( number < size )
+> >     {
+> >         for ( int factor = 2; factor < number / 2; factor++ )
+> >         {
+> >             if ( number % factor == 0 )
+> >             {
+> >                 result = 0;
+> >                 break;
+> >             }
+> >         }
+> > 
+> >         all_prime_numbers[number] = result;
+> >     }
 > > }
 > > ~~~
 > > {: .language-c}
