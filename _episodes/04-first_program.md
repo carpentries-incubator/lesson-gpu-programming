@@ -59,7 +59,7 @@ However, CUDA is the most used platform for GPU programming and therefore we dec
 
 # Running Code on the GPU with CuPy
 
-Before delving deeper into the meaning of all lines of code, let us try to execute the code on a GPU.
+Before delving deeper into the meaning of all lines of code, and before starting to understand how CUDA works, let us execute the code on a GPU and check if it is correct or not.
 To compile the code and manage the GPU in Python we are going to use the interface provided by CuPy.
 
 ~~~
@@ -362,7 +362,7 @@ However, in a real world scenario we may have to process vectors of arbitrary si
 >
 > We modified the `vector_add` kernel to include a check for the size of the vector, so that we only compute elements that are within the vector boundaries.
 > However the code is not correct as it is written now.
-> Can you reorder the lines of the source code to make it work?
+> Can you rewrite the code to make it work?
 >
 > ~~~
 > extern "C"
@@ -502,12 +502,11 @@ Correct results!
 >     print("Wrong results!")
 > ~~~
 > {: .language-python}
+>
+> > ## Solution
+> > One possible solution is provided in the following code.
 > >
-> > ### Solution
-> >
-> > One possible solution is the following one:
 > > ~~~
-> > check_prime_gpu_code = r'''
 > > extern "C"
 > > __global__ void all_primes_to(int size, int * const all_prime_numbers)
 > > {
@@ -528,7 +527,6 @@ Correct results!
 > >         all_prime_numbers[number] = result;
 > >     }
 > > }
-> > '''
 > > ~~~
 > > {: .language-c}
 > {: .solution}
