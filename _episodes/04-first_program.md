@@ -504,7 +504,7 @@ Correct results!
 > {: .language-python}
 >
 > > ## Solution
-> > The correct way to modify the `vector_add` to work on vectors of arbitrary size is to first compute the coordinates of each thread, and then perform the sum only on elements that are within the vector boundaries.
+> > One possible solution is provided in the following code.
 > >
 > > ~~~
 > > extern "C"
