@@ -3,7 +3,7 @@ title: "Programming your GPU using CuPy"
 
 teaching: 0
 
-exercises: 0
+exercises: 15
 
 questions:
 
@@ -79,7 +79,7 @@ In our example, we will convolve our image with a 2D Gaussian function shown bel
 
 <div style="font-size:1.5em">$$G(x,y) = \frac{1}{2\pi \sigma^2} e^{-\frac{x^2 + y^2}{2 \sigma^2}}$$</div>
 
-Where x and y are the "coordinates in our matrix, i.e. our row and columns. $$\sigma$$ controls the width of the Gaussian distribution. Convolving images with 2D Gaussian funcitons will change the value of each pixel to be a weighted average of the pixels around it, thereby "smoothing" the image. Convolving images with a Gaussian function denoises the image, which is often required in [edge-detection](https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection) since most algorithms to do this are sensitive to noise.
+Where x and y are the "coordinates in our matrix, i.e. our row and columns. $$\sigma$$ controls the width of the Gaussian distribution. Convolving images with 2D Gaussian functions will change the value of each pixel to be a weighted average of the pixels around it, thereby "smoothing" the image. Convolving images with a Gaussian function reduces the noise in the image, which is often required in [edge-detection](https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection) since most algorithms to do this are sensitive to noise.
 
 # Convolution on the CPU Using SciPy
 
@@ -164,12 +164,12 @@ This is what I got on a TITAN X (Pascal) GPU:
 This is a lot faster than on the host, a performance improvement, or speedup, of 125 times.
 Impressive!
 
-> ## Challenge: Try a shortcut: convolution on the GPU without CuPy 
+> ## Challenge: try a shortcut: convolution on the GPU without CuPy 
 > Try to convolve the Numpy array deltas with the Numpy array gauss directly on the GPU, so without using CuPy arrays. 
 > If we succeed, this should save us the time and effort of transferring deltas and gauss to the GPU.
 >
 > > ## Solution
-> > We can again use the GPU convolution function from the cupyx library: convolve2d_gpu and use deltas and gauss as input.
+> > We can again use the GPU convolution function from the `cupyx` library: `convolve2d_gpu` and use `deltas` and `gauss` as input.
 > > ~~~
 > > convolve2d_gpu(deltas, gauss)
 > > ~~~
@@ -203,10 +203,10 @@ array(True)
 ~~~
 {: .output}
 
-> ## Challenge: Fairer runtime comparison CPU vs. GPU
+> ## Challenge: fairer runtime comparison CPU vs. GPU
 > Compute the CPU vs GPU speedup while taking into account the transfers of data to the GPU and back. 
 > You should now find a lower speedup from taking the overhead of the transfer of arrays into account.
-> Hint: To copy a CuPy array back to the host (CPU), use cp.asnumpy().
+> Hint: To copy a CuPy array back to the host (CPU), use `cp.asnumpy()`.
 >
 > > ## Solution
 > > For timing, it is most convenient to define a function that completes all the steps.
@@ -232,7 +232,7 @@ array(True)
 
 # A shortcut: performing Numpy routines on the GPU.
 
-We saw above that we cannot execute routines from the "cupyx" library directly on Numpy arrays.
+We saw above that we cannot execute routines from the `cupyx` library directly on Numpy arrays.
 In fact we need to first transfer the data from host to device memory.
 Vice versa, if we try to execute a regular Scipy routine (i.e. designed to run the CPU) on a CuPy array, we will also encounter an error.
 Try the following:
@@ -255,7 +255,7 @@ So Scipy routines cannot have CuPy arrays as input.
 We can, however, execute a simpler command that does not require Scipy.
 Instead of 2D convolution, we can do 1D convolution.
 For that we can use a Numpy routine instead of a Scipy routine.
-The "convolve" routine from Numpy performs linear (1D) convolution.
+The `convolve` routine from Numpy performs linear (1D) convolution.
 To generate some input for a linear convolution, we can flatten our image from 2D to 1D (using `ravel()`), but we also need a 1D kernel.
 For the latter we will take the diagonal elements of our 2D Gaussian kernel.
 Try the following three instructions for linear convolution on the CPU:
