@@ -128,8 +128,9 @@ This should return "11", because that is a prime and "0" because 12 is not a pri
 
 Note the extra arguments in square brackets - [1, 1] - that are added to the call of "check_prime_gpu_kernel". These indicate the number of "threads per block" and the number of "blocks per grid". These concepts will be explained in a later session. We will both set them to 1 for now.
 
-> ## Challenge: Write a function find_all_primes_cpu_and_gpu that uses check_prime_gpu_kernel and the outer loop similar to find_all_primes_cpu. 
-> # How long does it take to find all primes up to 10000?
+> ## Challenge: compute prime numbers
+> Write a function find_all_primes_cpu_and_gpu that uses check_prime_gpu_kernel and the outer loop similar to find_all_primes_cpu.
+> How long does it take to find all primes up to 10000?
 >
 > > ## Solution
 > > ~~~python
