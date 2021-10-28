@@ -3,7 +3,7 @@ title: "Programming your GPU using Numba"
 
 teaching: 0
 
-exercises: 0
+exercises: 15
 
 questions:
 
@@ -42,24 +42,25 @@ def find_all_primes_cpu(upper):
 ~~~
 {: .language-python}
 
-Calling "find_all_primes_cpu(10000)" will return all prime numbers between 1 and 10000 as a list. Let us time it:
+Calling `find_all_primes_cpu(10000)` will return all prime numbers between 1 and 10000 as a list. Let us time it:
 
 ~~~
 %timeit find_all_primes_cpu(10000) 
 ~~~
 {: .language-python}
 
-You will probably find that "find_all_primes_cpu" takes several hundreds of milliseconds to complete:
+You will probably find that `find_all_primes_cpu` takes several hundreds of milliseconds to complete:
 
 ~~~
 378 ms ± 45.6 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
 ~~~
 {: .output}
 
-As a quick sidestep, add Numba's JIT (Just in Time compilation) decorator to the "find_all_primes_cpu" function. You can either add it to the function definition or to the call, so either in this way:
+As a quick sidestep, add Numba's JIT (Just in Time compilation) decorator to the `find_all_primes_cpu` function. You can either add it to the function definition or to the call, so either in this way:
 
 ~~~
 from numba import jit
+
 @jit(nopython=True)
 def find_all_primes_cpu(upper):
     all_prime_numbers=[]
@@ -78,6 +79,7 @@ or in this way:
 
 ~~~
 from numba import jit
+
 %timeit jit(nopython=True)(find_all_primes_cpu)(upper_limit)
 ~~~
 {: .language-python}
@@ -89,7 +91,12 @@ which can give you a timing result similar to this:
 ~~~
 {: .output}
 
-So twice as fast, by using a simple decorator. The speedup is much larger for upper = 100000, but that takes a little too much waiting time for this course. Despite the "jit(nopython=True)" decorator the computation is still performed on the CPU. Let us move the computation to the GPU. There are a number of ways to achieve this, one of them is the usage of the "jit(device=True)" decorator, but it depends very much on the nature of the computation. Let us write our first GPU kernel which checks if a number is a prime, using the cuda.jit decorator, so different from the jit decorator for CPU computations. It is essentially the inner loop of "find_all_primes_cpu":
+So twice as fast, by using a simple decorator. The speedup is much larger for `upper = 100000`, but that takes a little too much waiting time for this course.
+Despite the `jit(nopython=True)` decorator the computation is still performed on the CPU.
+Let us move the computation to the GPU.
+There are a number of ways to achieve this, one of them is the usage of the `jit(device=True)` decorator, but it depends very much on the nature of the computation.
+Let us write our first GPU kernel which checks if a number is a prime, using the `cuda.jit` decorator, so different from the `jit` decorator for CPU computations.
+It is essentially the inner loop of `find_all_primes_cpu`:
 
 ~~~
 from numba import cuda
@@ -125,10 +132,10 @@ This should return "11", because that is a prime and "0" because 12 is not a pri
 ~~~
 {: .output}
 
-Note the extra arguments in square brackets - [1, 1] - that are added to the call of "check_prime_gpu_kernel". These indicate the number of "threads per block" and the number of "blocks per grid". These concepts will be explained in a later session. We will both set them to 1 for now.
+Note the extra arguments in square brackets - `[1, 1]` - that are added to the call of `check_prime_gpu_kernel`. These indicate the number of "threads per block" and the number of "blocks per grid". These concepts will be explained in a later session. We will both set them to 1 for now.
 
 > ## Challenge: compute prime numbers
-> Write a function find_all_primes_cpu_and_gpu that uses check_prime_gpu_kernel and the outer loop similar to find_all_primes_cpu.
+> Write a function `find_all_primes_cpu_and_gpu` that uses `check_prime_gpu_kernel` and the outer loop similar to `find_all_primes_cpu`.
 > How long does it take to find all primes up to 10000?
 >
 > > ## Solution
@@ -158,14 +165,14 @@ Note the extra arguments in square brackets - [1, 1] - that are added to the cal
 {: .challenge}
 
 
-Let us give the GPU a work load large enough to compensate for the overhead of data transfers to and from the GPU. For this example of computing primes we can best use the "vectorize" decorator for a new "check_prime_gpu" function that takes an array as input instead of "upper" in order to increase the work load. This is the array we have to use as input for our new "check_prime_gpu" function, instead of upper, a single integer:
+Let us give the GPU a work load large enough to compensate for the overhead of data transfers to and from the GPU. For this example of computing primes we can best use the `vectorize` decorator for a new `check_prime_gpu` function that takes an array as input instead of `upper` in order to increase the work load. This is the array we have to use as input for our new `check_prime_gpu` function, instead of upper, a single integer:
 
 ~~~
 np.arange(2, 10000, dtype=np.int32)
 ~~~
 {: .language-python}
 
-So that input to the new "check_prime_gpu" function is simply the array of numbers we need to check for primes. "check_prime_gpu" looks similar to "check_prime_gpu_kernel", but it is not a kernel, so it can return values:
+So that input to the new `check_prime_gpu` function is simply the array of numbers we need to check for primes. `check_prime_gpu` looks similar to `check_prime_gpu_kernel`, but it is not a kernel, so it can return values:
 
 ~~~
 import numba as nb
@@ -180,7 +187,7 @@ def check_prime_gpu(num):
 ~~~
 {: .language-python}
 
-where we have added the "vectorize" decorator from Numba. The argument of "check_prime_gpu" seems to be defined as a scalar (single integer in this case), but the "vectorize" decorator will allow us to use an array as input. That array should consist of 4B (byte) of 32b (bit) integers, indicated by "(int32)". The return array will also consist of 32b integers, with zeros for the non-primes. The nonzero values are the primes. 
+where we have added the `vectorize` decorator from Numba. The argument of `check_prime_gpu` seems to be defined as a scalar (single integer in this case), but the `vectorize` decorator will allow us to use an array as input. That array should consist of 4B (bytes) or 32b (bit) integers, indicated by `(int32)`. The return array will also consist of 32b integers, with zeros for the non-primes. The nonzero values are the primes. 
 
 Let us run it and record the elapsed time:
 
@@ -196,6 +203,6 @@ which should show you a significant speedup:
 ~~~
 {: .output}
 
-This amounts to an accelleration of our code of a factor 165/3.25 = 50.8 compared to the "jit(nopython=True)" decorated code on the CPU.
+This amounts to an acceleration of our code of a factor 165/3.25 = 50.8 compared to the `jit(nopython=True)` decorated code on the CPU.
 
 {% include links.md %}
