@@ -6,10 +6,8 @@ teaching: 0
 exercises: 15
 
 questions:
-
-- "How can I copy my data to the GPU?"
-- "How can I do a calculation on a GPU?"
-- "How can I copy the result back to my computer?"
+- "How can I increase the performance of code that uses NumPy?"
+- "How can I copy NumPy arrays to the GPU?"
 
 objectives:
 - "Be able to indicate if an array, represented by a variable in an iPython shell, is stored in host or device memory."
@@ -18,7 +16,7 @@ objectives:
 - "Be able to quickly estimate the speed benefits for a simple calculation by moving it from the CPU to the GPU."
 
 keypoints:
-- ""
+- "CuPy provides GPU accelerated version of many NumPy functions."
 ---
 
 # Introduction to CuPy
