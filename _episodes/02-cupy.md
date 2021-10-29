@@ -1,7 +1,7 @@
 ---
 title: "Programming your GPU using CuPy"
 
-teaching: 0
+teaching: 30
 
 exercises: 15
 
