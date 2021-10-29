@@ -1,24 +1,20 @@
 ---
 title: "Programming your GPU using Numba"
 
-teaching: 0
+teaching: 30
 
 exercises: 15
 
 questions:
-
-- "How can I copy my data to the GPU?"
-- "How can I do a calculation on a GPU?"
-- "How can I copy the result back to my computer?"
+- "How can I run my own Python functions on the GPU?"
 
 objectives:
-- "Be able to indicate if an array, represented by a variable in an iPython shell, is stored in host or device memory."
-- "Be able to copy the contents of this array from host to device memory and vice versa."
-- "Be able to select the appropriate function to either convolve an image using either CPU or GPU compute power."
-- "Be able to quickly estimate the speed benefits for a simple calculation by moving it from the CPU to the GPU."
+- "Learn how to use Numba decorators to improve the performance of your Python code."
+- "Run your first application on the GPU."
 
 keypoints:
-- ""
+- "Numba can be used to run your own Python functions on the GPU."
+- "Functions may need to be changed to run correctly on a GPU."
 ---
 
 # Using Numba to execute Python code on the GPU
