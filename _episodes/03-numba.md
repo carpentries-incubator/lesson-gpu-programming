@@ -6,10 +6,7 @@ teaching: 30
 exercises: 15
 
 questions:
-
 - "How can I run my own Python functions on the GPU?"
-- "How can I do a calculation on a GPU?"
-- "How can I copy the result back to my computer?"
 
 objectives:
 - "Learn how to use Numba decorators to improve the performance of your Python code."
