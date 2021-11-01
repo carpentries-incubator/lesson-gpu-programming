@@ -136,7 +136,6 @@ Note the extra arguments in square brackets - `[1, 1]` - that are added to the c
 >
 > > ## Solution
 > > ~~~
-> > @cuda.jit
 > > def find_all_primes_cpu_and_gpu(upper):
 > >     all_prime_numbers=[]
 > >     for num in range(2, upper):
