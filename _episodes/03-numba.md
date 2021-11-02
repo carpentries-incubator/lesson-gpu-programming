@@ -26,10 +26,9 @@ This is code that you can find on many websites. Small variations are possible, 
 
 ~~~
 def find_all_primes_cpu(upper):
-    all_prime_numbers=[]
+    all_prime_numbers = []
     for num in range(2, upper):
-        # all prime numbers are greater than 1
-        for i in range(2, num):
+        for i in range(2, (num // 2) + 1):
             if (num % i) == 0:
                 break
         else:
@@ -41,7 +40,7 @@ def find_all_primes_cpu(upper):
 Calling `find_all_primes_cpu(10000)` will return all prime numbers between 1 and 10000 as a list. Let us time it:
 
 ~~~
-%timeit find_all_primes_cpu(10000) 
+%timeit find_all_primes_cpu(10000)
 ~~~
 {: .language-python}
 
@@ -59,10 +58,9 @@ from numba import jit
 
 @jit(nopython=True)
 def find_all_primes_cpu(upper):
-    all_prime_numbers=[]
+    all_prime_numbers = []
     for num in range(2, upper):
-        # all prime numbers are greater than 1
-        for i in range(2, num):
+        for i in range(2, (num // 2) + 1):
             if (num % i) == 0:
                 break
         else:
@@ -99,9 +97,8 @@ from numba import cuda
 
 @cuda.jit
 def check_prime_gpu_kernel(num, result):
-   # all prime numbers are greater than 1
    result[0] =  0
-   for i in range(2, num):
+   for i in range(2, (num // 2) + 1):
        if (num % i) == 0:
            break
    else:
@@ -137,12 +134,11 @@ Note the extra arguments in square brackets - `[1, 1]` - that are added to the c
 > > ## Solution
 > > ~~~
 > > def find_all_primes_cpu_and_gpu(upper):
-> >     all_prime_numbers=[]
+> >     all_prime_numbers = []
 > >     for num in range(2, upper):
 > >         result = np.zeros((1), np.int32)
-> >         # Calculate the number of thread blocks in the grid
 > >         check_prime_gpu_kernel[1,1](num, result)
-> >         if result[0]>0:
+> >         if result[0] > 0:
 > >             all_prime_numbers.append(num)
 > >     return all_prime_numbers
 > >    
@@ -174,7 +170,7 @@ import numba as nb
 
 @nb.vectorize(['int32(int32)'], target='cuda')
 def check_prime_gpu(num):
-   for i in range(2, num):
+   for i in range(2, (num // 2) + 1):
        if (num % i) == 0:
            return 0
    else:
