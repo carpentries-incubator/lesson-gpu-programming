@@ -57,7 +57,8 @@ To get a feeling of how the whole image looks like, we can display the top-left 
 
 ~~~
 import pylab as pyl
-%matplotlib inline # Necessary command to render a matplotlib image in a Jupyter notebook.
+ # Necessary command to render a matplotlib image in a Jupyter notebook.
+%matplotlib inline
 
 # Display the image
 # You can zoom in using the menu in the window that will appear
@@ -236,7 +237,7 @@ array(True)
 
 We saw above that we cannot execute routines from the `cupyx` library directly on Numpy arrays.
 In fact we need to first transfer the data from host to device memory.
-Vice versa, if we try to execute a regular Scipy routine (i.e. designed to run the CPU) on a CuPy array, we will also encounter an error.
+Vice versa, if we try to execute a regular SciPy routine (i.e. designed to run the CPU) on a CuPy array, we will also encounter an error.
 Try the following:
 
 ~~~
@@ -253,10 +254,10 @@ TypeError: Implicit conversion to a NumPy array is not allowed. Please use `.get
 ~~~
 {: .output}
 
-So Scipy routines cannot have CuPy arrays as input.
-We can, however, execute a simpler command that does not require Scipy.
+So SciPy routines cannot have CuPy arrays as input.
+We can, however, execute a simpler command that does not require SciPy.
 Instead of 2D convolution, we can do 1D convolution.
-For that we can use a Numpy routine instead of a Scipy routine.
+For that we can use a Numpy routine instead of a SciPy routine.
 The `convolve` routine from Numpy performs linear (1D) convolution.
 To generate some input for a linear convolution, we can flatten our image from 2D to 1D (using `ravel()`), but we also need a 1D kernel.
 For the latter we will take the diagonal elements of our 2D Gaussian kernel.
@@ -288,7 +289,7 @@ gauss_1d_gpu = cp.asarray(gauss_1d)
 {: .language-python}
 
 You may be surprised that we can issue these commands without error.
-Contrary to Scipy routines, Numpy accepts CuPy arrays, i.e. arrays that exist in GPU memory, as input.
+Contrary to SciPy routines, Numpy accepts CuPy arrays, i.e. arrays that exist in GPU memory, as input.
 [Here](https://docs.cupy.dev/en/v8.2.0/reference/interoperability.html#numpy) you can find some background on why Numpy routines can handle CuPy arrays. 
 
 Also, remember the `np.allclose` command above?

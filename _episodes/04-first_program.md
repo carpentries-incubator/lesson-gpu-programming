@@ -462,11 +462,15 @@ Correct results!
 > Given the following Python code, similar to what we have seen in the previous episode about Numba, write the missing CUDA kernel that computes all the prime numbers up to a certain upper bound.
 >
 > ~~~
+> import numpy
+> import cupy
+> import math
+> 
 > # CPU
 > def all_primes_to(upper : int, prime_list : list):
 >     for num in range(2, upper):
 >         prime = True
->         for i in range(2, num // 2):
+>         for i in range(2, (num // 2) + 1):
 >             if (num % i) == 0:
 >                 prime = False
 >                 break
@@ -507,6 +511,7 @@ Correct results!
 > > One possible solution is provided in the following code.
 > >
 > > ~~~
+> > 
 > > extern "C"
 > > __global__ void all_primes_to(int size, int * const all_prime_numbers)
 > > {
@@ -515,7 +520,7 @@ Correct results!
 > > 
 > >     if ( number < size )
 > >     {
-> >         for ( int factor = 2; factor < number / 2; factor++ )
+> >         for ( int factor = 2; factor <= number / 2; factor++ )
 > >         {
 > >             if ( number % factor == 0 )
 > >             {
