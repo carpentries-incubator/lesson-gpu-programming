@@ -57,7 +57,8 @@ To get a feeling of how the whole image looks like, we can display the top-left 
 
 ~~~
 import pylab as pyl
-%matplotlib inline # Necessary command to render a matplotlib image in a Jupyter notebook.
+ # Necessary command to render a matplotlib image in a Jupyter notebook.
+%matplotlib inline
 
 # Display the image
 # You can zoom in using the menu in the window that will appear
