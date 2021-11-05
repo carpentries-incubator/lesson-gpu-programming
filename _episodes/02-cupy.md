@@ -168,7 +168,7 @@ This is a lot faster than on the host, a performance improvement, or speedup, of
 Impressive!
 
 > ## Challenge: try a shortcut: convolution on the GPU without CuPy 
-> Try to convolve the Numpy array deltas with the Numpy array gauss directly on the GPU, so without using CuPy arrays. 
+> Try to convolve the NumPy array deltas with the NumPy array gauss directly on the GPU, so without using CuPy arrays. 
 > If we succeed, this should save us the time and effort of transferring deltas and gauss to the GPU.
 >
 > > ## Solution
@@ -184,7 +184,7 @@ Impressive!
 > > ~~~
 > > {: .output}
 > >
-> > It is unfortunately not possible to access Numpy arrays from the GPU directly. Numpy arrays exist in the 
+> > It is unfortunately not possible to access NumPy arrays from the GPU directly. NumPy arrays exist in the 
 > > Random Access Memory (RAM) of the host and not in GPU memory. These types of memory are not united, but transfers are possible.
 > >
 > {: .solution}
@@ -233,9 +233,9 @@ array(True)
 > {: .solution}
 {: .challenge}
 
-# A shortcut: performing Numpy routines on the GPU.
+# A shortcut: performing NumPy routines on the GPU.
 
-We saw above that we cannot execute routines from the `cupyx` library directly on Numpy arrays.
+We saw above that we cannot execute routines from the `cupyx` library directly on NumPy arrays.
 In fact we need to first transfer the data from host to device memory.
 Vice versa, if we try to execute a regular SciPy routine (i.e. designed to run the CPU) on a CuPy array, we will also encounter an error.
 Try the following:
@@ -257,8 +257,8 @@ TypeError: Implicit conversion to a NumPy array is not allowed. Please use `.get
 So SciPy routines cannot have CuPy arrays as input.
 We can, however, execute a simpler command that does not require SciPy.
 Instead of 2D convolution, we can do 1D convolution.
-For that we can use a Numpy routine instead of a SciPy routine.
-The `convolve` routine from Numpy performs linear (1D) convolution.
+For that we can use a NumPy routine instead of a SciPy routine.
+The `convolve` routine from NumPy performs linear (1D) convolution.
 To generate some input for a linear convolution, we can flatten our image from 2D to 1D (using `ravel()`), but we also need a 1D kernel.
 For the latter we will take the diagonal elements of our 2D Gaussian kernel.
 Try the following three instructions for linear convolution on the CPU:
@@ -278,7 +278,7 @@ You could arrive at something similar to this timing result:
 
 We have performed a regular linear convolution using our CPU.
 Now let us try something bold.
-We will transfer the 1D arrays to the GPU and use the Numpy (!) routine to do the convolution.
+We will transfer the 1D arrays to the GPU and use the NumPy routine to do the convolution.
 Again, we have to issue three commands:
 
 ~~~
@@ -289,11 +289,11 @@ gauss_1d_gpu = cp.asarray(gauss_1d)
 {: .language-python}
 
 You may be surprised that we can issue these commands without error.
-Contrary to SciPy routines, Numpy accepts CuPy arrays, i.e. arrays that exist in GPU memory, as input.
-[Here](https://docs.cupy.dev/en/v8.2.0/reference/interoperability.html#numpy) you can find some background on why Numpy routines can handle CuPy arrays. 
+Contrary to SciPy routines, NumPy accepts CuPy arrays, i.e. arrays that exist in GPU memory, as input.
+[Here](https://docs.cupy.dev/en/v8.2.0/reference/interoperability.html#numpy) you can find some background on why NumPy routines can handle CuPy arrays. 
 
 Also, remember the `np.allclose` command above?
-With a Numpy and a CuPy array as input.
+With a NumPy and a CuPy array as input.
 That worked for the same reason.
 
 The linear convolution is actually performed on the GPU, which is shown by a nice speedup:
