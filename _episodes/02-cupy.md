@@ -1,5 +1,5 @@
 ---
-title: "Programming your GPU using CuPy"
+title: "Using your GPU with CuPy"
 
 teaching: 30
 

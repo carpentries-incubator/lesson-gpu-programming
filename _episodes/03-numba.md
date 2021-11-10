@@ -1,5 +1,5 @@
 ---
-title: "Programming your GPU using Numba"
+title: "Accelerate your own Python code with Numba"
 
 teaching: 30
 
