@@ -1,7 +1,7 @@
 ---
-title: "Programming your GPU using CuPy"
+title: "Using your GPU with CuPy"
 
-teaching: 30
+teaching: 45
 
 exercises: 15
 
@@ -128,7 +128,7 @@ This is part of a lesson on GPU programming, so let us use the GPU.
 Although there is a physical connection - i.e. a cable - between the CPU and the GPU, they do not share the same memory space.
 This image depicts the different components of CPU and GPU and how they are connected:
 
-![Separation of CPU and GPU memory](../fig/CPU_and_GPU_separated.png)
+![CPU and GPU are two separate entities, each with its own memory.](../fig/CPU_and_GPU_separated.png)
 
 This means that an array created from e.g. an iPython shell using NumPy is physically located into the main memory of the host, and therefore available for the CPU but not the GPU.
 It is not yet present in GPU memory, which means that we need to copy our data, the input image and the convolving function to the GPU, before we can execute any code on it.
