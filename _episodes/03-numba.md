@@ -1,5 +1,5 @@
 ---
-title: "Accelerate your own Python code with Numba"
+title: "Accelerate your Python code with Numba"
 
 teaching: 30
 
