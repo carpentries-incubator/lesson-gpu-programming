@@ -1,7 +1,7 @@
 ---
 title: "Shared Memory and Synchronization"
-teaching: 0
-exercises: 0
+teaching: 30
+exercises: 25
 questions:
 - "Question"
 objectives:

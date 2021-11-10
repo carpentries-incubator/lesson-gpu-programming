@@ -1,7 +1,7 @@
 ---
 title: "Constant Memory"
-teaching: 0
-exercises: 0
+teaching: 20
+exercises: 20
 questions:
 - "Question"
 objectives:
