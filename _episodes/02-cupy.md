@@ -1,7 +1,7 @@
 ---
 title: "Using your GPU with CuPy"
 
-teaching: 30
+teaching: 45
 
 exercises: 15
 

@@ -1,7 +1,7 @@
 ---
 title: "Accelerate your Python code with Numba"
 
-teaching: 30
+teaching: 45
 
 exercises: 15
 
