@@ -42,6 +42,10 @@ By contrast, most of the silicon on a GPU is actually used for compute units.
 The GPU does not need an overly complicated cache hierarchy, nor it does need complex control logic, because the overall goal is not to minimize the latency of any given thread, but to maximize the throughput of the whole computation.
 With many compute units available, the GPU can run massively parallel programs, programs in which thousands of threads are executed at the same time, while thousands more are ready for execution to hide the cost of memory operations.
 
+A high-level introduction on the differences between CPU and GPU can also be found in the following YouTube video.
+
+[![Graphics Processing Unit (GPU)](http://img.youtube.com/vi/bZdxcHEM-uc/0.jpg)](https://www.youtube.com/watch?v=bZdxcHEM-uc "Graphics Processing Unit (GPU)")
+
 # Speed Benefits
 
 So, GPUs are massively parallel devices that can execute thousands of threads at the same time.
