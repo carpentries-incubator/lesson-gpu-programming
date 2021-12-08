@@ -21,7 +21,7 @@ keypoints:
 
 [Numba](http://numba.pydata.org/) is a Python library that "translates Python functions to optimized machine code at runtime using the industry-standard LLVM compiler library". You might want to try it to speed up your code on a CPU. However, Numba [can also translate a subset of the Python language into CUDA](https://numba.pydata.org/numba-doc/latest/cuda/overview.html), which is what we will be using here. So the idea is that we can do what we are used to, i.e. write Python code and still benefit from the speed that GPUs offer us.
 
-We want to compute all prime numbers - i.e. numbers that have only 1 or itself as divisors without a remainder - between 1 and 10000 on the CPU and see if we can speed it up, by deploying a similar algorithm on a GPU. 
+We want to compute all [prime numbers](https://en.wikipedia.org/wiki/Prime_number) - i.e. numbers that have only 1 or themselves as exact divisors - between 1 and 10000 on the CPU and see if we can speed it up, by deploying a similar algorithm on a GPU. 
 This is code that you can find on many websites. Small variations are possible, but it will look something like this:
 
 ~~~
@@ -128,10 +128,14 @@ This should return "11", because that is a prime and "0" because 12 is not a pri
 Note the extra arguments in square brackets - `[1, 1]` - that are added to the call of `check_prime_gpu_kernel`. These indicate the number of "threads per block" and the number of "blocks per grid". These concepts will be explained in a later session. We will both set them to 1 for now.
 
 > ## Challenge: compute prime numbers
-> Write a function `find_all_primes_cpu_and_gpu` that uses `check_prime_gpu_kernel` and the outer loop similar to `find_all_primes_cpu`.
-> How long does it take to find all primes up to 10000?
+>
+> Write a new function `find_all_primes_cpu_and_gpu` that uses `check_prime_gpu_kernel` instead of the inner loop of `find_all_primes_cpu`.
+> How long does this new function take to find all primes up to 10000?
 >
 > > ## Solution
+> >
+> > One possible implementation of this function is the following one.
+> >
 > > ~~~
 > > def find_all_primes_cpu_and_gpu(upper):
 > >     all_prime_numbers = []
@@ -150,8 +154,9 @@ Note the extra arguments in square brackets - `[1, 1]` - that are added to the c
 > > ~~~
 > > {: .output}
 > >
-> > Wow, that is slow! So much slower than find_all_primes_cpu. Clearly, we have not given the GPU enough work to do, the overhead is a lot larger than the 
-> > workload.
+> > As you may have noticed, `find_all_primes_cpu_and_gpu` is much slower than the original `find_all_primes_cpu`.
+> > The reason is that the overhead of calling the GPU, and transferring data to and from it, for each number of the sequence is too large.
+> > To be efficient the GPU needs enough work to keep all of its cores busy.
 > {: .solution}
 {: .challenge}
 
