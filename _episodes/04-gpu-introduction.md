@@ -21,9 +21,12 @@ However, before moving to a programming language designed especially for GPUs, w
 
 # The GPU, a High Level View at the Hardware
 
-Explain how a GPU is made: group of processors with many cores, no coherent memory, each processor can run code independently of the others, cores execute the same code.
+We can see the GPU like a collection of processors, sharing some common memory, akin to a traditional multi-processor system.
+Each processor executes code independently of the others, and internally it has tens to hundreds of cores, and some private memory space; in some GPUs the different processors can even execute different programs.
+The cores are often grouped in groups, and each group executes the same code, instruction by instruction, in the same order and at the same time.
+All cores have access to the processor's private memory space.
 
-A short introduction to GPU hardware can also be found in the following video, extracted from the University of Utah's undergraduate course on Computer Organization and presented by Rajeev Balasubramonian.
+A short, but at the same time detailed, introduction to GPU hardware can be found in the following video, extracted from the University of Utah's undergraduate course on Computer Organization and presented by Rajeev Balasubramonian.
 
 [![GPU Hardware Introduction](http://img.youtube.com/vi/FcS_kQOIykU/0.jpg)](https://www.youtube.com/watch?v=FcS_kQOIykU "GPU Hardware Introduction")
 
