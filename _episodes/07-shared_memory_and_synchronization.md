@@ -24,7 +24,7 @@ To allocate an array in shared memory we need to preface the definition with the
 
 > ## Challenge: use of shared memory
 >
-> Modify the following code to use shared memory for the `temp` array.
+> Modify the following code to allocate the `temp` array in shared memory.
 >
 > ~~~
 > extern "C"
@@ -72,7 +72,7 @@ The reason is that the `temp` array is not anymore private to the thread allocat
 
 > ## Challenge: what is the result of the previous code block?
 >
-> The previous code example is functionally wrong. Do you know what the result of its execution will be?
+> The previous code example is functionally wrong. Can you guess what the result of its execution will be?
 >
 > > ## Solution
 > >
@@ -226,8 +226,18 @@ __global__ void histogram(const int * input, int * output)
 
 > ## Challenge: error in the histogram
 >
-> If you look at the CUDA `histogram` code, there is a logical error that prevents the code to produce the right result.
+> If you look at the CUDA `histogram` code, there is a logical error that prevents it to produce the right result.
 > Can you spot it?
+>
+> ~~~
+> __global__ void histogram(const int * input, int * output)
+> {
+>     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+> 
+>     output[input[item]] = output[input[item]] + 1;
+> }
+> ~~~
+> {: .language-c}
 >
 > > ## Solution
 > >
@@ -300,13 +310,25 @@ As you may expect, we can improve performance by using shared memory.
 
 > ## Challenge: use shared memory to speed up the histogram
 >
-> Implement a new version of the `histogram` function that uses shared memory.
+> Implement a new version of the CUDA `histogram` function that uses shared memory to reduce conflicts in global memory. 
 >
-> Hint: try to reduce conflicts, and improve the memory access pattern.
-> Hint: for this exercise, assume that the size of `output` is the same as the number of threads in a block.
+> ~~~
+> __global__ void histogram(const int * input, int * output)
+> {
+>     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+> 
+>     atomicAdd(&(output[input[item]]), 1);
+> }
+> ~~~
+> {: .language-c}
+>
+> Hint: for this exercise, you can safely assume that the size of `output` is the same as the number of threads in a block.
+> Hint: `atomicAdd` can be used on both global and shared memory.
 >
 > > ## Solution
 > >
+> > The following code shows one of the possible solutions.
+> > 
 > > ~~~
 > > __global__ void histogram(const int * input, int * output)
 > > {
@@ -318,6 +340,10 @@ As you may expect, we can improve performance by using shared memory.
 > > }
 > > ~~~
 > > {: .language-c}
+> >
+> > The idea behind this solution is to reduce the expensive conflicts in global memory by having a temporary histogram in shared memory.
+> > After a block has finished processing its fraction of the input array, and the local histogram is populated, threads collaborate to update the global histogram.
+> > Not only this solution potentially reduces the conflicts in global memory, it also produces a better access pattern because threads read adjacent items of the `input` array, and write to adjacent elements of the `output` array.
 > >
 > {: .solution}
 {: .challenge}

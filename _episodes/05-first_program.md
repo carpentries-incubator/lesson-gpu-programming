@@ -168,6 +168,7 @@ In this particular case we are working on a one dimensional vector, and therefor
 > 4) All elements of `C` are zero
 >
 > > ## Solution
+> > 
 > > The correct answer is number 3, only the element `C[1]` is written, and we do not even know by which thread!
 > {: .solution}
 {: .challenge}
@@ -269,6 +270,7 @@ Finally, `gridDim` contains the size of the grid in three dimensions, and it is 
 > What is the content of the `blockDim` and `gridDim` variables inside the CUDA `vector_add` kernel?
 >
 > > ## Solution
+> > 
 > > The content of `blockDim` is `(512, 1, 1)` and the content of `gridDim` is `(4, 1, 1)`, for all threads.
 > {: .solution}
 {: .challenge}
@@ -339,7 +341,9 @@ In fact, while we increased the number of threads we launch, we did not modify t
 > {: .language-c}
 >
 > > ## Solution
+> >
 > > The correct answer is `(blockIdx.x * blockDim.x) + threadIdx.x`.
+> > The following code is the complete `vector_add` that can work with vectors larger than 1024 elements.
 > >
 > > ~~~
 > > extern "C"
@@ -378,7 +382,8 @@ However, in a real world scenario we may have to process vectors of arbitrary si
 > {: .language-c}
 >
 > > ## Solution
-> > The correct way to modify the `vector_add` to work on vectors of arbitrary size is to first compute the coordinates of each thread, and then perform the sum only on elements that are within the vector boundaries.
+> > 
+> > The correct way to modify the `vector_add` to work on vectors of arbitrary size is to first compute the coordinates of each thread, and then perform the sum only on elements that are within the vector boundaries, as shown in the following snippet of code.
 > >
 > > ~~~
 > > extern "C"
@@ -507,8 +512,12 @@ Correct results!
 > ~~~
 > {: .language-python}
 >
+> There is no need to modify anything in the code, except writing the body of the CUDA `all_primes_to` inside the `check_prime_gpu_code` string, as we did in the examples so far.
+>
+> Hint: look at the body of the Python `all_primes_to` function, and map the outermost loop to the CUDA grid.
 > > ## Solution
-> > One possible solution is provided in the following code.
+> >
+> > One possible solution for the CUDA kernel is provided in the following code.
 > >
 > > ~~~
 > > 
@@ -534,6 +543,10 @@ Correct results!
 > > }
 > > ~~~
 > > {: .language-c}
+> >
+> > The outermost loop in Python is replaced by having each thread testing for primeness a different number of the sequence.
+> > Having one number assigned to each thread via its ID, the kernel implements the innermost loop the same way it is implemented in Python.
+> >
 > {: .solution}
 {: .challenge}
 

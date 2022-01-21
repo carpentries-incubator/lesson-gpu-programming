@@ -167,25 +167,27 @@ This is what I got on a TITAN X (Pascal) GPU:
 This is a lot faster than on the host, a performance improvement, or speedup, of 125 times.
 Impressive!
 
-> ## Challenge: try a shortcut: convolution on the GPU without CuPy 
-> Try to convolve the NumPy array deltas with the NumPy array gauss directly on the GPU, so without using CuPy arrays. 
-> If we succeed, this should save us the time and effort of transferring deltas and gauss to the GPU.
+> ## Challenge: convolution on the GPU without CuPy 
+> 
+> Try to convolve the NumPy array `deltas` with the NumPy array `gauss` directly on the GPU, without using CuPy arrays. 
+> If this works, it should save us the time and effort of transferring deltas and gauss to the GPU.
 >
 > > ## Solution
-> > We can again use the GPU convolution function from the `cupyx` library: `convolve2d_gpu` and use `deltas` and `gauss` as input.
+> > 
+> > We can directly try to use the GPU convolution function `convolve2d_gpu` with `deltas` and `gauss` as inputs.
 > > ~~~
 > > convolve2d_gpu(deltas, gauss)
 > > ~~~
 > > {: .language-python}
 > > 
-> > However, this gives a long error message with this last line:
+> > However, this gives a long error message ending with:
 > > ~~~
 > > TypeError: Unsupported type <class 'numpy.ndarray'>
 > > ~~~
 > > {: .output}
 > >
-> > It is unfortunately not possible to access NumPy arrays from the GPU directly. NumPy arrays exist in the 
-> > Random Access Memory (RAM) of the host and not in GPU memory. These types of memory are not united, but transfers are possible.
+> > It is unfortunately not possible to access NumPy arrays directly from the GPU because they exist in the 
+> > Random Access Memory (RAM) of the host and not in GPU memory.
 > >
 > {: .solution}
 {: .challenge}
@@ -206,13 +208,16 @@ array(True)
 ~~~
 {: .output}
 
-> ## Challenge: fairer runtime comparison CPU vs. GPU
-> Compute the CPU vs GPU speedup while taking into account the transfers of data to the GPU and back. 
-> You should now find a lower speedup from taking the overhead of the transfer of arrays into account.
-> Hint: To copy a CuPy array back to the host (CPU), use `cp.asnumpy()`.
+> ## Challenge: fairer comparison of CPU vs. GPU
+> 
+> Compute again the speedup achieved using the GPU, but try to take also into account the time spent transferring the data to the GPU and back.
+>
+> Hint: to copy a CuPy array back to the host (CPU), use the `cp.asnumpy()` function.
 >
 > > ## Solution
-> > For timing, it is most convenient to define a function that completes all the steps.
+> > 
+> > A convenient solution is to group both the transfers, to and from the GPU, and the convolution into a single Python function, and then time its execution, like in the following example.
+> > 
 > > ~~~
 > > def transfer_compute_transferback():
 > >     deltas_gpu = cp.asarray(deltas)
@@ -228,8 +233,8 @@ array(True)
 > > ~~~
 > > {: .output}
 > >
-> > This means that our speedup has decreased from 2520 ms/20.2 ms = 125 to 2520 ms/35.1 ms = 72. This is still a significant 
-> > speedup of our computations and adequately takes account of additional data transfers.
+> > The speedup taking into account the data transfers decreased from 125 (2520 ms/20.2 ms) to 72 (2520 ms/35.1 ms).
+> > Taking into account the necessary data transfers when computing the speedup is a better, and more fair, way to compare performance.
 > {: .solution}
 {: .challenge}
 
