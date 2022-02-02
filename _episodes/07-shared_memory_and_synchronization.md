@@ -322,8 +322,8 @@ As you may expect, we can improve performance by using shared memory.
 > ~~~
 > {: .language-c}
 >
-> 
 > Hint: for this exercise, you can safely assume that the size of `output` is the same as the number of threads in a block.
+> 
 > Hint: `atomicAdd` can be used on both global and shared memory.
 >
 > > ## Solution
