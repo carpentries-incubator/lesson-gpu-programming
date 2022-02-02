@@ -411,7 +411,7 @@ __global__ void histogram(const int * input, int * output)
     extern __shared__ int temp_histogram[];
  
     // Initialize shared memory and synchronize
-    temp_histogram[threadId.x] = 0;
+    temp_histogram[threadIdx.x] = 0;
     __syncthreads();
 
     // Compute shared memory histogram and synchronize
