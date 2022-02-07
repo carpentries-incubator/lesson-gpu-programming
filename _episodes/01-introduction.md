@@ -18,7 +18,7 @@ keypoints:
 # Graphics Processing Unit
 
 The Graphics Processing Unit (**GPU**) is one of the components of a computer's video card, together with specialized memory and different Input/Output (I/O) units.
-In the context of the video card, the GPU fulfills a role similar to the one that the Central Processing Unit (**CPU**) has in a general purpose computing system: it processes input data data to generate some kind of output.
+In the context of the video card, the GPU fulfills a role similar to the one that the Central Processing Unit (**CPU**) has in a general purpose computing system: it processes input data to generate some kind of output.
 In the traditional context of video cards, GPUs process data in order to render images on an output device, such as a screen or monitor.
 However, current GPUs are general purpose computing devices able to perform any kind of computation.
 
