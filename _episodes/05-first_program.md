@@ -136,6 +136,7 @@ The following table offers a recapitulation of the keyword we just introduced.
 | `__host__` | the function is visible only to the host, and runs on the host |
 | `__device__` | the function is visible only to the GPU, and runs on the GPU |
 
+The following is the part of the code in which we do the actual work.
 
 ~~~
 int item = threadIdx.x;
@@ -143,7 +144,6 @@ C[item] = A[item] + B[item];
 ~~~
 {: .language-c}
 
-This is the part of the code in which we do the actual work.
 As you may see, it looks similar to the innermost loop of our `vector_add` Python function, with the main difference being in how the value of the `item` variable is evaluated.
 
 In fact, while in Python the content of `item` is the result of the `range` function, in CUDA we are reading a special variable, i.e. `threadIdx`, containing a triplet that indicates the id of a thread inside a three-dimensional CUDA block.
