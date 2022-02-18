@@ -128,6 +128,15 @@ Other execution space identifiers in CUDA-C are `__host__`, and `__device__`.
 Functions annotated with the `__host__` identifier will run on the host, and be only callable from the host, while functions annotated with the `__device__` identifier will run on the GPU, but can only be called from the GPU itself.
 We are not going to use these identifiers as often as `__global__`.
 
+The following table offers a recapitulation of the keyword we just introduced.
+
+| Keyword | Description |
+| ------- | ----------- |
+| `__global__` | the function is visible to the host and the GPU, and runs on the GPU |
+| `__host__` | the function is visible only to the host, and runs on the host |
+| `__device__` | the function is visible only to the GPU, and runs on the GPU |
+
+
 ~~~
 int item = threadIdx.x;
 C[item] = A[item] + B[item];
