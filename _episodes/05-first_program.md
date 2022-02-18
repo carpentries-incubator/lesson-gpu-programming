@@ -128,7 +128,7 @@ Other execution space identifiers in CUDA-C are `__host__`, and `__device__`.
 Functions annotated with the `__host__` identifier will run on the host, and be only callable from the host, while functions annotated with the `__device__` identifier will run on the GPU, but can only be called from the GPU itself.
 We are not going to use these identifiers as often as `__global__`.
 
-The following table offers a recapitulation of the keyword we just introduced.
+The following table offers a recapitulation of the keywords we just introduced.
 
 | Keyword | Description |
 | ------- | ----------- |
@@ -265,6 +265,15 @@ The triplet contained in `blockDim` represents the size of the calling thread's 
 While the content of `threadIdx` is different for each thread in the same block, the content of `blockDim` is the same because the size of the block is the same for all threads.
 The coordinates of a block in the computational grid are contained in `blockIdx`, therefore the content of this variable will be the same for all threads in the same block, but different for threads in different blocks.
 Finally, `gridDim` contains the size of the grid in three dimensions, and it is again the same for all threads.
+
+The following table offers a recapitulation of the keywords we just introduced.
+
+| Keyword | Description |
+| ------- | ----------- |
+| `threadIdx` | the ID of a thread in a block |
+| `blockDim` | the size of a block, i.e. the number of threads per dimension |
+| `blockIdx` | the ID of a block in the grid |
+| `gridDim` | the size of the grid, i.e. the number of blocks per dimension |
 
 > ## Challenge: hidden variables
 >
