@@ -229,8 +229,8 @@ __global__ void histogram(const int * input, int * output)
 
 > ## Challenge: error in the histogram
 >
-> If you look at the CUDA `histogram` code, there is a logical error that prevents it to produce the right result.
-> Can you spot it?
+> If you look at the CUDA `histogram` code, there is a logical error that prevents it to produce the correct results.
+> Can you find it?
 >
 > ~~~
 > __global__ void histogram(const int * input, int * output)
@@ -313,14 +313,19 @@ As you may expect, we can improve performance by using shared memory.
 
 > ## Challenge: use shared memory to speed up the histogram
 >
-> Implement a new version of the CUDA `histogram` function that uses shared memory to reduce conflicts in global memory. 
+> Implement a new version of the CUDA `histogram` function that uses shared memory to reduce conflicts in global memory.
+> Modify the following code and follow the suggestions in the comments.
 >
 > ~~~
 > __global__ void histogram(const int * input, int * output)
 > {
 >     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+>     // Declare temporary histogram in shared memory
 > 
->     atomicAdd(&(output[input[item]]), 1);
+>     // Update the temporary histogram in shared memory
+>     atomicAdd();
+>     // Update the global histogram in global memory
+>     atomicAdd();
 > }
 > ~~~
 > {: .language-c}
