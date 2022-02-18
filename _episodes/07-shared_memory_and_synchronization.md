@@ -321,6 +321,7 @@ As you may expect, we can improve performance by using shared memory.
 > {
 >     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
 >     // Declare temporary histogram in shared memory
+>     int temp_output[];
 > 
 >     // Update the temporary histogram in shared memory
 >     atomicAdd();
