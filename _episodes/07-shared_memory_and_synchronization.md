@@ -323,6 +323,7 @@ As you may expect, we can improve performance by using shared memory.
 > {: .language-c}
 >
 > Hint: for this exercise, you can safely assume that the size of `output` is the same as the number of threads in a block.
+> 
 > Hint: `atomicAdd` can be used on both global and shared memory.
 >
 > > ## Solution
@@ -373,7 +374,7 @@ __global__ void histogram(const int * input, int * output)
     extern __shared__ int temp_histogram[];
  
     // Initialize shared memory and synchronize
-    temp_histogram[threadId.x] = 0;
+    temp_histogram[threadIdx.x] = 0;
     __syncthreads();
 
     // Compute shared memory histogram and synchronize
@@ -411,7 +412,7 @@ __global__ void histogram(const int * input, int * output)
     extern __shared__ int temp_histogram[];
  
     // Initialize shared memory and synchronize
-    temp_histogram[threadId.x] = 0;
+    temp_histogram[threadIdx.x] = 0;
     __syncthreads();
 
     // Compute shared memory histogram and synchronize

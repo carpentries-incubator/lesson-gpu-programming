@@ -74,6 +74,7 @@ or in this way:
 ~~~
 from numba import jit
 
+upper_limit = 10000
 %timeit jit(nopython=True)(find_all_primes_cpu)(upper_limit)
 ~~~
 {: .language-python}
