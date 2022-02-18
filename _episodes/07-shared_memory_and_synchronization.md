@@ -11,6 +11,7 @@ keypoints:
 - "Shared memory is faster than global memory and local memory"
 - "Shared memory can be used as a user-controlled cache to speedup code"
 - "Use `__shared__` to allocate memory in the shared memory space"
+- "Use `__syncthreads()` to wait for shared memory operations to be visible to all threads in a block"
 ---
 
 So far we looked at how to use CUDA to accelerate the computation, but a common pattern in all the examples we encountered so far is that threads worked in isolation.
