@@ -70,6 +70,18 @@ $$G(x,y) = \frac{1}{2\pi \sigma^2} \exp\left(-\frac{x^2 + y^2}{2 \sigma^2}\right
 
 where $x$ and $y$ are the "coordinates in our matrix, i.e. our row and columns, and $$\sigma$$ controls the width of the Gaussian distribution. Convolving images with 2D Gaussian functions will change the value of each pixel to be a weighted average of the pixels around it, thereby "smoothing" the image. Convolving images with a Gaussian function reduces the noise in the image, which is often required in [edge-detection](https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection) since most algorithms to do this are sensitive to noise.
 
+> ## Maps and stencils
+> It is often useful to identify the dataflow inherent in a problem. Say, if we want to square a list of numbers, all the operations are independent. The dataflow of a one-to-one operation is called a *map*.
+> 
+> ![Data flow of a map operation](../fig/mapping.svg){: style="width: 50%"}
+> 
+> A convolution is slightly more complicated. Here we have a many-to-one data flow, which is also known as a stencil.
+> 
+> ![Data flow of a stencil operation](../fig/stencil.svg){: style="width: 50%"}
+> 
+> GPU's are exceptionally well suited to compute algorithms that follow one of these patterns.
+{: .callout}
+
 # Convolution on the CPU Using SciPy
 Let us first construct the Gaussian, and then display it. Remember that at this point we are still doing everything with standard Python, and not using the GPU yet.
 
