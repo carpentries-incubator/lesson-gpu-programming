@@ -3,12 +3,16 @@ title: "Shared Memory and Synchronization"
 teaching: 30
 exercises: 25
 questions:
-- "Question"
+- "Is there a way to share data between threads of a same block?"
+- "Can threads inside a block wait for other threads?"
 objectives:
 - "Learn how to share data between threads"
 - "Learn how to synchronize threads"
 keypoints:
-- ""
+- "Shared memory can be allocated using the `__shared__` identifier"
+- "Size of shared memory arrays must be known at compile time if allocated inside a thread"
+- "It is possible to declare `extern` shared memory arrays and pass the size during kernel invocation"
+- "Threads can be synchronized using the `__syncthreads()` function"
 ---
 
 So far we looked at how to use CUDA to accelerate the computation, but a common pattern in all the examples we encountered so far is that threads worked in isolation.
