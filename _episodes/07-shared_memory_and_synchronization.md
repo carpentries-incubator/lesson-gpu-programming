@@ -3,13 +3,16 @@ title: "Shared Memory and Synchronization"
 teaching: 30
 exercises: 25
 questions:
-- "Question"
+- "Is there a way to share data between threads of a same block?"
+- "Can threads inside a block wait for other threads?"
 objectives:
 - "Learn how to share data between threads"
 - "Learn how to synchronize threads"
 keypoints:
 - "Shared memory is faster than global memory and local memory"
 - "Shared memory can be used as a user-controlled cache to speedup code"
+- "Size of shared memory arrays must be known at compile time if allocated inside a thread"
+- "It is possible to declare `extern` shared memory arrays and pass the size during kernel invocation"
 - "Use `__shared__` to allocate memory in the shared memory space"
 - "Use `__syncthreads()` to wait for shared memory operations to be visible to all threads in a block"
 ---
