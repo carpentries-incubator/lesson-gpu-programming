@@ -86,7 +86,7 @@ The reason is that the `temp` array is not anymore private to the thread allocat
 
 To fix the previous kernel we should allocate enough shared memory for each thread to store three values, so that each thread has its own section of the shared memory array to work with.
 
-To allocate enough memory we need to replace the constant 3 in `__shared__ float temp[3];` with something else.
+To allocate enough memory we need to replace the constant 3 in `__shared__ float temp[3]` with something else.
 If we know that each thread block has 1024 threads, we can write something like the following:
 
 ~~~
@@ -97,23 +97,22 @@ __shared__ float temp[3 * 1024];
 But we know by experience that having constants in the code is not a scalable and maintainable solution.
 The problem is that we need to have a constant value if we want to declare a shared memory array, because the compiler needs to know how much memory to allocate.
 
-A solution to this problem is to declare our array as a pointer, such as:
+A solution to this problem is to not specify the size of the array, and allocate the memory somewhere else.
 
 ~~~
 extern __shared__ float temp[];
 ~~~
 {: .language-c}
 
-And then use CuPy to instruct the compiler about how much shared memory, in bytes, each thread block needs:
+And then use CuPy to instruct CUDA about how much shared memory, in bytes, each thread block needs.
+This can be done by adding the named parameter `shared_mem` to the kernel call.
 
 ~~~
-# execute the code
 vector_add_gpu((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size), shared_mem=((size // 2) * 3 * cupy.dtype(cupy.float32).itemsize))
 ~~~
 {: .language-python}
 
-So before compiling and executing the kernel, we need to set `attributes.max_dynamic_shared_size_bytes` with the number of bytes necessary.
-As you may notice, we had to retrieve the size in bytes of the data type `cupy.float32`, and this is done with `cupy.dtype(cupy.float32).itemsize`.
+As you may have noticed, we had to retrieve the size in bytes of the data type `cupy.float32`, and this is done with `cupy.dtype(cupy.float32).itemsize`.
 
 After these changes, the body of the kernel needs to be modified to use the right indices:
 
@@ -191,7 +190,7 @@ numpy.allclose(c_cpu, c_gpu)
 
 The code is now correct, although it is still not very useful.
 We are definitely using shared memory, and we are using it the correct way, but there is no performance gain we achieved by doing so.
-In practice, we are making our code slower, not faster, because shared memory is slower than registers.
+Actually, we are making our code slower, not faster, because shared memory is slower than registers.
 
 Let us, therefore, work on an example where using shared memory is actually useful.
 We start again with some Python code.
@@ -215,7 +214,7 @@ output_array = histogram(input_array, output_array)
 {: .language-python}
 
 Everything as expected.
-We can now write equivalent code in CUDA.
+We can now write the equivalent code in CUDA.
 
 ~~~
 __global__ void histogram(const int * input, int * output)
@@ -270,7 +269,7 @@ import numpy
 import cupy
 
 # input size
-size = 2048
+size = 2**25
 
 # allocate memory on CPU and GPU
 input_gpu = cupy.random.randint(256, size=size, dtype=cupy.int32)
@@ -296,20 +295,20 @@ grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
 
 # execute code on CPU and GPU
-histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
-histogram(input_cpu, output_cpu)
+%timeit -n 1 -r 1 histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
+%timeit -n 1 -r 1 histogram(input_cpu, output_cpu)
 
 # compare results
 numpy.allclose(output_cpu, output_gpu)
 ~~~
 {: .language-python}
 
-The CUDA code is now correct, and computes the same result as the Python code.
-However, we are accumulating the results directly in global memory, and the more conflicts we have in global memory, the lower performance our `histogram` will have.
+The CUDA code is now correct, and computes the same result as the Python code; it is also faster than the Python code, as you can see from measuring the execution time.
+However, we are accumulating the results directly in global memory, and the more conflicts we have in global memory, the lower the performance of our `histogram` will be.
 Moreover, the access pattern to the output array is very irregular, being dependent on the content of the input array.
-The best performance is obtained on the GPU when consecutive threads access consecutive addresses in memory, and this is not the case in our code.
+GPUs are designed for very regular computations, and so if we can make the histogram more regular we can hope in a further improvement in performance.
 
-As you may expect, we can improve performance by using shared memory.
+As you may expect, we can improve the memory access pattern by using shared memory.
 
 > ## Challenge: use shared memory to speed up the histogram
 >
@@ -321,11 +320,11 @@ As you may expect, we can improve performance by using shared memory.
 > {
 >     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
 >     // Declare temporary histogram in shared memory
->     int temp_output[];
+>     int temp_histogram[256];
 > 
 >     // Update the temporary histogram in shared memory
 >     atomicAdd();
->     // Update the global histogram in global memory
+>     // Update the global histogram in global memory, using the temporary histogram
 >     atomicAdd();
 > }
 > ~~~
@@ -343,7 +342,7 @@ As you may expect, we can improve performance by using shared memory.
 > > __global__ void histogram(const int * input, int * output)
 > > {
 > >     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
-> >     extern __shared__ int temp_histogram[];
+> >     __shared__ int temp_histogram[256];
 > > 
 > >     atomicAdd(&(temp_histogram[input[item]]), 1);
 > >     atomicAdd(&(output[threadIdx.x]), temp_histogram[threadIdx.x]);
@@ -353,7 +352,7 @@ As you may expect, we can improve performance by using shared memory.
 > >
 > > The idea behind this solution is to reduce the expensive conflicts in global memory by having a temporary histogram in shared memory.
 > > After a block has finished processing its fraction of the input array, and the local histogram is populated, threads collaborate to update the global histogram.
-> > Not only this solution potentially reduces the conflicts in global memory, it also produces a better access pattern because threads read adjacent items of the `input` array, and write to adjacent elements of the `output` array.
+> > Not only this solution potentially reduces the conflicts in global memory, it also produces a better access pattern because threads read adjacent items of the `input` array, and write to adjacent elements of the `output` array during the second call to `atomicAdd`.
 > >
 > {: .solution}
 {: .challenge}
@@ -375,12 +374,13 @@ However, the changes to shared memory are not automatically available to all oth
 To solve this issue, we need to explicitly synchronize all threads in a block, so that memory operations are also finalized and visible to all.
 To synchronize threads in a block, we use the `__syncthreads()` CUDA function.
 Moreover, shared memory is not initialized, and the programmer needs to take care of that too.
+So we need to first initialize `temp_histogram`, wait that all threads are done doing this, perform the computation in shared memory, wait again that all threads are done, and only then update the global array.
 
 ~~~
 __global__ void histogram(const int * input, int * output)
 {
     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
-    extern __shared__ int temp_histogram[];
+    __shared__ int temp_histogram[256];
  
     // Initialize shared memory and synchronize
     temp_histogram[threadIdx.x] = 0;
@@ -404,7 +404,7 @@ import numpy
 import cupy
 
 # input size
-size = 2048
+size = 2**25
 
 # allocate memory on CPU and GPU
 input_gpu = cupy.random.randint(256, size=size, dtype=cupy.int32)
@@ -418,7 +418,7 @@ extern "C"
 __global__ void histogram(const int * input, int * output)
 {
     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
-    extern __shared__ int temp_histogram[];
+    __shared__ int temp_histogram[256];
  
     // Initialize shared memory and synchronize
     temp_histogram[threadIdx.x] = 0;
@@ -440,8 +440,8 @@ grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
 
 # execute code on CPU and GPU
-histogram_gpu(grid_size, block_size, (input_gpu, output_gpu), shared_mem=(threads_per_block * cupy.dtype(cupy.int32).itemsize))
-histogram(input_cpu, output_cpu)
+%timeit -n 1 -r 1 histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
+%timeit -n 1 -r 1 histogram(input_cpu, output_cpu)
 
 # compare results
 numpy.allclose(output_cpu, output_gpu)
