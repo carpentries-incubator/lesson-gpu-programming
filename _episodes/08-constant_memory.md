@@ -3,11 +3,11 @@ title: "Constant Memory"
 teaching: 20
 exercises: 20
 questions:
-- "Question"
+- "Is there a way to have a read-only cache in CUDA?"
 objectives:
-- "Understanding when to use constant memory"
+- "Understanding when and how to use constant memory"
 keypoints:
-- ""
+- "Globally scoped arrays, which size is known at compile time, can be stored in constant memory using the `__constant__` identifier"
 ---
 
 # Constant Memory
