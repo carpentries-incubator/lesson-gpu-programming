@@ -36,22 +36,11 @@ We can interactively write and executed the code in an iPython shell or a Jupyte
 ~~~
 import numpy as np
 
-# Construct a subimage with all zeros and a single one in the middle
-primary_unit = np.zeros((16, 16))
-primary_unit[8, 8] = 1
-
-# Now duplicate this subimage many times to construct a larger image
-deltas = np.tile(primary_unit, (128, 128))
-print(deltas.shape)
+# Construct an image with repeated delta functions
+deltas = np.zeros((2048, 2048))
+deltas[8::16,8::16] = 1
 ~~~
 {: .language-python}
-
-The final `print` should show that you have indeed built a large image.
-
-~~~
-Out[7]: (2048, 2048)
-~~~
-{: .output}
 
 To get a feeling of how the whole image looks like, we can display the top-left corner of it.
 
