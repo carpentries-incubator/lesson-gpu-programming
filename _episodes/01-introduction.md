@@ -13,6 +13,8 @@ keypoints:
 - "Using GPUs to accelerate computation can provide large performance gains"
 - "Accessing the GPU using Python is not particularly difficult"
 - "CPUs and GPUs are both useful and each has its own place in our toolbox"
+- "The GPU may also be referred to as device"
+- "The CPU, main memory and motherboard are called host"
 ---
 
 # Graphics Processing Unit
@@ -92,6 +94,13 @@ We also report the output, obtained on the same notebook on Google Colab; as alw
 100 loops, best of 5: 6.83 ms per loop
 ~~~
 {: .output}
+
+Notice that the first thing we need to do, is to copy the input data to the GPU. The distinction between data on the GPU and that on the *host* is a very important one that we will get back to later.
+
+> ## Host vs. Device
+> From now on we may also call the GPU the *device*, while we refer to other computations as taking place on the *host*. We'll also talk about *host memory* and *device memory*, but much more on memory in later episodes!
+{: .callout}
+
 
 Sorting an array using CuPy, and therefore using the GPU, is clearly much faster than using NumPy, but can we quantify how much faster?
 Having recorded the average execution time of both operations, we can then compute the speedup of using CuPy over NumPy.
