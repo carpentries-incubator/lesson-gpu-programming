@@ -9,10 +9,12 @@ objectives:
 - "Learn how to share data between threads"
 - "Learn how to synchronize threads"
 keypoints:
-- "Shared memory can be allocated using the `__shared__` identifier"
+- "Shared memory is faster than global memory and local memory"
+- "Shared memory can be used as a user-controlled cache to speedup code"
 - "Size of shared memory arrays must be known at compile time if allocated inside a thread"
 - "It is possible to declare `extern` shared memory arrays and pass the size during kernel invocation"
-- "Threads can be synchronized using the `__syncthreads()` function"
+- "Use `__shared__` to allocate memory in the shared memory space"
+- "Use `__syncthreads()` to wait for shared memory operations to be visible to all threads in a block"
 ---
 
 So far we looked at how to use CUDA to accelerate the computation, but a common pattern in all the examples we encountered so far is that threads worked in isolation.
@@ -230,8 +232,8 @@ __global__ void histogram(const int * input, int * output)
 
 > ## Challenge: error in the histogram
 >
-> If you look at the CUDA `histogram` code, there is a logical error that prevents it to produce the right result.
-> Can you spot it?
+> If you look at the CUDA `histogram` code, there is a logical error that prevents it to produce the correct results.
+> Can you find it?
 >
 > ~~~
 > __global__ void histogram(const int * input, int * output)
@@ -314,14 +316,20 @@ As you may expect, we can improve performance by using shared memory.
 
 > ## Challenge: use shared memory to speed up the histogram
 >
-> Implement a new version of the CUDA `histogram` function that uses shared memory to reduce conflicts in global memory. 
+> Implement a new version of the CUDA `histogram` function that uses shared memory to reduce conflicts in global memory.
+> Modify the following code and follow the suggestions in the comments.
 >
 > ~~~
 > __global__ void histogram(const int * input, int * output)
 > {
 >     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+>     // Declare temporary histogram in shared memory
+>     int temp_output[];
 > 
->     atomicAdd(&(output[input[item]]), 1);
+>     // Update the temporary histogram in shared memory
+>     atomicAdd();
+>     // Update the global histogram in global memory
+>     atomicAdd();
 > }
 > ~~~
 > {: .language-c}
