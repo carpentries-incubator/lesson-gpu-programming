@@ -233,7 +233,7 @@ array(True)
 > {: .solution}
 {: .challenge}
 
-# A shortcut: performing NumPy routines on the GPU.
+# A shortcut: performing NumPy routines on the GPU
 
 We saw above that we cannot execute routines from the `cupyx` library directly on NumPy arrays.
 In fact we need to first transfer the data from host to device memory.
