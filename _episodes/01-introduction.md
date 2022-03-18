@@ -10,37 +10,35 @@ objectives:
 - "Understand the differences between CPU and GPU"
 - "See the possible performance benefits of GPU acceleration"
 keypoints:
-- "Using GPUs to accelerate computation can provide large performance gains"
-- "Accessing the GPU using Python is not particularly difficult"
 - "CPUs and GPUs are both useful and each has its own place in our toolbox"
-- "The GPU may also be referred to as device"
-- "The CPU, main memory and motherboard are called host"
+- "In the context of GPU programming, we often refer to the GPU as the *device* and the CPU as the *host*"
+- "Using GPUs to accelerate computation can provide large performance gains"
+- "Using the GPU with Python is not particularly difficult"
 ---
 
 # Graphics Processing Unit
 
 The Graphics Processing Unit (**GPU**) is one of the components of a computer's video card, together with specialized memory and different Input/Output (I/O) units.
 In the context of the video card, the GPU fulfills a role similar to the one that the Central Processing Unit (**CPU**) has in a general purpose computing system: it processes input data to generate some kind of output.
-In the traditional context of video cards, GPUs process data in order to render images on an output device, such as a screen or monitor.
-However, current GPUs are general purpose computing devices able to perform any kind of computation.
+In the traditional context of video cards, GPUs process data in order to render images on an output device, such as a screen.
+However, modern GPUs are general purpose computing devices that can be used to perform any kind of computation, and this is what we are going to do in this lesson.
 
 # Parallel by Design
 
 But what is the reason to use GPUs to perform general purpose computation, when computers already have fast CPUs that are able to perform any kind of computation?
-One way to answer this question is to go back to the roots of what a GPU is designed to do.
+One way to answer this question is to go back to the roots of what a GPU is designed to do: render images.
 
 An image can be seen as a matrix of points called **pixels** (a portmanteau of the words *picture* and *element*), with each pixel representing the color the image should have in that particular point, and the traditional task performed by video cards is to produce the images a user will see on the screen.
-So GPUs are designed with this particular task in mind: render multiple pixels at the same time.
-
 A single 4K UHD image contains more than 8 million pixels.
-If a GPU needs to generate a continuous stream of 25 4K frames (images) per second, enough for a user to not experience delays in a videogame, movie, or any other video output, it must process over 200 million pixels per second.
-So GPUs are not only designed to render multiple pixels at the same time, they are designed to do it efficiently.
+For a GPU  to render a continuous stream of 25 4K frames (images) per second, enough so that users not experience delay in a videogame, movie, or any other video output, it must process over 200 million pixels per second.
+So GPUs are designed to render multiple pixels at the same time, and they are designed to do it efficiently.
+This design principle results in the GPU being, from a hardware point of view, very different from a CPU.
 
-This design principle results in the GPU being, from a hardware point of view, a very different device than a CPU.
 The CPU is a very general purpose device, good at different tasks, being them parallel or sequential in nature; it is also designed for interaction with the user, so it has to be responsive and guarantee minimal latency.
+In practice, we want our CPU to be available whenever we sent it a new task.
 The result is a device where most of the silicon is used for memory caches and control-flow logic, not just compute units.
-By contrast, most of the silicon on a GPU is actually used for compute units.
 
+By contrast, most of the silicon on a GPU is actually used for compute units.
 The GPU does not need an overly complicated cache hierarchy, nor it does need complex control logic, because the overall goal is not to minimize the latency of any given thread, but to maximize the throughput of the whole computation.
 With many compute units available, the GPU can run massively parallel programs, programs in which thousands of threads are executed at the same time, while thousands more are ready for execution to hide the cost of memory operations.
 

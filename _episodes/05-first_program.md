@@ -500,11 +500,11 @@ Correct results!
 >         if prime:
 >             prime_list[num] = 1
 > 
-> upper_bound = 100000
+> upper_bound = 100_000
 > all_primes_cpu = numpy.zeros(upper_bound, dtype=numpy.int32)
 > all_primes_cpu[0] = 1
 > all_primes_cpu[1] = 1
-> %timeit all_primes_to(upper_bound, all_primes_cpu)
+> %timeit -n 1 -r 1 all_primes_to(upper_bound, all_primes_cpu)
 > 
 > # GPU
 > check_prime_gpu_code = r'''
@@ -520,7 +520,7 @@ Correct results!
 > all_primes_to_gpu = cupy.RawKernel(check_prime_gpu_code, "all_primes_to")
 > grid_size = (int(math.ceil(upper_bound / 1024)), 1, 1)
 > block_size = (1024, 1, 1)
-> %timeit all_primes_to_gpu(grid_size, block_size, (upper_bound, all_primes_gpu))
+> %timeit -n 1 -r 10 all_primes_to_gpu(grid_size, block_size, (upper_bound, all_primes_gpu))
 > 
 > # Test
 > if numpy.allclose(all_primes_cpu, all_primes_gpu):

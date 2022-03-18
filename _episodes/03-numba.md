@@ -37,10 +37,10 @@ def find_all_primes_cpu(upper):
 ~~~
 {: .language-python}
 
-Calling `find_all_primes_cpu(10000)` will return all prime numbers between 1 and 10000 as a list. Let us time it:
+Calling `find_all_primes_cpu(10_000)` will return all prime numbers between 1 and 10000 as a list. Let us time it:
 
 ~~~
-%timeit find_all_primes_cpu(10000)
+%timeit -n 1 -r 10 find_all_primes_cpu(10_000)
 ~~~
 {: .language-python}
 
@@ -74,8 +74,8 @@ or in this way:
 ~~~
 from numba import jit
 
-upper_limit = 10000
-%timeit jit(nopython=True)(find_all_primes_cpu)(upper_limit)
+upper_limit = 10_000
+%timeit -n 1 -r 10 jit(nopython=True)(find_all_primes_cpu)(upper_limit)
 ~~~
 {: .language-python}
 
@@ -118,7 +118,7 @@ print(result[0])
 ~~~
 {: .language-python}
 
-This should return "11", because that is a prime and "0" because 12 is not a prime:
+If we have not made any mistake, the first call should return "11", because 11 is a prime number, while the second call should return "0" because 12 is not a prime:
 
 ~~~
 11
@@ -126,7 +126,8 @@ This should return "11", because that is a prime and "0" because 12 is not a pri
 ~~~
 {: .output}
 
-Note the extra arguments in square brackets - `[1, 1]` - that are added to the call of `check_prime_gpu_kernel`. These indicate the number of "threads per block" and the number of "blocks per grid". These concepts will be explained in a later session. We will both set them to 1 for now.
+Note the extra arguments in square brackets - `[1, 1]` - that are added to the call of `check_prime_gpu_kernel`: these indicate the number of threads we want to run on the GPU.
+While this is an important argument, we will explain it later and for now we can keep using `1`.
 
 > ## Challenge: compute prime numbers
 >
@@ -147,7 +148,7 @@ Note the extra arguments in square brackets - `[1, 1]` - that are added to the c
 > >             all_prime_numbers.append(num)
 > >     return all_prime_numbers
 > >    
-> > %timeit find_all_primes_cpu_and_gpu(10000)
+> > %timeit -n 1 -r 10 find_all_primes_cpu_and_gpu(10_000)
 > > ~~~
 > > {: .language-python}
 > > ~~~
@@ -165,7 +166,7 @@ Note the extra arguments in square brackets - `[1, 1]` - that are added to the c
 Let us give the GPU a work load large enough to compensate for the overhead of data transfers to and from the GPU. For this example of computing primes we can best use the `vectorize` decorator for a new `check_prime_gpu` function that takes an array as input instead of `upper` in order to increase the work load. This is the array we have to use as input for our new `check_prime_gpu` function, instead of upper, a single integer:
 
 ~~~
-np.arange(2, 10000, dtype=np.int32)
+np.arange(2, 10_000, dtype=np.int32)
 ~~~
 {: .language-python}
 
@@ -189,7 +190,7 @@ where we have added the `vectorize` decorator from Numba. The argument of `check
 Let us run it and record the elapsed time:
 
 ~~~
-%timeit check_prime_gpu(np.arange(2, 10000, dtype=np.int32))
+%timeit -n 1 -r 10 check_prime_gpu(np.arange(2, 10_000, dtype=np.int32))
 ~~~
 {: .language-python}
 
