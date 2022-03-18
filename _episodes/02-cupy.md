@@ -17,6 +17,7 @@ objectives:
 
 keypoints:
 - "CuPy provides GPU accelerated version of many NumPy functions."
+- "Always have CPU and GPU versions of your code so that you can compare performance, as well as validate your code."
 ---
 
 # Introduction to CuPy
@@ -27,8 +28,7 @@ This makes it a very convenient tool to use the compute power of GPUs for people
 # Convolution in Python
 
 We start by generating an artificial "image" on the host using Python and NumPy; the host is the CPU on the laptop, desktop, or cluster node you are using right now, and from now on we may use *host* to refer to the CPU and *device* to refer to the GPU.
-The image will be all zeros, except for isolated pixels with value one, on a regular grid.
-We will convolve it with a Gaussian and inspect the result.
+The image will be all zeros, except for isolated pixels with value one, on a regular grid. The plan is to convolve it with a Gaussian and inspect the result.
 We will also record the time it takes to execute this convolution on the host.
 
 We can interactively write and executed the code in an iPython shell or a Jupyter notebook.
@@ -36,22 +36,11 @@ We can interactively write and executed the code in an iPython shell or a Jupyte
 ~~~
 import numpy as np
 
-# Construct a subimage with all zeros and a single one in the middle
-primary_unit = np.zeros((16, 16))
-primary_unit[8, 8] = 1
-
-# Now duplicate this subimage many times to construct a larger image
-deltas = np.tile(primary_unit, (128, 128))
-print(deltas.shape)
+# Construct an image with repeated delta functions
+deltas = np.zeros((2048, 2048))
+deltas[8::16,8::16] = 1
 ~~~
 {: .language-python}
-
-The final `print` should show that you have indeed built a large image.
-
-~~~
-Out[7]: (2048, 2048)
-~~~
-{: .output}
 
 To get a feeling of how the whole image looks like, we can display the top-left corner of it.
 
@@ -67,8 +56,6 @@ pyl.show()
 ~~~
 {: .language-python}
 
-The result of this should be four times the content of `primary_unit`.
-
 ### Background
 The computation we want to perform on this image is a convolution, once on the host and once on the device so we can compare the results and execution times.
 In computer vision applications, convolutions are often used to filter images and if you want to know more about them, we encourage you to check out [this github repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin with some great animations. We have already seen that we can think of an image as a matrix of color values, when we convolve that image with a particular filter, we generate a new matrix with different color values. An example of convolution can be seen in the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
@@ -77,15 +64,26 @@ In computer vision applications, convolutions are often used to filter images an
 
 In our example, we will convolve our image with a 2D Gaussian function shown below:
 
-<div style="font-size:1.5em">$$G(x,y) = \frac{1}{2\pi \sigma^2} e^{-\frac{x^2 + y^2}{2 \sigma^2}}$$</div>
+<!--<div style="font-size:1.5em">-->
+$$G(x,y) = \frac{1}{2\pi \sigma^2} \exp\left(-\frac{x^2 + y^2}{2 \sigma^2}\right),$$
+<!--</div>-->
 
-Where x and y are the "coordinates in our matrix, i.e. our row and columns. $$\sigma$$ controls the width of the Gaussian distribution. Convolving images with 2D Gaussian functions will change the value of each pixel to be a weighted average of the pixels around it, thereby "smoothing" the image. Convolving images with a Gaussian function reduces the noise in the image, which is often required in [edge-detection](https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection) since most algorithms to do this are sensitive to noise.
+where $x$ and $y$ are the "coordinates in our matrix, i.e. our row and columns, and $$\sigma$$ controls the width of the Gaussian distribution. Convolving images with 2D Gaussian functions will change the value of each pixel to be a weighted average of the pixels around it, thereby "smoothing" the image. Convolving images with a Gaussian function reduces the noise in the image, which is often required in [edge-detection](https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection) since most algorithms to do this are sensitive to noise.
+
+> ## Maps and stencils
+> It is often useful to identify the dataflow inherent in a problem. Say, if we want to square a list of numbers, all the operations are independent. The dataflow of a one-to-one operation is called a *map*.
+> 
+> ![Data flow of a map operation](../fig/mapping.svg){: style="width: 50%"}
+> 
+> A convolution is slightly more complicated. Here we have a many-to-one data flow, which is also known as a stencil.
+> 
+> ![Data flow of a stencil operation](../fig/stencil.svg){: style="width: 50%"}
+> 
+> GPU's are exceptionally well suited to compute algorithms that follow one of these patterns.
+{: .callout}
 
 # Convolution on the CPU Using SciPy
-
-
-Let us first construct the Gaussian, and then display it.
-Remember that at this point we are still doing everything with standard Python, and not using the GPU yet.
+Let us first construct the Gaussian, and then display it. Remember that at this point we are still doing everything with standard Python, and not using the GPU yet.
 
 ~~~
 x, y = np.meshgrid(np.linspace(-2, 2, 15), np.linspace(-2, 2, 15))
@@ -98,10 +96,7 @@ pyl.show()
 ~~~
 {: .language-python}
 
-This should show you a symmetrical two-dimensional Gaussian.
-Now we are ready to do the convolution on the host.
-We do not have to write this convolution function ourselves, as it is very conveniently provided by SciPy.
-Let us also record the time it takes to perform this convolution and inspect the top left corner of the convolved image.
+This should show you a symmetrical two-dimensional Gaussian. Now we are ready to do the convolution on the host. We do not have to write this convolution function ourselves, as it is very conveniently provided by SciPy. Let us also record the time it takes to perform this convolution and inspect the top left corner of the convolved image.
 
 ~~~
 from scipy.signal import convolve2d as convolve2d_cpu
@@ -192,7 +187,7 @@ Impressive!
 > {: .solution}
 {: .challenge}
 
-# Compare the results. Copy the convolved image from the device back to the host
+# Validation
 
 To check that we actually computed the same output on the host and the device we can compare the two output arrays `convolved_image_using_GPU` and `convolved_image_using_CPU`.
 

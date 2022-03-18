@@ -1,0 +1,121 @@
+<?xml version="1.0" standalone="no" ?>
+<svg viewBox="0 0 485 210" xmlns="http://www.w3.org/2000/svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700');
+
+:root {
+   --nlesc-blue:   #009DDD;
+   --nlesc-purple: #380339;
+   --nlesc-yellow: #FFB213;
+
+   --some-gray:    #aaaaaa;
+}
+
+.paper {
+    fill: #ffffdd;
+}
+
+.box {
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0, 0.3));
+    stroke: white;
+    stroke-width: 0.15;
+}
+
+.yellow {
+    fill: var(--nlesc-yellow);
+}
+
+.blue {
+    fill: var(--nlesc-blue);
+}
+
+/* .arrow {
+    stroke: black;
+    stroke-width: 2;
+}
+
+.arrow-head {
+    fill: black;
+} */
+
+.gray {
+    stroke: var(--some-gray);
+    fill: var(--some-gray);
+    stroke-width: 2;
+}
+
+.black {
+    stroke: black;
+    fill: black;
+    stroke-width: 2;
+}
+
+.arrow-head {
+    stroke: none;
+}
+
+</style>
+<rect class="paper" x="0" y="0" width="500" height="400" />
+<rect class="box blue" x="5" y="5" width="50" height="50" rx="5" ry="5" />
+<rect class="box blue" x="75" y="5" width="50" height="50" rx="5" ry="5" />
+<rect class="box blue" x="145" y="5" width="50" height="50" rx="5" ry="5" />
+<rect class="box blue" x="215" y="5" width="50" height="50" rx="5" ry="5" />
+<rect class="box blue" x="285" y="5" width="50" height="50" rx="5" ry="5" />
+<rect class="box blue" x="355" y="5" width="50" height="50" rx="5" ry="5" />
+<rect class="box blue" x="425" y="5" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="5" y="155" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="75" y="155" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="145" y="155" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="215" y="155" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="285" y="155" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="355" y="155" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="425" y="155" width="50" height="50" rx="5" ry="5" />
+<g class="gray">
+<line class="arrow" x1="30" y1="55" x2="30" y2="150" />
+<path class="arrow-head" d="M 34 140 Q 30 150 26 140 L 30 155 z" />
+<line class="arrow" x1="100" y1="55" x2="32.86731172181664" y2="150.9038403974048" />
+<path class="arrow-head" d="M 41.87886284752609 145.00537056966772 Q 32.86731172181664 150.9038403974048 35.32500748337376 140.4176718147611 L 30 155 z" />
+<line class="arrow" x1="30" y1="55" x2="97.13268827818335" y2="150.9038403974048" />
+<path class="arrow-head" d="M 94.67499251662623 140.4176718147611 Q 97.13268827818335 150.9038403974048 88.1211371524739 145.00537056966772 L 100 155 z" />
+<line class="arrow" x1="100" y1="55" x2="100" y2="150" />
+<path class="arrow-head" d="M 104 140 Q 100 150 96 140 L 100 155 z" />
+<line class="arrow" x1="170" y1="55" x2="102.86731172181665" y2="150.9038403974048" />
+<path class="arrow-head" d="M 111.8788628475261 145.00537056966772 Q 102.86731172181665 150.9038403974048 105.32500748337377 140.4176718147611 L 100 155 z" />
+<line class="arrow" x1="100" y1="55" x2="167.13268827818337" y2="150.9038403974048" />
+<path class="arrow-head" d="M 164.67499251662622 140.4176718147611 Q 167.13268827818337 150.9038403974048 158.12113715247392 145.00537056966772 L 170 155 z" />
+<line class="arrow" x1="170" y1="55" x2="170" y2="150" />
+<path class="arrow-head" d="M 174 140 Q 170 150 166 140 L 170 155 z" />
+<line class="arrow" x1="240" y1="55" x2="172.86731172181663" y2="150.9038403974048" />
+<path class="arrow-head" d="M 181.87886284752608 145.00537056966772 Q 172.86731172181663 150.9038403974048 175.32500748337378 140.4176718147611 L 170 155 z" />
+<line class="arrow" x1="170" y1="55" x2="237.13268827818337" y2="150.9038403974048" />
+<path class="arrow-head" d="M 234.67499251662622 140.4176718147611 Q 237.13268827818337 150.9038403974048 228.12113715247392 145.00537056966772 L 240 155 z" />
+<line class="arrow" x1="240" y1="55" x2="240" y2="150" />
+<path class="arrow-head" d="M 244 140 Q 240 150 236 140 L 240 155 z" />
+<line class="arrow" x1="310" y1="55" x2="242.86731172181663" y2="150.9038403974048" />
+<path class="arrow-head" d="M 251.87886284752608 145.00537056966772 Q 242.86731172181663 150.9038403974048 245.32500748337378 140.4176718147611 L 240 155 z" />
+<line class="arrow" x1="240" y1="55" x2="307.13268827818337" y2="150.9038403974048" />
+<path class="arrow-head" d="M 304.6749925166263 140.4176718147611 Q 307.13268827818337 150.9038403974048 298.1211371524739 145.00537056966772 L 310 155 z" />
+<line class="arrow" x1="310" y1="55" x2="310" y2="150" />
+<path class="arrow-head" d="M 314 140 Q 310 150 306 140 L 310 155 z" />
+<line class="arrow" x1="380" y1="55" x2="312.86731172181663" y2="150.9038403974048" />
+<path class="arrow-head" d="M 321.8788628475261 145.00537056966772 Q 312.86731172181663 150.9038403974048 315.3250074833737 140.4176718147611 L 310 155 z" />
+<line class="arrow" x1="310" y1="55" x2="377.13268827818337" y2="150.9038403974048" />
+<path class="arrow-head" d="M 374.6749925166263 140.4176718147611 Q 377.13268827818337 150.9038403974048 368.1211371524739 145.00537056966772 L 380 155 z" />
+<line class="arrow" x1="380" y1="55" x2="380" y2="150" />
+<path class="arrow-head" d="M 384 140 Q 380 150 376 140 L 380 155 z" />
+<line class="arrow" x1="450" y1="55" x2="382.86731172181663" y2="150.9038403974048" />
+<path class="arrow-head" d="M 391.8788628475261 145.00537056966772 Q 382.86731172181663 150.9038403974048 385.3250074833737 140.4176718147611 L 380 155 z" />
+<line class="arrow" x1="380" y1="55" x2="447.13268827818337" y2="150.9038403974048" />
+<path class="arrow-head" d="M 444.6749925166263 140.4176718147611 Q 447.13268827818337 150.9038403974048 438.1211371524739 145.00537056966772 L 450 155 z" />
+<line class="arrow" x1="450" y1="55" x2="450" y2="150" />
+<path class="arrow-head" d="M 454 140 Q 450 150 446 140 L 450 155 z" />
+</g>
+<g class="black">
+<line class="arrow" x1="100" y1="55" x2="167.13268827818337" y2="150.9038403974048" />
+<path class="arrow-head" d="M 164.67499251662622 140.4176718147611 Q 167.13268827818337 150.9038403974048 158.12113715247392 145.00537056966772 L 170 155 z" />
+<line class="arrow" x1="170" y1="55" x2="170" y2="150" />
+<path class="arrow-head" d="M 174 140 Q 170 150 166 140 L 170 155 z" />
+<line class="arrow" x1="240" y1="55" x2="172.86731172181663" y2="150.9038403974048" />
+<path class="arrow-head" d="M 181.87886284752608 145.00537056966772 Q 172.86731172181663 150.9038403974048 175.32500748337378 140.4176718147611 L 170 155 z" />
+</g>
+</svg>
