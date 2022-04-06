@@ -280,7 +280,7 @@ gauss_1d = gauss.diagonal()
 
 You could arrive at something similar to this timing result:
 ~~~
-104 ms ± 32.9 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+1 loop, best of 1: 201 ms per loop
 ~~~
 {: .output}
 
@@ -307,10 +307,10 @@ That worked for the same reason.
 The linear convolution is actually performed on the GPU, which is shown by a nice speedup:
 
 ~~~
-731 µs ± 106 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+1 loop, best of 1: 2.91 ms per loop
 ~~~
 {: .output}
 
-So this implies a speedup of a factor 104/0.731 = 142. Impressive.
+So this implies a speedup of a factor 69. Impressive.
 
 {% include links.md %}
