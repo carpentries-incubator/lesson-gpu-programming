@@ -65,7 +65,7 @@ input = np.random.random(size).astype(np.float32)
 We then time the execution of the NumPy `sort()` function, to see how long sorting this array takes on the CPU.
 
 ~~~
-%timeit output = np.sort(input)
+%timeit -n 1 -r 1 output = np.sort(input)
 ~~~
 {: .language-python}
 
@@ -82,7 +82,7 @@ CuPy is an open-source library, compatible with NumPy, for GPU computing in Pyth
 ~~~
 import cupy as cp
 input_gpu = cp.asarray(input)
-%timeit output_gpu = cp.sort(input_gpu)
+%timeit -n 1 -r 1 output_gpu = cp.sort(input_gpu)
 ~~~
 {: .language-python}
 
