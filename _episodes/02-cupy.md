@@ -56,6 +56,10 @@ pyl.show()
 ~~~
 {: .language-python}
 
+After executing the code, you should see the following image.
+
+![Deltas array](../fig/deltas.png)
+
 ### Background
 The computation we want to perform on this image is a convolution, once on the host and once on the device so we can compare the results and execution times.
 In computer vision applications, convolutions are often used to filter images and if you want to know more about them, we encourage you to check out [this github repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin with some great animations. We have already seen that we can think of an image as a matrix of color values, when we convolve that image with a particular filter, we generate a new matrix with different color values. An example of convolution can be seen in the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
@@ -96,13 +100,16 @@ pyl.show()
 ~~~
 {: .language-python}
 
-This should show you a symmetrical two-dimensional Gaussian. Now we are ready to do the convolution on the host. We do not have to write this convolution function ourselves, as it is very conveniently provided by SciPy. Let us also record the time it takes to perform this convolution and inspect the top left corner of the convolved image.
+This should show you a symmetrical two-dimensional Gaussian.
+
+![Two-dimensional Gaussian](../fig/gauss.png)
+
+Now we are ready to do the convolution on the host. We do not have to write this convolution function ourselves, as it is very conveniently provided by SciPy. Let us also record the time it takes to perform this convolution and inspect the top left corner of the convolved image.
 
 ~~~
 from scipy.signal import convolve2d as convolve2d_cpu
 
-convolved_image_using_CPU = convolve2d_cpu(deltas, gauss)
-%timeit convolve2d_cpu(deltas, gauss)
+%timeit -n 1 -r 1 convolved_image_using_CPU = convolve2d_cpu(deltas, gauss)
 pyl.imshow(convolved_image_using_CPU[0:32, 0:32])
 pyl.show()
 ~~~
@@ -116,6 +123,8 @@ Obviously, the time to perform this convolution will depend very much on the pow
 {: .output}
 
 When you display the corner of the image, you can see that the "ones" surrounded by zeros have actually been blurred by a Gaussian, so we end up with a regular grid of Gaussians.
+
+![Regular grid of Gaussians.](../fig/convolved_image.png)
 
 # Convolution on the GPU Using CuPy
 
@@ -146,8 +155,7 @@ Let us again record the time to execute the convolution, so that we can compare 
 ~~~
 from cupyx.scipy.signal import convolve2d as convolve2d_gpu
 
-convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
-%timeit convolve2d_gpu(deltas_gpu, gauss_gpu)
+%timeit -n 1 -r 1 convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
 ~~~
 {: .language-python}
 
@@ -220,7 +228,7 @@ array(True)
 > >     convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
 > >     convolved_image_using_GPU_copied_to_host = cp.asnumpy(convolved_image_using_GPU)
 > >    
-> > %timeit transfer_compute_transferback()
+> > %timeit -n 1 -r 1 transfer_compute_transferback()
 > > ~~~
 > > {: .language-python}
 > > ~~~
@@ -266,7 +274,7 @@ Try the following three instructions for linear convolution on the CPU:
 ~~~
 deltas_1d = deltas.ravel()
 gauss_1d = gauss.diagonal()
-%timeit np.convolve(deltas_1d, gauss_1d)
+%timeit -n 1 -r 1 np.convolve(deltas_1d, gauss_1d)
 ~~~
 {: .language-python}
 
@@ -284,7 +292,7 @@ Again, we have to issue three commands:
 ~~~
 deltas_1d_gpu = cp.asarray(deltas_1d)
 gauss_1d_gpu = cp.asarray(gauss_1d)
-%timeit np.convolve(deltas_1d_gpu, gauss_1d_gpu)
+%timeit -n 1 -r 1 np.convolve(deltas_1d_gpu, gauss_1d_gpu)
 ~~~
 {: .language-python}
 
