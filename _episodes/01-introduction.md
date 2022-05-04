@@ -117,6 +117,6 @@ With the result of the previous operation being the following.
 ~~~
 {: .output}
 
-We can therefore say that just by using the GPU with CuPy to sort an array of size `4096 * 4096` we achieved a performance improvement of 269 times.
+We can therefore say that just by using the GPU with CuPy to sort an array of size `4096 * 4096` we achieved a performance improvement of 559 times.
 
 {% include links.md %}
