@@ -72,7 +72,7 @@ We then time the execution of the NumPy `sort()` function, to see how long sorti
 While the timing of this operation will differ depending on the system on which you run the code, these are the results for one experiment running on a Jupyter notebook on Google Colab.
 
 ~~~
-1 loop, best of 5: 1.84 s per loop
+1.72 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
 ~~~
 {: .output}
 
@@ -82,14 +82,14 @@ CuPy is an open-source library, compatible with NumPy, for GPU computing in Pyth
 ~~~
 import cupy as cp
 input_gpu = cp.asarray(input)
-%timeit -n 1 -r 1 output_gpu = cp.sort(input_gpu)
+%timeit -n 7 -r 1 output_gpu = cp.sort(input_gpu)
 ~~~
 {: .language-python}
 
 We also report the output, obtained on the same notebook on Google Colab; as always note that your result will vary based on the environment and GPU you are using.
 
 ~~~
-100 loops, best of 5: 6.83 ms per loop
+3.08 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 7 loops each)
 ~~~
 {: .output}
 
@@ -105,7 +105,7 @@ Having recorded the average execution time of both operations, we can then compu
 The speedup is defined as the ratio between the sequential (NumPy in our case) and parallel (CuPy in our case) execution times; beware that both execution times need to be in the same unit, this is why we had to convert the GPU execution time from milliseconds to seconds.
 
 ~~~
-speedup = 1.84 / 0.00683
+speedup = 1.72 / 0.00308
 print(speedup)
 ~~~
 {: .language-python}
@@ -113,7 +113,7 @@ print(speedup)
 With the result of the previous operation being the following.
 
 ~~~
-269.39970717423137
+559.4155844155845
 ~~~
 {: .output}
 
