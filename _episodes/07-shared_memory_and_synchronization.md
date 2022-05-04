@@ -298,8 +298,8 @@ grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
 
 # execute code on CPU and GPU
-%timeit -n 1 -r 1 histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
 %timeit -n 1 -r 1 histogram(input_cpu, output_cpu)
+%timeit -n 1 -r 1 histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
 
 # compare results
 numpy.allclose(output_cpu, output_gpu)
@@ -443,8 +443,8 @@ grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
 
 # execute code on CPU and GPU
-%timeit -n 1 -r 1 histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
 %timeit -n 1 -r 1 histogram(input_cpu, output_cpu)
+%timeit -n 1 -r 1 histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
 
 # compare results
 numpy.allclose(output_cpu, output_gpu)
