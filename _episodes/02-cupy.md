@@ -109,16 +109,17 @@ Now we are ready to do the convolution on the host. We do not have to write this
 ~~~
 from scipy.signal import convolve2d as convolve2d_cpu
 
-%timeit -n 1 -r 1 convolved_image_using_CPU = convolve2d_cpu(deltas, gauss)
+convolved_image_using_CPU = convolve2d_cpu(deltas, gauss)
 pyl.imshow(convolved_image_using_CPU[0:32, 0:32])
 pyl.show()
+%timeit -n 1 -r 1 convolve2d_cpu(deltas, gauss)
 ~~~
 {: .language-python}
 
 Obviously, the time to perform this convolution will depend very much on the power of your CPU, but I expect you to find that it takes a couple of seconds.
 
 ~~~
-1 loop, best of 5: 2.52 s per loop
+2.62 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
 ~~~
 {: .output}
 
@@ -155,15 +156,16 @@ Let us again record the time to execute the convolution, so that we can compare 
 ~~~
 from cupyx.scipy.signal import convolve2d as convolve2d_gpu
 
-%timeit -n 1 -r 1 convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
+convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
+%timeit -n 7 -r 1 convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
 ~~~
 {: .language-python}
 
-Similar to what we had previously on the host, the execution time of the GPU convolution will depend very much on the GPU used, but I expect you to find it will take about 10ms.
-This is what I got on a TITAN X (Pascal) GPU:
+Similar to what we had previously on the host, the execution time of the GPU convolution will depend very much on the GPU used.
+These are the results using a NVIDIA Titan RTX:
 
 ~~~
-1000 loops, best of 5: 20.2 ms per loop
+333 µs ± 0 ns per loop (mean ± std. dev. of 1 run, 7 loops each)
 ~~~
 {: .output}
 
@@ -228,11 +230,11 @@ array(True)
 > >     convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
 > >     convolved_image_using_GPU_copied_to_host = cp.asnumpy(convolved_image_using_GPU)
 > >    
-> > %timeit -n 1 -r 1 transfer_compute_transferback()
+> > %timeit -n 7 -r 1 transfer_compute_transferback()
 > > ~~~
 > > {: .language-python}
 > > ~~~
-> > 10 loops, best of 5: 35.1 ms per loop
+> > 35.2 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 7 loops each)
 > > ~~~
 > > {: .output}
 > >
@@ -280,7 +282,7 @@ gauss_1d = gauss.diagonal()
 
 You could arrive at something similar to this timing result:
 ~~~
-1 loop, best of 1: 201 ms per loop
+138 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
 ~~~
 {: .output}
 
@@ -292,7 +294,7 @@ Again, we have to issue three commands:
 ~~~
 deltas_1d_gpu = cp.asarray(deltas_1d)
 gauss_1d_gpu = cp.asarray(gauss_1d)
-%timeit -n 1 -r 1 np.convolve(deltas_1d_gpu, gauss_1d_gpu)
+%timeit -n 7 -r 1 np.convolve(deltas_1d_gpu, gauss_1d_gpu)
 ~~~
 {: .language-python}
 
@@ -307,10 +309,10 @@ That worked for the same reason.
 The linear convolution is actually performed on the GPU, which is shown by a nice speedup:
 
 ~~~
-1 loop, best of 1: 2.91 ms per loop
+373 µs ± 0 ns per loop (mean ± std. dev. of 1 run, 7 loops each)
 ~~~
 {: .output}
 
-So this implies a speedup of a factor 69. Impressive.
+So this implies a speedup of a factor 369. Impressive.
 
 {% include links.md %}
