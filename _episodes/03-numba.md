@@ -40,14 +40,14 @@ def find_all_primes_cpu(upper):
 Calling `find_all_primes_cpu(10_000)` will return all prime numbers between 1 and 10000 as a list. Let us time it:
 
 ~~~
-%timeit -n 1 -r 10 find_all_primes_cpu(10_000)
+%timeit -n 10 -r 1 find_all_primes_cpu(10_000)
 ~~~
 {: .language-python}
 
 You will probably find that `find_all_primes_cpu` takes several hundreds of milliseconds to complete:
 
 ~~~
-378 ms ± 45.6 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+186 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
 ~~~
 {: .output}
 
@@ -74,19 +74,19 @@ or in this way:
 ~~~
 from numba import jit
 
-upper_limit = 10_000
-%timeit -n 1 -r 10 jit(nopython=True)(find_all_primes_cpu)(upper_limit)
+upper = 10_000
+%timeit -n 10 -r 1 jit(nopython=True)(find_all_primes_cpu)(upper)
 ~~~
 {: .language-python}
 
 which can give you a timing result similar to this:
 
 ~~~
-165 ms ± 19 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+52.1 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
 ~~~
 {: .output}
 
-So twice as fast, by using a simple decorator. The speedup is much larger for `upper = 100000`, but that takes a little too much waiting time for this course.
+So twice as fast, by using a simple decorator. The speedup is much larger for `upper = 100_000`, but that takes a little too much waiting time for this course.
 Despite the `jit(nopython=True)` decorator the computation is still performed on the CPU.
 Let us move the computation to the GPU.
 There are a number of ways to achieve this, one of them is the usage of the `jit(device=True)` decorator, but it depends very much on the nature of the computation.
@@ -148,11 +148,11 @@ While this is an important argument, we will explain it later and for now we can
 > >             all_prime_numbers.append(num)
 > >     return all_prime_numbers
 > >    
-> > %timeit -n 1 -r 10 find_all_primes_cpu_and_gpu(10_000)
+> > %timeit -n 10 -r 1 find_all_primes_cpu_and_gpu(10_000)
 > > ~~~
 > > {: .language-python}
 > > ~~~
-> > 6.62 s ± 152 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+> > 5.26 s ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
 > > ~~~
 > > {: .output}
 > >
@@ -190,17 +190,17 @@ where we have added the `vectorize` decorator from Numba. The argument of `check
 Let us run it and record the elapsed time:
 
 ~~~
-%timeit -n 1 -r 10 check_prime_gpu(np.arange(2, 10_000, dtype=np.int32))
+%timeit -n 10 -r 1 check_prime_gpu(np.arange(2, 10_000, dtype=np.int32))
 ~~~
 {: .language-python}
 
 which should show you a significant speedup:
 
 ~~~
-3.25 ms ± 138 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+3.4 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
 ~~~
 {: .output}
 
-This amounts to an acceleration of our code of a factor 165/3.25 = 50.8 compared to the `jit(nopython=True)` decorated code on the CPU.
+This amounts to an acceleration of our code of a factor 52/3.4 = 15 compared to the `jit(nopython=True)` decorated code on the CPU.
 
 {% include links.md %}
