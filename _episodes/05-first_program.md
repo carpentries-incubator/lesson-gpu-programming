@@ -520,7 +520,7 @@ Correct results!
 > all_primes_to_gpu = cupy.RawKernel(check_prime_gpu_code, "all_primes_to")
 > grid_size = (int(math.ceil(upper_bound / 1024)), 1, 1)
 > block_size = (1024, 1, 1)
-> %timeit -n 1 -r 10 all_primes_to_gpu(grid_size, block_size, (upper_bound, all_primes_gpu))
+> %timeit -n 10 -r 1 all_primes_to_gpu(grid_size, block_size, (upper_bound, all_primes_gpu))
 > 
 > # Test
 > if numpy.allclose(all_primes_cpu, all_primes_gpu):
