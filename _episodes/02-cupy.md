@@ -173,7 +173,7 @@ Impressive!
 > ## Challenge: convolution on the GPU without CuPy 
 > 
 > Try to convolve the NumPy array `deltas` with the NumPy array `gauss` directly on the GPU, without using CuPy arrays. 
-> If this works, it should save us the time and effort of transferring deltas and gauss to the GPU.
+> If this works, it should save us the time and effort of transferring `deltas` and `gauss` to the GPU.
 >
 > > ## Solution
 > > 
