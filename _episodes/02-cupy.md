@@ -300,7 +300,7 @@ gauss_1d_gpu = cp.asarray(gauss_1d)
 
 You may be surprised that we can issue these commands without error.
 Contrary to SciPy routines, NumPy accepts CuPy arrays, i.e. arrays that exist in GPU memory, as input.
-[Here](https://docs.cupy.dev/en/v8.2.0/reference/interoperability.html#numpy) you can find some background on why NumPy routines can handle CuPy arrays. 
+[Here](https://docs.cupy.dev/en/stable/user_guide/interoperability.html#numpy) you can find some background on why NumPy routines can handle CuPy arrays. 
 
 Also, remember the `np.allclose` command above?
 With a NumPy and a CuPy array as input.
