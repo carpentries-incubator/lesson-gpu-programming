@@ -518,7 +518,7 @@ One advantage of using the `benchmark` method is that it excludes the compile ti
 > 
 > # CPU version
 > def all_primes_to(upper : int, prime_list : list):
->     for num in range(2, upper):
+>     for num in range(0, upper):
 >         prime = True
 >         for i in range(2, (num // 2) + 1):
 >             if (num % i) == 0:
@@ -529,15 +529,13 @@ One advantage of using the `benchmark` method is that it excludes the compile ti
 > 
 > upper_bound = 100_000
 > all_primes_cpu = numpy.zeros(upper_bound, dtype=numpy.int32)
-> all_primes_cpu[0] = 1
-> all_primes_cpu[1] = 1
 > 
 > # GPU version
 > check_prime_gpu_code = r'''
 > extern "C"
 > __global__ void all_primes_to(int size, int * const all_prime_numbers)
 > {
->    for ( int number = 2; number < size; number++ )
+>    for ( int number = 0; number < size; number++ )
 >    {
 >        int result = 1;
 >        for ( int factor = 2; factor <= number / 2; factor++ )
