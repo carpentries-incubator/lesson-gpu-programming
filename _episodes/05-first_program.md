@@ -515,6 +515,7 @@ One advantage of using the `benchmark` method is that it excludes the compile ti
 > import numpy
 > import cupy
 > import math
+> from cupyx.profiler import benchmark
 > 
 > # CPU version
 > def all_primes_to(upper : int, prime_list : list):
