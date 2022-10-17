@@ -10,6 +10,7 @@ objectives:
 - "Recognize possible data parallelism in Python code"
 - "Understand the structure of a CUDA program"
 - "Execute a CUDA program in Python using CuPy"
+- "Measure the execution time of a CUDA kernel with CuPy"
 keypoints:
 - "Precede your kernel definition with the `__global__` keyword"
 - "Use built-in variables `threadIdx`, `blockIdx`, `gridDim` and `blockDim` to identify each thread"
