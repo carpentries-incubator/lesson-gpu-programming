@@ -561,7 +561,6 @@ One advantage of using the `benchmark` method is that it excludes the compile ti
 > block_size = (1024, 1, 1)
 > 
 > # Benchmark and test
-> 
 > %timeit -n 1 -r 1 all_primes_to(upper_bound, all_primes_cpu)
 > execution_gpu = benchmark(all_primes_to_gpu, (grid_size, block_size, (upper_bound, all_primes_gpu)), n_repeat=10)
 > gpu_avg_time = numpy.average(execution_gpu.gpu_times)
