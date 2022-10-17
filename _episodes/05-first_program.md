@@ -10,6 +10,7 @@ objectives:
 - "Recognize possible data parallelism in Python code"
 - "Understand the structure of a CUDA program"
 - "Execute a CUDA program in Python using CuPy"
+- "Measure the execution time of a CUDA kernel with CuPy"
 keypoints:
 - "Precede your kernel definition with the `__global__` keyword"
 - "Use built-in variables `threadIdx`, `blockIdx`, `gridDim` and `blockDim` to identify each thread"
@@ -480,6 +481,32 @@ Correct results!
 ~~~
 {: .output}
 
+# Measuring performance
+
+So far we used `timeit` to measure the performance of our Python code, no matter if it was running on the CPU or was GPU accelerated.
+However, using CUDA all kernel calls are asynchronous: the control is given back to the Python interpreter while the GPU is executing the task.
+Because of this, it is not possible to use `timeit` anymore: the timing would not be correct.
+
+CuPy provides a function, `benchmark` that we can use to measure the time it takes the GPU to execute our kernels.
+
+~~~
+from cupyx.profiler import benchmark
+
+execution_gpu = benchmark(vector_add_gpu, (grid_size, block_size, (a_gpu, b_gpu, c_gpu, size)), n_repeat=10)
+~~~
+{: .language-python}
+
+The previous code executes `vector_add_gpu` ten times, and stores the execution time of each run in the `gpu_times` attribute of the variable `execution_gpu`.
+We can then compute the average execution time and print it, as shown.
+
+~~~
+gpu_avg_time = numpy.average(execution_gpu.gpu_times)
+print(f"{gpu_avg_time:.6f} s")
+~~~
+{: .language-python}
+
+One advantage of using the `benchmark` method is that it excludes the compile time.
+
 > ## Challenge: compute prime numbers with CUDA
 >
 > Given the following Python code, similar to what we have seen in the previous episode about Numba, write the missing CUDA kernel that computes all the prime numbers up to a certain upper bound.
@@ -488,10 +515,11 @@ Correct results!
 > import numpy
 > import cupy
 > import math
+> from cupyx.profiler import benchmark
 > 
-> # CPU
+> # CPU version
 > def all_primes_to(upper : int, prime_list : list):
->     for num in range(2, upper):
+>     for num in range(0, upper):
 >         prime = True
 >         for i in range(2, (num // 2) + 1):
 >             if (num % i) == 0:
@@ -502,27 +530,42 @@ Correct results!
 > 
 > upper_bound = 100_000
 > all_primes_cpu = numpy.zeros(upper_bound, dtype=numpy.int32)
-> all_primes_cpu[0] = 1
-> all_primes_cpu[1] = 1
-> %timeit -n 1 -r 1 all_primes_to(upper_bound, all_primes_cpu)
 > 
-> # GPU
+> # GPU version
 > check_prime_gpu_code = r'''
 > extern "C"
 > __global__ void all_primes_to(int size, int * const all_prime_numbers)
 > {
+>    for ( int number = 0; number < size; number++ )
+>    {
+>        int result = 1;
+>        for ( int factor = 2; factor <= number / 2; factor++ )
+>        {
+>            if ( number % factor == 0 )
+>            {
+>                result = 0;
+>                break;
+>            }
+>        }
+>
+>        all_prime_numbers[number] = result;
+>    }
 > }
 > '''
 > # Allocate memory
 > all_primes_gpu = cupy.zeros(upper_bound, dtype=cupy.int32)
 > 
-> # Compile and execute code
+> # Setup the grid
 > all_primes_to_gpu = cupy.RawKernel(check_prime_gpu_code, "all_primes_to")
 > grid_size = (int(math.ceil(upper_bound / 1024)), 1, 1)
 > block_size = (1024, 1, 1)
-> %timeit -n 10 -r 1 all_primes_to_gpu(grid_size, block_size, (upper_bound, all_primes_gpu))
 > 
-> # Test
+> # Benchmark and test
+> %timeit -n 1 -r 1 all_primes_to(upper_bound, all_primes_cpu)
+> execution_gpu = benchmark(all_primes_to_gpu, (grid_size, block_size, (upper_bound, all_primes_gpu)), n_repeat=10)
+> gpu_avg_time = numpy.average(execution_gpu.gpu_times)
+> print(f"{gpu_avg_time:.6f} s")
+>
 > if numpy.allclose(all_primes_cpu, all_primes_gpu):
 >     print("Correct results!")
 > else:
@@ -530,9 +573,9 @@ Correct results!
 > ~~~
 > {: .language-python}
 >
-> There is no need to modify anything in the code, except writing the body of the CUDA `all_primes_to` inside the `check_prime_gpu_code` string, as we did in the examples so far.
+> There is no need to modify anything in the code, except the body of the CUDA `all_primes_to` inside the `check_prime_gpu_code` string, as we did in the examples so far.
 >
-> Hint: look at the body of the Python `all_primes_to` function, and map the outermost loop to the CUDA grid.
+> Be aware that the provided CUDA code is a direct port of the Python code, and therefore very slow. If you want to test it, user a lower value for `upper_bound`.
 > > ## Solution
 > >
 > > One possible solution for the CUDA kernel is provided in the following code.
