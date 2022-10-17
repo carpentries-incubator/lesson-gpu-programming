@@ -477,4 +477,7 @@ print(f"{gpu_avg_time:.6f} s")
 ~~~
 {: .language-python}
 
+While both versions of the GPU histogram are correct, the one using shared memory is faster; but how fast?
+On a NVIDIA Tesla T4 accessed via Google Colab, the shared memory version is ten times faster than the version doing atomic operations on global memory.
+
 {% include links.md %}
