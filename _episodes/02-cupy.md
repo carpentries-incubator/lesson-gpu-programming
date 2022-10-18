@@ -265,22 +265,24 @@ array(True)
 > >     convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
 > >     convolved_image_using_GPU_copied_to_host = cp.asnumpy(convolved_image_using_GPU)
 > >    
-> > %timeit -n 7 -r 1 transfer_compute_transferback()
+> > execution_gpu = benchmark(transfer_compute_transferback, (), n_repeat=10)
+> > gpu_avg_time = np.average(execution_gpu.gpu_times)
+> > print(f"{gpu_avg_time:.6f} s")
 > > ~~~
 > > {: .language-python}
 > > ~~~
-> > 35.2 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 7 loops each)
+> > 0.035400 s
 > > ~~~
 > > {: .output}
 > >
-> > The speedup taking into account the data transfers decreased from 125 (2520 ms/20.2 ms) to 72 (2520 ms/35.1 ms).
+> > The speedup taking into account the data transfers decreased from 116 to 67.
 > > Taking into account the necessary data transfers when computing the speedup is a better, and more fair, way to compare performance.
 > {: .solution}
 {: .challenge}
 
 # A shortcut: performing NumPy routines on the GPU
 
-We saw above that we cannot execute routines from the `cupyx` library directly on NumPy arrays.
+We saw earlier that we cannot execute routines from the `cupyx` library directly on NumPy arrays.
 In fact we need to first transfer the data from host to device memory.
 Vice versa, if we try to execute a regular SciPy routine (i.e. designed to run the CPU) on a CuPy array, we will also encounter an error.
 Try the following:
@@ -317,19 +319,21 @@ gauss_1d = gauss.diagonal()
 
 You could arrive at something similar to this timing result:
 ~~~
-138 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
+270 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
 ~~~
 {: .output}
 
 We have performed a regular linear convolution using our CPU.
 Now let us try something bold.
 We will transfer the 1D arrays to the GPU and use the NumPy routine to do the convolution.
-Again, we have to issue three commands:
 
 ~~~
 deltas_1d_gpu = cp.asarray(deltas_1d)
 gauss_1d_gpu = cp.asarray(gauss_1d)
-%timeit -n 7 -r 1 np.convolve(deltas_1d_gpu, gauss_1d_gpu)
+
+execution_gpu = benchmark(np.convolve, (deltas_1d_gpu, gauss_1d_gpu), n_repeat=10)
+gpu_avg_time = np.average(execution_gpu.gpu_times)
+print(f"{gpu_avg_time:.6f} s")
 ~~~
 {: .language-python}
 
@@ -337,17 +341,16 @@ You may be surprised that we can issue these commands without error.
 Contrary to SciPy routines, NumPy accepts CuPy arrays, i.e. arrays that exist in GPU memory, as input.
 [Here](https://docs.cupy.dev/en/stable/user_guide/interoperability.html#numpy) you can find some background on why NumPy routines can handle CuPy arrays. 
 
-Also, remember the `np.allclose` command above?
-With a NumPy and a CuPy array as input.
+Also, remember when we used `np.allclose` with a NumPy and a CuPy array as input?
 That worked for the same reason.
 
-The linear convolution is actually performed on the GPU, which is shown by a nice speedup:
+The linear convolution is actually performed on the GPU, which also results in a lower execution time.
 
 ~~~
-373 µs ± 0 ns per loop (mean ± std. dev. of 1 run, 7 loops each)
+0.014529 s
 ~~~
 {: .output}
 
-So this implies a speedup of a factor 369. Impressive.
+Without much effort, we obtained a 18 times speedup. 
 
 {% include links.md %}
