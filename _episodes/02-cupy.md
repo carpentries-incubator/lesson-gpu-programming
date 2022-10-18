@@ -277,6 +277,7 @@ array(True)
 > >
 > > The speedup taking into account the data transfers decreased from 116 to 67.
 > > Taking into account the necessary data transfers when computing the speedup is a better, and more fair, way to compare performance.
+> > As a note, because data transfers force the GPU to sync with the host, this could also be measured with `timeit` and still provide correct measurements.
 > {: .solution}
 {: .challenge}
 
