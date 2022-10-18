@@ -119,7 +119,7 @@ pyl.show()
 Obviously, the time to perform this convolution will depend very much on the power of your CPU, but I expect you to find that it takes a couple of seconds.
 
 ~~~
-2.62 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
+2.4 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
 ~~~
 {: .output}
 
@@ -162,15 +162,50 @@ convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
 {: .language-python}
 
 Similar to what we had previously on the host, the execution time of the GPU convolution will depend very much on the GPU used.
-These are the results using a NVIDIA Titan RTX:
+These are the results using a NVIDIA Tesla T4 on Google Colab.
 
 ~~~
-333 µs ± 0 ns per loop (mean ± std. dev. of 1 run, 7 loops each)
+98.2 µs ± 0 ns per loop (mean ± std. dev. of 1 run, 7 loops each)
 ~~~
 {: .output}
 
-This is a lot faster than on the host, a performance improvement, or speedup, of 125 times.
-Impressive!
+This is a lot faster than on the host, a performance improvement, or speedup, of 24439 times.
+Impressive, but is it true?
+
+# Measuring performance
+
+So far we used `timeit` to measure the performance of our Python code, no matter if it was running on the CPU or was GPU accelerated.
+However, execution on the GPU is asynchronous: the control is given back to the Python interpreter immediately, while the GPU is still executing the task.
+Because of this, we cannot use `timeit` anymore: the timing would not be correct.
+
+CuPy provides a function, `benchmark` that we can use to measure the time it takes the GPU to execute our kernels.
+
+~~~
+from cupyx.profiler import benchmark
+
+execution_gpu = benchmark(convolve2d_gpu, (deltas_gpu, gauss_gpu), n_repeat=10)
+~~~
+{: .language-python}
+
+The previous code executes `convolve2d_gpu` ten times, and stores the execution time of each run, in seconds, inside the `gpu_times` attribute of the variable `execution_gpu`.
+We can then compute the average execution time and print it, as shown.
+
+~~~
+gpu_avg_time = np.average(execution_gpu.gpu_times)
+print(f"{gpu_avg_time:.6f} s")
+~~~
+{: .language-python}
+
+Another advantage of the `benchmark` method is that it excludes the compile time, and warms up the GPU, so that measurements are more stable and representative.
+
+With the new measuring code in place, we can measure performance again.
+
+~~~
+0.020642 s
+~~~
+{: .output}
+
+We now have a more reasonable, but still impressive, speedup of 116 times over the host code.
 
 > ## Challenge: convolution on the GPU without CuPy 
 > 
