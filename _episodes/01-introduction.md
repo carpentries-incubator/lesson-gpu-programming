@@ -83,7 +83,7 @@ CuPy is an open-source library, compatible with NumPy, for GPU computing in Pyth
 import cupy as cp
 input_gpu = cp.asarray(input)
 execution_gpu = benchmark(cp.sort, (input_gpu,), n_repeat=10)
-gpu_avg_time = numpy.average(execution_gpu.gpu_times)
+gpu_avg_time = np.average(execution_gpu.gpu_times)
 print(f"{gpu_avg_time:.6f} s")
 ~~~
 {: .language-python}
