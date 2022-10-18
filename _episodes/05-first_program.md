@@ -481,32 +481,6 @@ Correct results!
 ~~~
 {: .output}
 
-# Measuring performance
-
-So far we used `timeit` to measure the performance of our Python code, no matter if it was running on the CPU or was GPU accelerated.
-However, using CUDA all kernel calls are asynchronous: the control is given back to the Python interpreter while the GPU is executing the task.
-Because of this, it is not possible to use `timeit` anymore: the timing would not be correct.
-
-CuPy provides a function, `benchmark` that we can use to measure the time it takes the GPU to execute our kernels.
-
-~~~
-from cupyx.profiler import benchmark
-
-execution_gpu = benchmark(vector_add_gpu, (grid_size, block_size, (a_gpu, b_gpu, c_gpu, size)), n_repeat=10)
-~~~
-{: .language-python}
-
-The previous code executes `vector_add_gpu` ten times, and stores the execution time of each run in the `gpu_times` attribute of the variable `execution_gpu`.
-We can then compute the average execution time and print it, as shown.
-
-~~~
-gpu_avg_time = numpy.average(execution_gpu.gpu_times)
-print(f"{gpu_avg_time:.6f} s")
-~~~
-{: .language-python}
-
-One advantage of using the `benchmark` method is that it excludes the compile time.
-
 > ## Challenge: compute prime numbers with CUDA
 >
 > Given the following Python code, similar to what we have seen in the previous episode about Numba, write the missing CUDA kernel that computes all the prime numbers up to a certain upper bound.

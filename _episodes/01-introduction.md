@@ -72,7 +72,7 @@ We then time the execution of the NumPy `sort()` function, to see how long sorti
 While the timing of this operation will differ depending on the system on which you run the code, these are the results for one experiment running on a Jupyter notebook on Google Colab.
 
 ~~~
-1.72 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
+1.83 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
 ~~~
 {: .output}
 
@@ -82,14 +82,16 @@ CuPy is an open-source library, compatible with NumPy, for GPU computing in Pyth
 ~~~
 import cupy as cp
 input_gpu = cp.asarray(input)
-%timeit -n 7 -r 1 output_gpu = cp.sort(input_gpu)
+execution_gpu = benchmark(cp.sort, (input_gpu,), n_repeat=10)
+gpu_avg_time = np.average(execution_gpu.gpu_times)
+print(f"{gpu_avg_time:.6f} s")
 ~~~
 {: .language-python}
 
 We also report the output, obtained on the same notebook on Google Colab; as always note that your result will vary based on the environment and GPU you are using.
 
 ~~~
-3.08 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 7 loops each)
+0.008949 s
 ~~~
 {: .output}
 
@@ -105,7 +107,7 @@ Having recorded the average execution time of both operations, we can then compu
 The speedup is defined as the ratio between the sequential (NumPy in our case) and parallel (CuPy in our case) execution times; beware that both execution times need to be in the same unit, this is why we had to convert the GPU execution time from milliseconds to seconds.
 
 ~~~
-speedup = 1.72 / 0.00308
+speedup = 1.83 / 0.008949
 print(speedup)
 ~~~
 {: .language-python}
@@ -113,10 +115,10 @@ print(speedup)
 With the result of the previous operation being the following.
 
 ~~~
-559.4155844155845
+204.49212202480723
 ~~~
 {: .output}
 
-We can therefore say that just by using the GPU with CuPy to sort an array of size `4096 * 4096` we achieved a performance improvement of 559 times.
+We can therefore say that just by using the GPU with CuPy to sort an array of size `4096 * 4096` we achieved a performance improvement of 204 times.
 
 {% include links.md %}

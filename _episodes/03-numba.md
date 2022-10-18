@@ -27,11 +27,13 @@ This is code that you can find on many websites. Small variations are possible, 
 ~~~
 def find_all_primes_cpu(upper):
     all_prime_numbers = []
-    for num in range(2, upper):
+    for num in range(0, upper):
+        prime = True
         for i in range(2, (num // 2) + 1):
             if (num % i) == 0:
+                prime = False
                 break
-        else:
+        if prime:
             all_prime_numbers.append(num)
     return all_prime_numbers
 ~~~
@@ -47,7 +49,7 @@ Calling `find_all_primes_cpu(10_000)` will return all prime numbers between 1 an
 You will probably find that `find_all_primes_cpu` takes several hundreds of milliseconds to complete:
 
 ~~~
-186 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
+176 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
 ~~~
 {: .output}
 
@@ -59,13 +61,17 @@ from numba import jit
 @jit(nopython=True)
 def find_all_primes_cpu(upper):
     all_prime_numbers = []
-    for num in range(2, upper):
+    for num in range(0, upper):
+        prime = True
         for i in range(2, (num // 2) + 1):
             if (num % i) == 0:
+                prime = False
                 break
-        else:
+        if prime:
             all_prime_numbers.append(num)
     return all_prime_numbers
+
+%timeit -n 10 -r 1 find_all_primes_cpu(10_000)
 ~~~
 {: .language-python}
 
@@ -82,7 +88,7 @@ upper = 10_000
 which can give you a timing result similar to this:
 
 ~~~
-52.1 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
+69.5 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
 ~~~
 {: .output}
 
@@ -98,18 +104,19 @@ from numba import cuda
 
 @cuda.jit
 def check_prime_gpu_kernel(num, result):
-   result[0] =  0
+   result[0] =  num
    for i in range(2, (num // 2) + 1):
        if (num % i) == 0:
+           result[0] = 0
            break
-   else:
-       result[0] = num
 ~~~
 {: .language-python}
 
 A number of things are worth noting. CUDA kernels do not return anything, so you have to supply for an array to be modified. All arguments have to be arrays, if you work with scalars, make them arrays of length one. This is the case here, because we check if a single number is a prime or not. Let us see if this works:
 
 ~~~
+import numpy as np
+
 result = np.zeros((1), np.int32)
 check_prime_gpu_kernel[1, 1](11, result)
 print(result[0])
@@ -141,7 +148,7 @@ While this is an important argument, we will explain it later and for now we can
 > > ~~~
 > > def find_all_primes_cpu_and_gpu(upper):
 > >     all_prime_numbers = []
-> >     for num in range(2, upper):
+> >     for num in range(0, upper):
 > >         result = np.zeros((1), np.int32)
 > >         check_prime_gpu_kernel[1,1](num, result)
 > >         if result[0] > 0:
@@ -152,7 +159,7 @@ While this is an important argument, we will explain it later and for now we can
 > > ~~~
 > > {: .language-python}
 > > ~~~
-> > 5.26 s ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
+> > 6.21 s ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
 > > ~~~
 > > {: .output}
 > >
@@ -166,7 +173,7 @@ While this is an important argument, we will explain it later and for now we can
 Let us give the GPU a work load large enough to compensate for the overhead of data transfers to and from the GPU. For this example of computing primes we can best use the `vectorize` decorator for a new `check_prime_gpu` function that takes an array as input instead of `upper` in order to increase the work load. This is the array we have to use as input for our new `check_prime_gpu` function, instead of upper, a single integer:
 
 ~~~
-np.arange(2, 10_000, dtype=np.int32)
+np.arange(0, 10_000, dtype=np.int32)
 ~~~
 {: .language-python}
 
@@ -177,11 +184,10 @@ import numba as nb
 
 @nb.vectorize(['int32(int32)'], target='cuda')
 def check_prime_gpu(num):
-   for i in range(2, (num // 2) + 1):
+    for i in range(2, (num // 2) + 1):
        if (num % i) == 0:
            return 0
-   else:
-       return num
+    return num
 ~~~
 {: .language-python}
 
@@ -190,17 +196,17 @@ where we have added the `vectorize` decorator from Numba. The argument of `check
 Let us run it and record the elapsed time:
 
 ~~~
-%timeit -n 10 -r 1 check_prime_gpu(np.arange(2, 10_000, dtype=np.int32))
+%timeit -n 10 -r 1 check_prime_gpu(numbers)
 ~~~
 {: .language-python}
 
 which should show you a significant speedup:
 
 ~~~
-3.4 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
+5.9 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 10 loops each)
 ~~~
 {: .output}
 
-This amounts to an acceleration of our code of a factor 52/3.4 = 15 compared to the `jit(nopython=True)` decorated code on the CPU.
+This amounts to a speedup of our code of a factor 11 compared to the `jit(nopython=True)` decorated code on the CPU.
 
 {% include links.md %}
