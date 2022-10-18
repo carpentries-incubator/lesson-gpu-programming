@@ -37,11 +37,10 @@ import numba as nb
 
 @nb.vectorize(['int32(int32)'], target='cuda')
 def check_prime_gpu(num):
-   for i in range(2, (num // 2) + 1):
+    for i in range(2, (num // 2) + 1):
        if (num % i) == 0:
            return 0
-   else:
-       return num
+    return num
 ~~~
 {: .language-python}
 
@@ -64,8 +63,6 @@ While the processors cannot communicate with each other, the cores of the same p
 While so far in the lesson we had no control over the way in which the computation is mapped to the GPU for execution, this is something that we will address soon.
 
 # Different Memories
-
-<!-- Explain that GPUs have many different memories, some accessible to both CPU and GPU, some accessible to all groups of threads, some to only threads in the same group, and some private to threads. -->
 
 Another detail that we need to understand is that GPUs have different memories.
 We have a main memory that is available to all processors on the GPU; this memory, as we already know, is often physically separate from the CPU memory, but copies to and from are possible.
