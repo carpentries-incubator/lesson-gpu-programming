@@ -92,16 +92,16 @@ vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
 And to be sure that the CUDA code does exactly what we want, we can execute our sequential Python code and compare the results.
 
 ~~~
-import numpy
+import numpy as np
 
 a_cpu = cupy.asnumpy(a_gpu)
 b_cpu = cupy.asnumpy(b_gpu)
-c_cpu = numpy.zeros(size, dtype=numpy.float32)
+c_cpu = np.zeros(size, dtype=np.float32)
 
 vector_add(a_cpu, b_cpu, c_cpu, size)
 
 # test
-if numpy.allclose(c_cpu, c_gpu):
+if np.allclose(c_cpu, c_gpu):
     print("Correct results!")
 ~~~
 {: .language-python}
@@ -306,7 +306,7 @@ b_gpu = cupy.random.rand(size, dtype=cupy.float32)
 c_gpu = cupy.zeros(size, dtype=cupy.float32)
 a_cpu = cupy.asnumpy(a_gpu)
 b_cpu = cupy.asnumpy(b_gpu)
-c_cpu = numpy.zeros(size, dtype=numpy.float32)
+c_cpu = np.zeros(size, dtype=np.float32)
 
 # CPU code
 def vector_add(A, B, C, size):
@@ -330,7 +330,7 @@ vector_add_gpu((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size))
 vector_add(a_cpu, b_cpu, c_cpu, size)
 
 # test
-if numpy.allclose(c_cpu, c_gpu):
+if np.allclose(c_cpu, c_gpu):
     print("Correct results!")
 else:
     print("Wrong results!")
@@ -486,7 +486,7 @@ Correct results!
 > Given the following Python code, similar to what we have seen in the previous episode about Numba, write the missing CUDA kernel that computes all the prime numbers up to a certain upper bound.
 >
 > ~~~
-> import numpy
+> import numpy as np
 > import cupy
 > import math
 > from cupyx.profiler import benchmark
@@ -503,7 +503,7 @@ Correct results!
 >             prime_list[num] = 1
 > 
 > upper_bound = 100_000
-> all_primes_cpu = numpy.zeros(upper_bound, dtype=numpy.int32)
+> all_primes_cpu = np.zeros(upper_bound, dtype=np.int32)
 > 
 > # GPU version
 > check_prime_gpu_code = r'''
@@ -537,10 +537,10 @@ Correct results!
 > # Benchmark and test
 > %timeit -n 1 -r 1 all_primes_to(upper_bound, all_primes_cpu)
 > execution_gpu = benchmark(all_primes_to_gpu, (grid_size, block_size, (upper_bound, all_primes_gpu)), n_repeat=10)
-> gpu_avg_time = numpy.average(execution_gpu.gpu_times)
+> gpu_avg_time = np.average(execution_gpu.gpu_times)
 > print(f"{gpu_avg_time:.6f} s")
 >
-> if numpy.allclose(all_primes_cpu, all_primes_gpu):
+> if np.allclose(all_primes_cpu, all_primes_gpu):
 >     print("Correct results!")
 > else:
 >     print("Wrong results!")

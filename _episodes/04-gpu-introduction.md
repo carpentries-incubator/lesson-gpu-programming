@@ -37,25 +37,24 @@ import numba as nb
 
 @nb.vectorize(['int32(int32)'], target='cuda')
 def check_prime_gpu(num):
-   for i in range(2, (num // 2) + 1):
+    for i in range(2, (num // 2) + 1):
        if (num % i) == 0:
            return 0
-   else:
-       return num
+    return num
 ~~~
 {: .language-python}
 
 We did not need to write a different `check_prime_gpu` function for each processor, or core, on the GPU; actually, we have no idea how many processors and cores are available on the GPU we just used to execute this code!
 
 So we can imagine that each processors receives its copy of the `check_prime_gpu` function, and executes it independently of the other processors.
-We also know that by executing the following Python snippet, we are telling the GPU to execute our function on all numbers between 2 and 100000.
+We also know that by executing the following Python snippet, we are telling the GPU to execute our function on all numbers between 0 and 100000.
 
 ~~~
-check_prime_gpu(np.arange(2, 10000, dtype=np.int32))
+check_prime_gpu(np.arange(0, 10000, dtype=np.int32))
 ~~~
 {: .language-python}
 
-So each processor will get a copy of the code, and one subset of the numbers between 2 and 10000.
+So each processor will get a copy of the code, and one subset of the numbers between 0 and 10000.
 If we assume that our GPU has 4 processors, each of them will get around 2500 numbers to process; the processing of these numbers will be split among the various cores that the processor has.
 Again, let us assume that each processor has 8 cores, divided in 2 groups of 4 cores.
 Therefore, the 2500 numbers to process will be divided inside the processors in sets of 4 elements, and these sets will be scheduled for execution on the 2 groups of cores that each processor has available.
@@ -64,8 +63,6 @@ While the processors cannot communicate with each other, the cores of the same p
 While so far in the lesson we had no control over the way in which the computation is mapped to the GPU for execution, this is something that we will address soon.
 
 # Different Memories
-
-<!-- Explain that GPUs have many different memories, some accessible to both CPU and GPU, some accessible to all groups of threads, some to only threads in the same group, and some private to threads. -->
 
 Another detail that we need to understand is that GPUs have different memories.
 We have a main memory that is available to all processors on the GPU; this memory, as we already know, is often physically separate from the CPU memory, but copies to and from are possible.

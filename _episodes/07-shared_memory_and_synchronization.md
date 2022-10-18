@@ -142,7 +142,7 @@ And for completeness, we present the full Python code.
 
 ~~~
 import math
-import numpy
+import numpy as np
 import cupy
 
 # vector size
@@ -157,7 +157,7 @@ gpu_args = (a_gpu, b_gpu, c_gpu, size)
 # CPU memory allocation
 a_cpu = cupy.asnumpy(a_gpu)
 b_cpu = cupy.asnumpy(b_gpu)
-c_cpu = numpy.zeros(size, dtype=numpy.float32)
+c_cpu = np.zeros(size, dtype=np.float32)
 
 # CUDA code
 vector_add_cuda_code = r'''
@@ -187,7 +187,7 @@ vector_add_gpu(grid_size, block_size, gpu_args, shared_mem=(threads_per_block * 
 
 # execute Python code and compare results
 vector_add(a_cpu, b_cpu, c_cpu, size)
-numpy.allclose(c_cpu, c_gpu)
+np.allclose(c_cpu, c_gpu)
 ~~~
 {: .language-python}
 
@@ -210,8 +210,8 @@ The `histogram` function, as the name suggests, computes the histogram of an arr
 We can now generate some data and run the code.
 
 ~~~
-input_array = numpy.random.randint(256, size=2048, dtype=numpy.int32)
-output_array = numpy.zeros(256, dtype=numpy.int32)
+input_array = np.random.randint(256, size=2048, dtype=np.int32)
+output_array = np.zeros(256, dtype=np.int32)
 output_array = histogram(input_array, output_array)
 ~~~
 {: .language-python}
@@ -268,7 +268,7 @@ And the full Python code snippet.
 
 ~~~
 import math
-import numpy
+import numpy as np
 import cupy
 from cupyx.profiler import benchmark
 
@@ -306,7 +306,7 @@ block_size = (threads_per_block, 1, 1)
 # check correctness
 histogram(input_cpu, output_cpu)
 histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
-if numpy.allclose(output_cpu, output_gpu):
+if np.allclose(output_cpu, output_gpu):
     print("Correct results!")
 else:
     print("Wrong results!")
@@ -314,7 +314,7 @@ else:
 # measure performance
 %timeit -n 1 -r 1 histogram(input_cpu, output_cpu)
 execution_gpu = benchmark(histogram_gpu, (grid_size, block_size, (input_gpu, output_gpu)), n_repeat=10)
-gpu_avg_time = numpy.average(execution_gpu.gpu_times)
+gpu_avg_time = np.average(execution_gpu.gpu_times)
 print(f"{gpu_avg_time:.6f} s")
 ~~~
 {: .language-python}
@@ -416,7 +416,7 @@ And the full Python code snippet.
 
 ~~~
 import math
-import numpy
+import numpy as np
 import cupy
 from cupyx.profiler import benchmark
 
@@ -464,7 +464,7 @@ block_size = (threads_per_block, 1, 1)
 # check correctness
 histogram(input_cpu, output_cpu)
 histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
-if numpy.allclose(output_cpu, output_gpu):
+if np.allclose(output_cpu, output_gpu):
     print("Correct results!")
 else:
     print("Wrong results!")
@@ -472,7 +472,7 @@ else:
 # measure performance
 %timeit -n 1 -r 1 histogram(input_cpu, output_cpu)
 execution_gpu = benchmark(histogram_gpu, (grid_size, block_size, (input_gpu, output_gpu)), n_repeat=10)
-gpu_avg_time = numpy.average(execution_gpu.gpu_times)
+gpu_avg_time = np.average(execution_gpu.gpu_times)
 print(f"{gpu_avg_time:.6f} s")
 ~~~
 {: .language-python}
