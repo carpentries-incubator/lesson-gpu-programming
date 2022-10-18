@@ -47,14 +47,14 @@ def check_prime_gpu(num):
 We did not need to write a different `check_prime_gpu` function for each processor, or core, on the GPU; actually, we have no idea how many processors and cores are available on the GPU we just used to execute this code!
 
 So we can imagine that each processors receives its copy of the `check_prime_gpu` function, and executes it independently of the other processors.
-We also know that by executing the following Python snippet, we are telling the GPU to execute our function on all numbers between 2 and 100000.
+We also know that by executing the following Python snippet, we are telling the GPU to execute our function on all numbers between 0 and 100000.
 
 ~~~
 check_prime_gpu(np.arange(0, 10000, dtype=np.int32))
 ~~~
 {: .language-python}
 
-So each processor will get a copy of the code, and one subset of the numbers between 2 and 10000.
+So each processor will get a copy of the code, and one subset of the numbers between 0 and 10000.
 If we assume that our GPU has 4 processors, each of them will get around 2500 numbers to process; the processing of these numbers will be split among the various cores that the processor has.
 Again, let us assume that each processor has 8 cores, divided in 2 groups of 4 cores.
 Therefore, the 2500 numbers to process will be divided inside the processors in sets of 4 elements, and these sets will be scheduled for execution on the 2 groups of cores that each processor has available.
