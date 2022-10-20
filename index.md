@@ -14,8 +14,6 @@ permalink: index.html  # Is the only page that doesn't follow the pattern /:path
 > Preferred:
 >    - knowledge of NumPy
 >    - familiarity with high-performance computing concepts
-
-
 {: .prereq}
 
 {% include links.md %}
