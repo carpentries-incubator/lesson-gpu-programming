@@ -18,14 +18,12 @@ keypoints:
 
 # Summing Two Vectors in Python
 
-We start by introducing a program that, given two input vectors of the same size, returns a third vector containing the sum of the corresponding elements of the two input vectors.
+We start by introducing a program that, given two input vectors of the same size, stores the sum of the corresponding elements of the two input vectors into a third one.
 
 ~~~
 def vector_add(A, B, C, size):
     for item in range(0, size):
         C[item] = A[item] + B[item]
-    
-    return C
 ~~~
 {: .language-python}
 
@@ -312,8 +310,6 @@ c_cpu = np.zeros(size, dtype=np.float32)
 def vector_add(A, B, C, size):
     for item in range(0, size):
         C[item] = A[item] + B[item]
-    
-    return C
 
 # CUDA vector_add
 vector_add_gpu = cupy.RawKernel(r'''

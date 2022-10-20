@@ -50,7 +50,7 @@ So we can imagine that each processors receives its copy of the `check_prime_gpu
 We also know that by executing the following Python snippet, we are telling the GPU to execute our function on all numbers between 0 and 100000.
 
 ~~~
-check_prime_gpu(np.arange(0, 10000, dtype=np.int32))
+check_prime_gpu(np.arange(0, 10_000, dtype=np.int32))
 ~~~
 {: .language-python}
 

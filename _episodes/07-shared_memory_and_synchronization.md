@@ -202,7 +202,6 @@ We start again with some Python code.
 def histogram(input_array, output_array):
     for item in input_array:
         output_array[item] = output_array[item] + 1
-    return output_array
 ~~~
 {: .language-python}
 
@@ -212,7 +211,7 @@ We can now generate some data and run the code.
 ~~~
 input_array = np.random.randint(256, size=2048, dtype=np.int32)
 output_array = np.zeros(256, dtype=np.int32)
-output_array = histogram(input_array, output_array)
+histogram(input_array, output_array)
 ~~~
 {: .language-python}
 
@@ -275,7 +274,6 @@ from cupyx.profiler import benchmark
 def histogram(input_array, output_array):
     for item in input_array:
         output_array[item] = output_array[item] + 1
-    return output_array
 
 # input size
 size = 2**25
@@ -423,7 +421,6 @@ from cupyx.profiler import benchmark
 def histogram(input_array, output_array):
     for item in input_array:
         output_array[item] = output_array[item] + 1
-    return output_array
 
 # input size
 size = 2**25
