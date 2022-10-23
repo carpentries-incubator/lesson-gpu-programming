@@ -80,6 +80,7 @@ We now perform the same sorting operation, but this time we will be using CuPy t
 CuPy is an open-source library, compatible with NumPy, for GPU computing in Python.
 
 ~~~
+from cupyx.profiler import benchmark
 import cupy as cp
 input_gpu = cp.asarray(input)
 execution_gpu = benchmark(cp.sort, (input_gpu,), n_repeat=10)
