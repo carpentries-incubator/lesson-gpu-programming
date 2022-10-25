@@ -381,7 +381,7 @@ pyl.colorbar()
 ~~~
 {: .language-python}
 
-![Image of GC](../fig/mage_of_GC)
+![Image of GC](../fig/image_of_GC)
 
 Now that that does not show the level of detail that we are looking for. Let us zoom in a bit.
 
@@ -396,5 +396,6 @@ pyl.colorbar()
 
 which shows us a few sources but also the background noise:
 
+![Subimage of GC](../fig/subimage_of_GC)
 
 {% include links.md %}
