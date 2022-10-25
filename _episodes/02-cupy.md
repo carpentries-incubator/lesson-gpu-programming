@@ -354,4 +354,47 @@ The linear convolution is actually performed on the GPU, which also results in a
 
 Without much effort, we obtained a 18 times speedup. 
 
+# Expanding the shortcut, image processing for astronomy
+
+In this section, we will perform the four major steps in image processing for astronomy: determination of background characteristics, segmentation, connected component labelling and source measurements. 
+
+Start by importing a 2048² pixels image of the Galactic Center, an image made from observations by the Indian Giant Metrewave Radio Telescope (GMRT) at 150 MHz. 
+
+~~~
+from astropy.io import fits
+
+with fits.open("GMRT_image_of_Galactic_Center.fits") as hdul:
+    data = hdul[0].data.byteswap().newbyteorder()
+~~~
+{: .language-python}
+
+The latter two methods are needed to convert byte ordering from big endian to little endian.
+Let us have a look at part of this image.
+
+~~~
+from matplotlib.colors import LogNorm
+
+maxim = data.max()
+
+pyl.matshow(data, cmap=pyl.cm.gray_r, norm=LogNorm(vmin = maxim/100, vmax=maxim))
+pyl.colorbar()
+~~~
+{: .language-python}
+
+![Image of GC](../fig/mage_of_GC)
+
+Now that that does not show the level of detail that we are looking for. Let us zoom in a bit.
+
+~~~
+subimage = data[500:1000, 500:1000]
+maxim_sub = subimage.max()
+pyl.matshow(subimage, cmap=pyl.cm.gray_r, \
+            norm=LogNorm(vmin = maxim_sub/100, vmax=maxim_sub))
+pyl.colorbar()
+~~~
+{: .language-python}
+
+which shows us a few sources but also the background noise:
+
+
 {% include links.md %}
