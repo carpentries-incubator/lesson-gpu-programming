@@ -358,6 +358,8 @@ Without much effort, we obtained a 18 times speedup.
 
 In this section, we will perform the four major steps in image processing for astronomy: determination of background characteristics, segmentation, connected component labelling and source measurements. 
 
+## Import the FITS image.
+
 Start by importing a 2048² pixels image of the Galactic Center, an image made from observations by the Indian Giant Metrewave Radio Telescope (GMRT) at 150 MHz. 
 
 ~~~
@@ -369,6 +371,9 @@ with fits.open("GMRT_image_of_Galactic_Center.fits") as hdul:
 {: .language-python}
 
 The latter two methods are needed to convert byte ordering from big endian to little endian.
+
+## Inspect the image.
+
 Let us have a look at part of this image.
 
 ~~~
@@ -397,6 +402,8 @@ pyl.colorbar()
 This shows us a few sources, with a bit more detail than just a single dot, but also the background noise:
 
 ![Subimage of GC](../fig/subimage_of_GC)
+
+## Determine the background characteristics of the image.
 
 We want to identify all the sources - meaning e.g. stars, supernova remnants and distant galaxies - in this image and measure their positions and fluxes. How do we separate source pixels from background pixels? When do we know if a pixel with a high value belongs to a source or is simply a noise peak? We assume the background noise, which is a reflection of the limited sensitivity of the radio telescope, has a normal distribution. The chance of having a background pixel with a value above 5 times the standard deviation is 2.9e-7. We have 2²² = 4.2e6 pixels in our image, so the chance of catching at least one random noise peak by setting a threshold of 5 times the standard deviation is less than 50%. We refer to the standard deviation as \sigma.
 
@@ -498,6 +505,63 @@ mean = -1.945e-06, median = -9.796e-06, sttdev = 1.334e-02,maximum = 4.000e-02
 > > {: .language-python}
 > > ~~~
 > > The speedup factor for ks clipping is: 1.396e+01
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
+
+## Segment the image
+
+We have seen that clipping at the 5 \sigma level of an image this size (2048² pixels) will yield a chance of less than 50% that from all the sources we detect at least one will be a noise peak. So let us set the threshold at 5 \sigma and segment it.
+First check that we find the same standard deviation from our clipper on the GPU:
+
+~~~
+stddev_gpu_ = np.std(data_gpu_clipped)
+print(f"standard deviation of background_noise = {stddev_:.4f} Jy/beam")
+~~~
+{: .language-python}
+yields
+~~~
+standard deviation of background_noise = 0.0133 Jy/beam
+~~~
+{: .output}
+
+
+~~~
+threshold = 5 * stddev_
+segmented_image = np.where(data > threshold, 1,  0)
+timing_segmentation_CPU = %timeit -o np.where(data > threshold, 1,  0)
+fastest_segmentation_CPU = timing_segmentation_CPU.best 
+print(f"Fastest CPU segmentation time = {1000 * fastest_segmentation_CPU:.3e} ms.")
+~~~
+{: .language-python}
+
+~~~
+6.41 ms ± 55.3 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+Fastest CPU segmentation time = 6.294e+00 ms.
+~~~
+{: .output}
+
+> ## Challenge: perform the segmentation on the GPU and compute the speedup.
+> > ## Solution
+> > 
+> > ~~~
+> > data_gpu = cp.asarray(data)
+> > threshold = 5 * stddev_gpu_
+> > segmented_image_gpu = np.where(data_gpu > threshold, 1,  0)
+> > timing_segmentation_GPU = benchmark(np.where, (data_gpu > threshold, 1,  0), n_repeat=10)
+> > fastest_segmentation_GPU = np.min(timing_segmentation_GPU.gpu_times)
+> > print(f"{1000 * fastest_segmentation_GPU:.3e} ms")
+> > print()
+> > speedup_factor = fastest_segmentation_CPU/fastest_segmentation_GPU
+> > print(f"The speedup factor for segmentation is: {speedup_factor:.3e}")
+> > ~~~
+> > {: .language-python}
+> > This yields
+> > ~~~
+> > 3.298e-01 ms
+> > 
+> > The speedup factor for segmentation is: 1.908e+01
 > > ~~~
 > > {: .output}
 > {: .solution}
