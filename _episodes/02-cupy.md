@@ -567,4 +567,87 @@ Fastest CPU segmentation time = 6.294e+00 ms.
 > {: .solution}
 {: .challenge}
 
+# The segmentation yielded islands above the threshold. Label them. 
+This is called connected component labelling (CCL). It will replace pixel values in the segmented image - just consisting of zeros and ones - of the first connected group of pixels with the value 1 - so nothing changed, but just for that first group - the pixel values in the second group of connected pixels will all be 2, the third connected group of pixels will all have the value 3 etc.
+
+This is a CPU code for connected component labelling.
+~~~
+from scipy.ndimage import label
+labelled_image = np.empty(data.shape)
+number_of_sources_in_image = label(segmented_image, output = labelled_image)
+sigma_unicode = "\u03C3"
+print(f"The number of sources in the image at the 5{sigma_unicode} level is \
+{number_of_sources_in_image}.")
+
+timing_CCL_CPU = %timeit -o label(segmented_image, output = labelled_image)
+fastest_CCL_CPU = timing_CCL_CPU.best
+print(f"Fastest CPU CCL time = {1000 * fastest_CCL_CPU:.3e} ms.")
+~~~
+{: .language-python}
+This gives, on my machine:
+~~~
+The number of sources in the image at the 5σ level is 185.
+26.3 ms ± 965 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+Fastest CPU CCL time = 2.546e+01 ms.
+~~~
+{: .output}
+
+Let us not just accept the answer, but also do a sanity check. What are the values in the labbeled image?
+~~~
+print(f"These are all the pixel values we can find in the labelled image: \
+{np.unique(labelled_image)}")
+~~~
+{: .language-python}
+
+This should yield
+~~~
+These are all the pixel values we can find in the labelled image: [  0.   1.   2.   3.   4.   5.   6.   7.   8.   9.  10.  11.  12.  13.
+  14.  15.  16.  17.  18.  19.  20.  21.  22.  23.  24.  25.  26.  27.
+  28.  29.  30.  31.  32.  33.  34.  35.  36.  37.  38.  39.  40.  41.
+  42.  43.  44.  45.  46.  47.  48.  49.  50.  51.  52.  53.  54.  55.
+  56.  57.  58.  59.  60.  61.  62.  63.  64.  65.  66.  67.  68.  69.
+  70.  71.  72.  73.  74.  75.  76.  77.  78.  79.  80.  81.  82.  83.
+  84.  85.  86.  87.  88.  89.  90.  91.  92.  93.  94.  95.  96.  97.
+  98.  99. 100. 101. 102. 103. 104. 105. 106. 107. 108. 109. 110. 111.
+ 112. 113. 114. 115. 116. 117. 118. 119. 120. 121. 122. 123. 124. 125.
+ 126. 127. 128. 129. 130. 131. 132. 133. 134. 135. 136. 137. 138. 139.
+ 140. 141. 142. 143. 144. 145. 146. 147. 148. 149. 150. 151. 152. 153.
+ 154. 155. 156. 157. 158. 159. 160. 161. 162. 163. 164. 165. 166. 167.
+ 168. 169. 170. 171. 172. 173. 174. 175. 176. 177. 178. 179. 180. 181.
+ 182. 183. 184. 185.]
+~~~
+{: .output}
+
+
+> ## Challenge: perform this connected component labelling on the GPU and compute the speedup.
+> > ## Solution
+> > 
+> > ~~~
+> > from cupyx.scipy.ndimage import label as label_gpu
+> > labelled_image_gpu = cp.empty(data_gpu.shape)
+> > number_of_sources_in_image = label_gpu(segmented_image_gpu, \
+> >                                        output = labelled_image_gpu)
+> > 
+> > print(f"The number of sources in the image at the 5{sigma_unicode} level is \
+> > {number_of_sources_in_image}.")
+> > 
+> > timing_CCL_GPU = benchmark(label_gpu, \
+> >                            (segmented_image_gpu, None, labelled_image_gpu), n_repeat=10)
+> > fastest_CCL_GPU = np.amin(timing_CCL_GPU.gpu_times)
+> > print(f"Fastest CCL on the GPU is {1000 * fastest_CCL_GPU:.3e} ms")
+> > print()
+> > speedup_factor = fastest_CCL_CPU/fastest_CCL_GPU
+> > print(f"The speedup factor for CCL is: {speedup_factor:.3e}")
+> > ~~~
+> > {: .language-python}
+> > This yields
+> > ~~~
+> > The number of sources in the image at the 5σ level is 185.
+> > Fastest CCL on the GPU is 1.405e+00 ms
+> > 
+> > The speedup factor for CCL is: 1.812e+01
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
 {% include links.md %}
