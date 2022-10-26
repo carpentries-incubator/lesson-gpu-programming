@@ -650,4 +650,98 @@ These are all the pixel values we can find in the labelled image: [  0.   1.   2
 > > {: .output}
 > {: .solution}
 {: .challenge}
+
+# Source measurements
+
+We are ready for the final step. We have been given observing time to make this beautiful image of the Galactic Center, we have determined its background statistics, we have separated actual cosmic sources from noise and now we want to measure these cosmic sources. What are their positions and what are their flux densities?
+	
+Again, the algorithms from scipy.ndimage help us to determine these quantities.
+This is the CPU code for measuring our sources.
+
+~~~
+from scipy.ndimage import center_of_mass, sum_labels
+all_positions = center_of_mass(data, labelled_image, \
+                               range(1, number_of_sources_in_image+1))
+all_integrated_fluxes = sum_labels(data, labelled_image, \
+                               range(1, number_of_sources_in_image+1))
+
+print (f'These are the ten highest integrated fluxes of the sources in my image: \
+{np.sort(all_integrated_fluxes)[-10:]}')
+~~~
+{: .language-python}
+which gives the Galactic Center as the most luminous source, which makes sense when we look at our image.
+~~~
+These are the ten highest integrated fluxes of the sources in my image: [ 38.90615184  41.91485894  43.02203498  47.30590784  51.23707351
+  58.07289425  68.85673917  70.31223921  95.16443585 363.58937774]
+~~~
+{: .output}
+
+Now we can try to measure the execution times for both algorithms, like this:
+~~~
+%%timeit -o
+all_positions = center_of_mass(data, labelled_image, \
+                               range(1, number_of_sources_in_image+1))
+all_integrated_fluxes = sum_labels(data, labelled_image, \
+                               range(1, number_of_sources_in_image+1))
+~~~
+{: .language-python}
+which yields, on my machine:
+~~~
+797 ms ± 9.32 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+<TimeitResult : 797 ms ± 9.32 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)>
+~~~
+{: .output}
+
+To collect the result from that timing in our next cell block, we need a trick that uses the _ variable.
+
+~~~
+timing_source_measurements_CPU = _
+fastest_source_measurements_CPU = timing_source_measurements_CPU.best
+print(f"Fastest CPU set of source measurements = \
+{1000 * fastest_source_measurements_CPU:.3e} ms.")
+~~~
+{: .language-python}
+which yields
+~~~
+Fastest CPU set of source measurements = 7.838e+02 ms.
+~~~
+{: .output}
+
+Now it is time to do the same thing on a GPU. Let's see.
+
+~~~
+# Now on the GPU
+from cupyx.scipy.ndimage import center_of_mass as com_gpu
+from cupyx.scipy.ndimage import sum_labels as sl_gpu
+
+timing_position_measurements_GPU = benchmark(com_gpu, (data_gpu, labelled_image_gpu, \
+                                      cp.arange(1, number_of_sources_in_image+1)),
+                                      n_repeat =10)
+fastest_position_measurements_GPU = np.amin(timing_position_measurements_GPU.gpu_times)
+timing_flux_measurements_GPU = benchmark(sl_gpu, (data_gpu, labelled_image_gpu, \
+                                      cp.arange(1, number_of_sources_in_image+1)),
+                                      n_repeat =10)
+fastest_flux_measurements_GPU = np.amin(timing_flux_measurements_GPU.gpu_times)
+fastest_source_measurements_GPU = fastest_position_measurements_GPU + \
+                                  fastest_flux_measurements_GPU
+print(f"Fastest source measurements on the GPU take \
+ {1000 * fastest_source_measurements_GPU:.3e} ms")
+print()
+speedup_factor = fastest_source_measurements_CPU/fastest_source_measurements_GPU
+print(f"The speedup factor for source measurements is: {speedup_factor:.3e}")
+~~~
+{: .language-python}
+which gives
+
+~~~
+Fastest source measurements on the GPU take  5.616e+01 ms
+
+The speedup factor for source measurements is: 1.396e+01
+~~~
+{: .output}
+
+> ## Final challenge: compile the first three steps of image processing for astronomy, i.e. \kappa, \sigma clipping, segmentation and component labelling in a single function, that works for both CPU and GPU. 
+> > Calculate the speedup factor. If you have time left, you can add separate functions for source measurements, one for the CPU and one for the GPU and include their performance in calculating the speedup factor.
+
 {% include links.md %}
