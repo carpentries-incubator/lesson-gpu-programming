@@ -383,7 +383,7 @@ pyl.colorbar()
 
 ![Image of GC](../fig/image_of_GC)
 
-Now that that does not show the level of detail that we are looking for. Let us zoom in a bit.
+That does not show the level of detail that we are looking for. Let us zoom in a bit.
 
 ~~~
 subimage = data[500:1000, 500:1000]
@@ -394,8 +394,113 @@ pyl.colorbar()
 ~~~
 {: .language-python}
 
-which shows us a few sources but also the background noise:
+This shows us a few sources, with a bit more detail than just a single dot, but also the background noise:
 
 ![Subimage of GC](../fig/subimage_of_GC)
+
+We want to identify all the sources - meaning e.g. stars, supernova remnants and distant galaxies - in this image and measure their positions and fluxes. How do we separate source pixels from background pixels? When do we know if a pixel with a high value belongs to a source or is simply a noise peak? We assume the background noise, which is a reflection of the limited sensitivity of the radio telescope, has a normal distribution. The chance of having a background pixel with a value above 5 times the standard deviation is 2.9e-7. We have 2²² = 4.2e6 pixels in our image, so the chance of catching at least one random noise peak by setting a threshold of 5 times the standard deviation is less than 50%. We refer to the standard deviation as \sigma.
+
+How do we measure the standard deviation of the background pixels? First we need to separate them from the source pixels, based on their values, in the sense that high pixel values more likely come from sources. The technique we use is called \kappa, \sigma clipping. First we take all pixels and compute the standard deviation (\sigma). Then we compute the median and clip all pixels larger than median + 3 * \sigma and smaller than median - 3 * \sigma. From the clipped set, we compute the median and standard deviation again and clip again. Continue until no more pixels are clipped. The standard deviation from this final set of pixel values is the basis for the next step.
+
+Before clipping, let us investigate some properties of our unclipped data.
+~~~
+mean_ = data.mean()
+median_ = np.median(data)
+stddev_ = np.std(data)
+max_ = np.amax(data)
+print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e},\
+maximum = {max_:.3e}")
+~~~
+{: .language-python}
+
+The maximum flux density is 2506 mJy/beam, coming from the Galactic Center itself, so from the center of the image, while the overall standard deviation is 19.9 mJy/beam:
+
+~~~
+mean = 3.898e-04, median = 1.571e-05, sttdev = 1.993e-02,maximum = 2.506e+00
+~~~
+{: .output}
+
+You might observe that \kappa, \sigma clipping is a compute intense task, that is why we want to do it on a GPU. But let's first issue the algorithm on a CPU.
+
+This is the Numpy code to do this:
+
+~~~
+# Flattening our 2D data first makes subsequent steps easier.
+data_flat = data.ravel()
+# Here is a kappa, sigma clipper for the CPU
+def kappa_sigma_clipper(data_flat):
+    while True:
+         med = np.median(data_flat)
+         std = np.std(data_flat)
+         clipped_lower = data_flat.compress(data_flat > med - 3 * std)
+         clipped_both = clipped_lower.compress(clipped_lower < med + 3 * std)
+         if len(clipped_both) == len(data_flat):
+             break
+         data_flat = clipped_both  
+    return data_flat
+
+data_clipped = kappa_sigma_clipper(data_flat)
+timing_ks_clipping_cpu = %timeit -o kappa_sigma_clipper(data_flat)
+fastest_ks_clipping_cpu = timing_ks_clipping_cpu.best
+print(f"Fastest CPU ks clipping time = {1000 * fastest_ks_clipping_cpu:.3e} ms.")
+~~~
+{: .language-python}
+
+~~~
+793 ms ± 17.2 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+Fastest CPU ks clipping time = 7.777e+02 ms.
+~~~
+{: .output}
+
+So that is close to 1 second to perform these computations. Hopefully, we can speed this up using the GPU.
+How has \kappa, \sigma clipping influenced our statistics?
+
+~~~
+mean_ = data_clipped.mean()
+median_ = np.median(data_clipped)
+stddev_ = np.std(data_clipped)
+max_ = np.amax(data_clipped)
+print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e},\
+maximum = {max_:.3e}")
+~~~
+{: .language-python}
+
+All output statistics have become smaller which is reassuring; it seems data_clipped contains mostly background pixels:
+
+~~~
+mean = -1.945e-06, median = -9.796e-06, sttdev = 1.334e-02,maximum = 4.000e-02
+~~~
+{: .output}
+
+> ## Challenge: Now that you understand how the \kappa, \sigma clipping algorithm works, perform it on the GPU.
+> 
+> Also compute the speedup factor.
+>
+> > ## Solution
+> > 
+> > ~~~
+> > data_flat_gpu = cp.asarray(data_flat)
+> > data_gpu_clipped = kappa_sigma_clipper(data_flat_gpu)
+> > timing_ks_clipping_gpu = benchmark(kappa_sigma_clipper, (data_flat_gpu.ravel(), ), n_repeat=10)
+> > fastest_ks_clipping_gpu = np.min(timing_ks_clipping_gpu.gpu_times)
+> > print(f"{1000 * fastest_ks_clipping_gpu:.3e} ms")
+> > ~~~
+> > {: .language-python}
+> > ~~~
+> > 5.571e+01 ms
+> > ~~~
+> > {: .output}
+> >
+> > ~~~
+> > speedup_factor = fastest_ks_clipping_cpu/fastest_ks_clipping_gpu
+> > print(f"The speedup factor for ks clipping is: {speedup_factor:.3e}")
+> > ~~~
+> > {: .language-python}
+> > ~~~
+> > The speedup factor for ks clipping is: 1.396e+01
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
 
 {% include links.md %}
