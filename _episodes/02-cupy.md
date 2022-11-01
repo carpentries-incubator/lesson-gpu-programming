@@ -1,9 +1,9 @@
 ---
 title: "Using your GPU with CuPy"
 
-teaching: 45
+teaching: 90
 
-exercises: 15
+exercises: 30
 
 questions:
 - "How can I increase the performance of code that uses NumPy?"
@@ -354,7 +354,7 @@ The linear convolution is actually performed on the GPU, which also results in a
 
 Without much effort, we obtained a 18 times speedup. 
 
-# Real world example: image processing for radio astronomy
+# A real world example: image processing for radio astronomy
 
 In this section, we will perform the four major steps in image processing for radio astronomy: determination of background characteristics, segmentation, connected component labelling and source measurements. 
 
@@ -411,6 +411,7 @@ We want to identify all the sources - meaning e.g. stars, supernova remnants and
 How do we measure the standard deviation of the background pixels? First we need to separate them from the source pixels, based on their values, in the sense that high pixel values more likely come from sources. The technique we use is called $\kappa, \sigma$ clipping. First we take all pixels and compute the standard deviation ($\sigma$). Then we compute the median and clip all pixels larger than $median + 3 * \sigma$ and smaller than $median - 3 * \sigma$. From the clipped set, we compute the median and standard deviation again and clip again. Continue until no more pixels are clipped. The standard deviation from this final set of pixel values is the basis for the next step.
 
 Before clipping, let us investigate some properties of our unclipped data.
+
 ~~~
 mean_ = data.mean()
 median_ = np.median(data)
@@ -430,7 +431,7 @@ mean = 3.898e-04, median = 1.571e-05, sttdev = 1.993e-02,maximum = 2.506e+00
 
 You might observe that $\kappa, \sigma$ clipping is a compute intense task, that is why we want to do it on a GPU. But let's first issue the algorithm on a CPU.
 
-This is the Numpy code to do this:
+This is the NumPy code to do this:
 
 ~~~
 # Flattening our 2D data first makes subsequent steps easier.
@@ -480,9 +481,8 @@ mean = -1.945e-06, median = -9.796e-06, sttdev = 1.334e-02,maximum = 4.000e-02
 ~~~
 {: .output}
 
-> ## Challenge: Now that you understand how the $\kappa, \sigma$ clipping algorithm works, perform it on the GPU.
-> 
-> Also compute the speedup factor.
+> ## Challenge: $\kappa, \sigma$ clipping on the GPU
+> Now that you understand how the $\kappa, \sigma$ clipping algorithm works, perform it on the GPU using CuPy and compute the speedup.
 >
 > > ## Solution
 > > 
@@ -521,12 +521,13 @@ stddev_gpu_ = np.std(data_gpu_clipped)
 print(f"standard deviation of background_noise = {stddev_:.4f} Jy/beam")
 ~~~
 {: .language-python}
-yields
+
 ~~~
 standard deviation of background_noise = 0.0133 Jy/beam
 ~~~
 {: .output}
 
+With the standard deviation computed we apply the $5 \sigma$ threshold to the image.
 
 ~~~
 threshold = 5 * stddev_
@@ -543,7 +544,9 @@ Fastest CPU segmentation time = 6.294e+00 ms.
 ~~~
 {: .output}
 
-> ## Challenge: perform the segmentation on the GPU and compute the speedup.
+> ## Challenge: segmentation on the GPU
+> It is now time to use CuPy to perform the segmentation on the GPU and compute the speedup.
+>
 > > ## Solution
 > > 
 > > ~~~
@@ -568,7 +571,8 @@ Fastest CPU segmentation time = 6.294e+00 ms.
 > {: .solution}
 {: .challenge}
 
-# The segmentation yielded islands above the threshold. Label them. 
+## Labelling of the segmented data 
+
 This is called connected component labelling (CCL). It will replace pixel values in the segmented image - just consisting of zeros and ones - of the first connected group of pixels with the value 1 - so nothing changed, but just for that first group - the pixel values in the second group of connected pixels will all be 2, the third connected group of pixels will all have the value 3 etc.
 
 This is a CPU code for connected component labelling.
@@ -585,7 +589,9 @@ fastest_CCL_CPU = timing_CCL_CPU.best
 print(f"Fastest CPU CCL time = {1000 * fastest_CCL_CPU:.3e} ms.")
 ~~~
 {: .language-python}
+
 This gives, on my machine:
+
 ~~~
 The number of sources in the image at the 5σ level is 185.
 26.3 ms ± 965 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
@@ -594,13 +600,15 @@ Fastest CPU CCL time = 2.546e+01 ms.
 {: .output}
 
 Let us not just accept the answer, but also do a sanity check. What are the values in the labbeled image?
+
 ~~~
 print(f"These are all the pixel values we can find in the labelled image: \
 {np.unique(labelled_image)}")
 ~~~
 {: .language-python}
 
-This should yield
+This should show the following output:
+
 ~~~
 These are all the pixel values we can find in the labelled image: [  0.   1.   2.   3.   4.   5.   6.   7.   8.   9.  10.  11.  12.  13.
   14.  15.  16.  17.  18.  19.  20.  21.  22.  23.  24.  25.  26.  27.
@@ -620,7 +628,9 @@ These are all the pixel values we can find in the labelled image: [  0.   1.   2
 {: .output}
 
 
-> ## Challenge: perform this connected component labelling on the GPU and compute the speedup.
+> ## Challenge: labelling on the GPU
+> Use CuPy to perform the connected component labelling on the GPU and compute the speedup.
+>
 > > ## Solution
 > > 
 > > ~~~
@@ -656,7 +666,7 @@ These are all the pixel values we can find in the labelled image: [  0.   1.   2
 
 We are ready for the final step. We have been given observing time to make this beautiful image of the Galactic Center, we have determined its background statistics, we have separated actual cosmic sources from noise and now we want to measure these cosmic sources. What are their positions and what are their flux densities?
 	
-Again, the algorithms from scipy.ndimage help us to determine these quantities.
+Again, the algorithms from `scipy.ndimage` help us to determine these quantities.
 This is the CPU code for measuring our sources.
 
 ~~~
@@ -678,6 +688,7 @@ These are the ten highest integrated fluxes of the sources in my image: [ 38.906
 {: .output}
 
 Now we can try to measure the execution times for both algorithms, like this:
+
 ~~~
 %%timeit -o
 all_positions = center_of_mass(data, labelled_image, \
@@ -686,7 +697,9 @@ all_integrated_fluxes = sum_labels(data, labelled_image, \
                                range(1, number_of_sources_in_image+1))
 ~~~
 {: .language-python}
-which yields, on my machine:
+
+Which yields, on my machine:
+
 ~~~
 797 ms ± 9.32 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
 
@@ -694,7 +707,7 @@ which yields, on my machine:
 ~~~
 {: .output}
 
-To collect the result from that timing in our next cell block, we need a trick that uses the _ variable.
+To collect the result from that timing in our next cell block, we need a trick that uses the `_` variable.
 
 ~~~
 timing_source_measurements_CPU = _
@@ -703,7 +716,9 @@ print(f"Fastest CPU set of source measurements = \
 {1000 * fastest_source_measurements_CPU:.3e} ms.")
 ~~~
 {: .language-python}
-which yields
+
+Which yields
+
 ~~~
 Fastest CPU set of source measurements = 7.838e+02 ms.
 ~~~
@@ -733,7 +748,8 @@ speedup_factor = fastest_source_measurements_CPU/fastest_source_measurements_GPU
 print(f"The speedup factor for source measurements is: {speedup_factor:.3e}")
 ~~~
 {: .language-python}
-which gives
+
+Which gives
 
 ~~~
 Fastest source measurements on the GPU take  5.616e+01 ms
@@ -742,7 +758,9 @@ The speedup factor for source measurements is: 1.396e+01
 ~~~
 {: .output}
 
-> ## Final challenge: compile the first three steps of image processing for astronomy, i.e. $\kappa, \sigma$ clipping, segmentation and component labelling in a single function, that works for both CPU and GPU. 
-> > Calculate the speedup factor. If you have time left, you can add separate functions for source measurements, one for the CPU and one for the GPU and include their performance in calculating the speedup factor.
+> ## Challenge: putting it all together
+> Combine the first three steps of image processing for astronomy, i.e. $\kappa, \sigma$ clipping, segmentation and component labelling into a single function, that works for both CPU and GPU.
+> Calculate the speedup factor. If you have time left, you can add separate functions for source measurements, one for the CPU and one for the GPU and include their performance in calculating the speedup factor.
+{: .challenge}
 
 {% include links.md %}
