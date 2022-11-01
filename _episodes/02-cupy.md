@@ -386,7 +386,7 @@ pyl.colorbar()
 ~~~
 {: .language-python}
 
-![Image of GC](../fig/image_of_GC)
+![Image of GC](../fig/image_of_GC.png)
 
 That does not show the level of detail that we are looking for. Let us zoom in a bit.
 
@@ -401,7 +401,7 @@ pyl.colorbar()
 
 This shows us a few sources, with a bit more detail than just a single dot, but also the background noise:
 
-![Subimage of GC](../fig/subimage_of_GC)
+![Subimage of GC](../fig/subimage_of_GC.png)
 
 ## Determine the background characteristics of the image.
 
