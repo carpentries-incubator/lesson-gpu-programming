@@ -406,9 +406,9 @@ This shows us a few sources, with a bit more detail than just a single dot, but 
 
 ## Determine the background characteristics of the image.
 
-We want to identify all the sources - meaning e.g. stars, supernova remnants and distant galaxies - in this image and measure their positions and fluxes. How do we separate source pixels from background pixels? When do we know if a pixel with a high value belongs to a source or is simply a noise peak? We assume the background noise, which is a reflection of the limited sensitivity of the radio telescope, has a normal distribution. The chance of having a background pixel with a value above 5 times the standard deviation is 2.9e-7. We have 2²² = 4.2e6 pixels in our image, so the chance of catching at least one random noise peak by setting a threshold of 5 times the standard deviation is less than 50%. We refer to the standard deviation as \sigma.
+We want to identify all the sources - meaning e.g. stars, supernova remnants and distant galaxies - in this image and measure their positions and fluxes. How do we separate source pixels from background pixels? When do we know if a pixel with a high value belongs to a source or is simply a noise peak? We assume the background noise, which is a reflection of the limited sensitivity of the radio telescope, has a normal distribution. The chance of having a background pixel with a value above 5 times the standard deviation is 2.9e-7. We have 2²² = 4.2e6 pixels in our image, so the chance of catching at least one random noise peak by setting a threshold of 5 times the standard deviation is less than 50%. We refer to the standard deviation as $\sigma$.
 
-How do we measure the standard deviation of the background pixels? First we need to separate them from the source pixels, based on their values, in the sense that high pixel values more likely come from sources. The technique we use is called \kappa, \sigma clipping. First we take all pixels and compute the standard deviation (\sigma). Then we compute the median and clip all pixels larger than median + 3 * \sigma and smaller than median - 3 * \sigma. From the clipped set, we compute the median and standard deviation again and clip again. Continue until no more pixels are clipped. The standard deviation from this final set of pixel values is the basis for the next step.
+How do we measure the standard deviation of the background pixels? First we need to separate them from the source pixels, based on their values, in the sense that high pixel values more likely come from sources. The technique we use is called $\kappa, \sigma$ clipping. First we take all pixels and compute the standard deviation ($\sigma$). Then we compute the median and clip all pixels larger than $median + 3 * \sigma$ and smaller than $median - 3 * \sigma$. From the clipped set, we compute the median and standard deviation again and clip again. Continue until no more pixels are clipped. The standard deviation from this final set of pixel values is the basis for the next step.
 
 Before clipping, let us investigate some properties of our unclipped data.
 ~~~
@@ -428,7 +428,7 @@ mean = 3.898e-04, median = 1.571e-05, sttdev = 1.993e-02,maximum = 2.506e+00
 ~~~
 {: .output}
 
-You might observe that \kappa, \sigma clipping is a compute intense task, that is why we want to do it on a GPU. But let's first issue the algorithm on a CPU.
+You might observe that $\kappa, \sigma$ clipping is a compute intense task, that is why we want to do it on a GPU. But let's first issue the algorithm on a CPU.
 
 This is the Numpy code to do this:
 
@@ -461,7 +461,7 @@ Fastest CPU ks clipping time = 7.777e+02 ms.
 {: .output}
 
 So that is close to 1 second to perform these computations. Hopefully, we can speed this up using the GPU.
-How has \kappa, \sigma clipping influenced our statistics?
+How has $\kappa, \sigma$ clipping influenced our statistics?
 
 ~~~
 mean_ = data_clipped.mean()
@@ -480,7 +480,7 @@ mean = -1.945e-06, median = -9.796e-06, sttdev = 1.334e-02,maximum = 4.000e-02
 ~~~
 {: .output}
 
-> ## Challenge: Now that you understand how the \kappa, \sigma clipping algorithm works, perform it on the GPU.
+> ## Challenge: Now that you understand how the $\kappa, \sigma$ clipping algorithm works, perform it on the GPU.
 > 
 > Also compute the speedup factor.
 >
@@ -513,7 +513,7 @@ mean = -1.945e-06, median = -9.796e-06, sttdev = 1.334e-02,maximum = 4.000e-02
 
 ## Segment the image
 
-We have seen that clipping at the 5 \sigma level of an image this size (2048² pixels) will yield a chance of less than 50% that from all the sources we detect at least one will be a noise peak. So let us set the threshold at 5 \sigma and segment it.
+We have seen that clipping at the $5 \sigma$ level of an image this size (2048² pixels) will yield a chance of less than 50% that from all the sources we detect at least one will be a noise peak. So let us set the threshold at $5 \sigma$ and segment it.
 First check that we find the same standard deviation from our clipper on the GPU:
 
 ~~~
@@ -742,7 +742,7 @@ The speedup factor for source measurements is: 1.396e+01
 ~~~
 {: .output}
 
-> ## Final challenge: compile the first three steps of image processing for astronomy, i.e. \kappa, \sigma clipping, segmentation and component labelling in a single function, that works for both CPU and GPU. 
+> ## Final challenge: compile the first three steps of image processing for astronomy, i.e. $\kappa, \sigma$ clipping, segmentation and component labelling in a single function, that works for both CPU and GPU. 
 > > Calculate the speedup factor. If you have time left, you can add separate functions for source measurements, one for the CPU and one for the GPU and include their performance in calculating the speedup factor.
 
 {% include links.md %}
