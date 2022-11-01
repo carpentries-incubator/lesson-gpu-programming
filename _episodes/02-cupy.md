@@ -354,4 +354,394 @@ The linear convolution is actually performed on the GPU, which also results in a
 
 Without much effort, we obtained a 18 times speedup. 
 
+# Expanding the shortcut, image processing for astronomy
+
+In this section, we will perform the four major steps in image processing for astronomy: determination of background characteristics, segmentation, connected component labelling and source measurements. 
+
+## Import the FITS image.
+
+Start by importing a 2048² pixels image of the Galactic Center, an image made from observations by the Indian Giant Metrewave Radio Telescope (GMRT) at 150 MHz. 
+
+~~~
+from astropy.io import fits
+
+with fits.open("GMRT_image_of_Galactic_Center.fits") as hdul:
+    data = hdul[0].data.byteswap().newbyteorder()
+~~~
+{: .language-python}
+
+The latter two methods are needed to convert byte ordering from big endian to little endian.
+
+## Inspect the image.
+
+Let us have a look at part of this image.
+
+~~~
+from matplotlib.colors import LogNorm
+
+maxim = data.max()
+
+pyl.matshow(data, cmap=pyl.cm.gray_r, norm=LogNorm(vmin = maxim/100, vmax=maxim))
+pyl.colorbar()
+~~~
+{: .language-python}
+
+![Image of GC](../fig/image_of_GC)
+
+That does not show the level of detail that we are looking for. Let us zoom in a bit.
+
+~~~
+subimage = data[500:1000, 500:1000]
+maxim_sub = subimage.max()
+pyl.matshow(subimage, cmap=pyl.cm.gray_r, \
+            norm=LogNorm(vmin = maxim_sub/100, vmax=maxim_sub))
+pyl.colorbar()
+~~~
+{: .language-python}
+
+This shows us a few sources, with a bit more detail than just a single dot, but also the background noise:
+
+![Subimage of GC](../fig/subimage_of_GC)
+
+## Determine the background characteristics of the image.
+
+We want to identify all the sources - meaning e.g. stars, supernova remnants and distant galaxies - in this image and measure their positions and fluxes. How do we separate source pixels from background pixels? When do we know if a pixel with a high value belongs to a source or is simply a noise peak? We assume the background noise, which is a reflection of the limited sensitivity of the radio telescope, has a normal distribution. The chance of having a background pixel with a value above 5 times the standard deviation is 2.9e-7. We have 2²² = 4.2e6 pixels in our image, so the chance of catching at least one random noise peak by setting a threshold of 5 times the standard deviation is less than 50%. We refer to the standard deviation as \sigma.
+
+How do we measure the standard deviation of the background pixels? First we need to separate them from the source pixels, based on their values, in the sense that high pixel values more likely come from sources. The technique we use is called \kappa, \sigma clipping. First we take all pixels and compute the standard deviation (\sigma). Then we compute the median and clip all pixels larger than median + 3 * \sigma and smaller than median - 3 * \sigma. From the clipped set, we compute the median and standard deviation again and clip again. Continue until no more pixels are clipped. The standard deviation from this final set of pixel values is the basis for the next step.
+
+Before clipping, let us investigate some properties of our unclipped data.
+~~~
+mean_ = data.mean()
+median_ = np.median(data)
+stddev_ = np.std(data)
+max_ = np.amax(data)
+print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e},\
+maximum = {max_:.3e}")
+~~~
+{: .language-python}
+
+The maximum flux density is 2506 mJy/beam, coming from the Galactic Center itself, so from the center of the image, while the overall standard deviation is 19.9 mJy/beam:
+
+~~~
+mean = 3.898e-04, median = 1.571e-05, sttdev = 1.993e-02,maximum = 2.506e+00
+~~~
+{: .output}
+
+You might observe that \kappa, \sigma clipping is a compute intense task, that is why we want to do it on a GPU. But let's first issue the algorithm on a CPU.
+
+This is the Numpy code to do this:
+
+~~~
+# Flattening our 2D data first makes subsequent steps easier.
+data_flat = data.ravel()
+# Here is a kappa, sigma clipper for the CPU
+def kappa_sigma_clipper(data_flat):
+    while True:
+         med = np.median(data_flat)
+         std = np.std(data_flat)
+         clipped_lower = data_flat.compress(data_flat > med - 3 * std)
+         clipped_both = clipped_lower.compress(clipped_lower < med + 3 * std)
+         if len(clipped_both) == len(data_flat):
+             break
+         data_flat = clipped_both  
+    return data_flat
+
+data_clipped = kappa_sigma_clipper(data_flat)
+timing_ks_clipping_cpu = %timeit -o kappa_sigma_clipper(data_flat)
+fastest_ks_clipping_cpu = timing_ks_clipping_cpu.best
+print(f"Fastest CPU ks clipping time = {1000 * fastest_ks_clipping_cpu:.3e} ms.")
+~~~
+{: .language-python}
+
+~~~
+793 ms ± 17.2 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+Fastest CPU ks clipping time = 7.777e+02 ms.
+~~~
+{: .output}
+
+So that is close to 1 second to perform these computations. Hopefully, we can speed this up using the GPU.
+How has \kappa, \sigma clipping influenced our statistics?
+
+~~~
+mean_ = data_clipped.mean()
+median_ = np.median(data_clipped)
+stddev_ = np.std(data_clipped)
+max_ = np.amax(data_clipped)
+print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e},\
+maximum = {max_:.3e}")
+~~~
+{: .language-python}
+
+All output statistics have become smaller which is reassuring; it seems data_clipped contains mostly background pixels:
+
+~~~
+mean = -1.945e-06, median = -9.796e-06, sttdev = 1.334e-02,maximum = 4.000e-02
+~~~
+{: .output}
+
+> ## Challenge: Now that you understand how the \kappa, \sigma clipping algorithm works, perform it on the GPU.
+> 
+> Also compute the speedup factor.
+>
+> > ## Solution
+> > 
+> > ~~~
+> > data_flat_gpu = cp.asarray(data_flat)
+> > data_gpu_clipped = kappa_sigma_clipper(data_flat_gpu)
+> > timing_ks_clipping_gpu = benchmark(kappa_sigma_clipper, (data_flat_gpu.ravel(), ), n_repeat=10)
+> > fastest_ks_clipping_gpu = np.min(timing_ks_clipping_gpu.gpu_times)
+> > print(f"{1000 * fastest_ks_clipping_gpu:.3e} ms")
+> > ~~~
+> > {: .language-python}
+> > ~~~
+> > 5.571e+01 ms
+> > ~~~
+> > {: .output}
+> >
+> > ~~~
+> > speedup_factor = fastest_ks_clipping_cpu/fastest_ks_clipping_gpu
+> > print(f"The speedup factor for ks clipping is: {speedup_factor:.3e}")
+> > ~~~
+> > {: .language-python}
+> > ~~~
+> > The speedup factor for ks clipping is: 1.396e+01
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
+
+## Segment the image
+
+We have seen that clipping at the 5 \sigma level of an image this size (2048² pixels) will yield a chance of less than 50% that from all the sources we detect at least one will be a noise peak. So let us set the threshold at 5 \sigma and segment it.
+First check that we find the same standard deviation from our clipper on the GPU:
+
+~~~
+stddev_gpu_ = np.std(data_gpu_clipped)
+print(f"standard deviation of background_noise = {stddev_:.4f} Jy/beam")
+~~~
+{: .language-python}
+yields
+~~~
+standard deviation of background_noise = 0.0133 Jy/beam
+~~~
+{: .output}
+
+
+~~~
+threshold = 5 * stddev_
+segmented_image = np.where(data > threshold, 1,  0)
+timing_segmentation_CPU = %timeit -o np.where(data > threshold, 1,  0)
+fastest_segmentation_CPU = timing_segmentation_CPU.best 
+print(f"Fastest CPU segmentation time = {1000 * fastest_segmentation_CPU:.3e} ms.")
+~~~
+{: .language-python}
+
+~~~
+6.41 ms ± 55.3 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+Fastest CPU segmentation time = 6.294e+00 ms.
+~~~
+{: .output}
+
+> ## Challenge: perform the segmentation on the GPU and compute the speedup.
+> > ## Solution
+> > 
+> > ~~~
+> > data_gpu = cp.asarray(data)
+> > threshold = 5 * stddev_gpu_
+> > segmented_image_gpu = np.where(data_gpu > threshold, 1,  0)
+> > timing_segmentation_GPU = benchmark(np.where, (data_gpu > threshold, 1,  0), n_repeat=10)
+> > fastest_segmentation_GPU = np.min(timing_segmentation_GPU.gpu_times)
+> > print(f"{1000 * fastest_segmentation_GPU:.3e} ms")
+> > print()
+> > speedup_factor = fastest_segmentation_CPU/fastest_segmentation_GPU
+> > print(f"The speedup factor for segmentation is: {speedup_factor:.3e}")
+> > ~~~
+> > {: .language-python}
+> > This yields
+> > ~~~
+> > 3.298e-01 ms
+> > 
+> > The speedup factor for segmentation is: 1.908e+01
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
+
+# The segmentation yielded islands above the threshold. Label them. 
+This is called connected component labelling (CCL). It will replace pixel values in the segmented image - just consisting of zeros and ones - of the first connected group of pixels with the value 1 - so nothing changed, but just for that first group - the pixel values in the second group of connected pixels will all be 2, the third connected group of pixels will all have the value 3 etc.
+
+This is a CPU code for connected component labelling.
+~~~
+from scipy.ndimage import label
+labelled_image = np.empty(data.shape)
+number_of_sources_in_image = label(segmented_image, output = labelled_image)
+sigma_unicode = "\u03C3"
+print(f"The number of sources in the image at the 5{sigma_unicode} level is \
+{number_of_sources_in_image}.")
+
+timing_CCL_CPU = %timeit -o label(segmented_image, output = labelled_image)
+fastest_CCL_CPU = timing_CCL_CPU.best
+print(f"Fastest CPU CCL time = {1000 * fastest_CCL_CPU:.3e} ms.")
+~~~
+{: .language-python}
+This gives, on my machine:
+~~~
+The number of sources in the image at the 5σ level is 185.
+26.3 ms ± 965 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+Fastest CPU CCL time = 2.546e+01 ms.
+~~~
+{: .output}
+
+Let us not just accept the answer, but also do a sanity check. What are the values in the labbeled image?
+~~~
+print(f"These are all the pixel values we can find in the labelled image: \
+{np.unique(labelled_image)}")
+~~~
+{: .language-python}
+
+This should yield
+~~~
+These are all the pixel values we can find in the labelled image: [  0.   1.   2.   3.   4.   5.   6.   7.   8.   9.  10.  11.  12.  13.
+  14.  15.  16.  17.  18.  19.  20.  21.  22.  23.  24.  25.  26.  27.
+  28.  29.  30.  31.  32.  33.  34.  35.  36.  37.  38.  39.  40.  41.
+  42.  43.  44.  45.  46.  47.  48.  49.  50.  51.  52.  53.  54.  55.
+  56.  57.  58.  59.  60.  61.  62.  63.  64.  65.  66.  67.  68.  69.
+  70.  71.  72.  73.  74.  75.  76.  77.  78.  79.  80.  81.  82.  83.
+  84.  85.  86.  87.  88.  89.  90.  91.  92.  93.  94.  95.  96.  97.
+  98.  99. 100. 101. 102. 103. 104. 105. 106. 107. 108. 109. 110. 111.
+ 112. 113. 114. 115. 116. 117. 118. 119. 120. 121. 122. 123. 124. 125.
+ 126. 127. 128. 129. 130. 131. 132. 133. 134. 135. 136. 137. 138. 139.
+ 140. 141. 142. 143. 144. 145. 146. 147. 148. 149. 150. 151. 152. 153.
+ 154. 155. 156. 157. 158. 159. 160. 161. 162. 163. 164. 165. 166. 167.
+ 168. 169. 170. 171. 172. 173. 174. 175. 176. 177. 178. 179. 180. 181.
+ 182. 183. 184. 185.]
+~~~
+{: .output}
+
+
+> ## Challenge: perform this connected component labelling on the GPU and compute the speedup.
+> > ## Solution
+> > 
+> > ~~~
+> > from cupyx.scipy.ndimage import label as label_gpu
+> > labelled_image_gpu = cp.empty(data_gpu.shape)
+> > number_of_sources_in_image = label_gpu(segmented_image_gpu, \
+> >                                        output = labelled_image_gpu)
+> > 
+> > print(f"The number of sources in the image at the 5{sigma_unicode} level is \
+> > {number_of_sources_in_image}.")
+> > 
+> > timing_CCL_GPU = benchmark(label_gpu, \
+> >                            (segmented_image_gpu, None, labelled_image_gpu), n_repeat=10)
+> > fastest_CCL_GPU = np.amin(timing_CCL_GPU.gpu_times)
+> > print(f"Fastest CCL on the GPU is {1000 * fastest_CCL_GPU:.3e} ms")
+> > print()
+> > speedup_factor = fastest_CCL_CPU/fastest_CCL_GPU
+> > print(f"The speedup factor for CCL is: {speedup_factor:.3e}")
+> > ~~~
+> > {: .language-python}
+> > This yields
+> > ~~~
+> > The number of sources in the image at the 5σ level is 185.
+> > Fastest CCL on the GPU is 1.405e+00 ms
+> > 
+> > The speedup factor for CCL is: 1.812e+01
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
+
+# Source measurements
+
+We are ready for the final step. We have been given observing time to make this beautiful image of the Galactic Center, we have determined its background statistics, we have separated actual cosmic sources from noise and now we want to measure these cosmic sources. What are their positions and what are their flux densities?
+	
+Again, the algorithms from scipy.ndimage help us to determine these quantities.
+This is the CPU code for measuring our sources.
+
+~~~
+from scipy.ndimage import center_of_mass, sum_labels
+all_positions = center_of_mass(data, labelled_image, \
+                               range(1, number_of_sources_in_image+1))
+all_integrated_fluxes = sum_labels(data, labelled_image, \
+                               range(1, number_of_sources_in_image+1))
+
+print (f'These are the ten highest integrated fluxes of the sources in my image: \
+{np.sort(all_integrated_fluxes)[-10:]}')
+~~~
+{: .language-python}
+which gives the Galactic Center as the most luminous source, which makes sense when we look at our image.
+~~~
+These are the ten highest integrated fluxes of the sources in my image: [ 38.90615184  41.91485894  43.02203498  47.30590784  51.23707351
+  58.07289425  68.85673917  70.31223921  95.16443585 363.58937774]
+~~~
+{: .output}
+
+Now we can try to measure the execution times for both algorithms, like this:
+~~~
+%%timeit -o
+all_positions = center_of_mass(data, labelled_image, \
+                               range(1, number_of_sources_in_image+1))
+all_integrated_fluxes = sum_labels(data, labelled_image, \
+                               range(1, number_of_sources_in_image+1))
+~~~
+{: .language-python}
+which yields, on my machine:
+~~~
+797 ms ± 9.32 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+<TimeitResult : 797 ms ± 9.32 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)>
+~~~
+{: .output}
+
+To collect the result from that timing in our next cell block, we need a trick that uses the _ variable.
+
+~~~
+timing_source_measurements_CPU = _
+fastest_source_measurements_CPU = timing_source_measurements_CPU.best
+print(f"Fastest CPU set of source measurements = \
+{1000 * fastest_source_measurements_CPU:.3e} ms.")
+~~~
+{: .language-python}
+which yields
+~~~
+Fastest CPU set of source measurements = 7.838e+02 ms.
+~~~
+{: .output}
+
+Now it is time to do the same thing on a GPU. Let's see.
+
+~~~
+# Now on the GPU
+from cupyx.scipy.ndimage import center_of_mass as com_gpu
+from cupyx.scipy.ndimage import sum_labels as sl_gpu
+
+timing_position_measurements_GPU = benchmark(com_gpu, (data_gpu, labelled_image_gpu, \
+                                      cp.arange(1, number_of_sources_in_image+1)),
+                                      n_repeat =10)
+fastest_position_measurements_GPU = np.amin(timing_position_measurements_GPU.gpu_times)
+timing_flux_measurements_GPU = benchmark(sl_gpu, (data_gpu, labelled_image_gpu, \
+                                      cp.arange(1, number_of_sources_in_image+1)),
+                                      n_repeat =10)
+fastest_flux_measurements_GPU = np.amin(timing_flux_measurements_GPU.gpu_times)
+fastest_source_measurements_GPU = fastest_position_measurements_GPU + \
+                                  fastest_flux_measurements_GPU
+print(f"Fastest source measurements on the GPU take \
+ {1000 * fastest_source_measurements_GPU:.3e} ms")
+print()
+speedup_factor = fastest_source_measurements_CPU/fastest_source_measurements_GPU
+print(f"The speedup factor for source measurements is: {speedup_factor:.3e}")
+~~~
+{: .language-python}
+which gives
+
+~~~
+Fastest source measurements on the GPU take  5.616e+01 ms
+
+The speedup factor for source measurements is: 1.396e+01
+~~~
+{: .output}
+
+> ## Final challenge: compile the first three steps of image processing for astronomy, i.e. \kappa, \sigma clipping, segmentation and component labelling in a single function, that works for both CPU and GPU. 
+> > Calculate the speedup factor. If you have time left, you can add separate functions for source measurements, one for the CPU and one for the GPU and include their performance in calculating the speedup factor.
+
 {% include links.md %}
