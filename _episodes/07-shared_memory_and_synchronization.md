@@ -335,6 +335,7 @@ As you may expect, we can improve the memory access pattern by using shared memo
 >     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
 >     // Declare temporary histogram in shared memory
 >     int temp_histogram[256];
+>
 >     // Update the temporary histogram in shared memory
 >     atomicAdd();
 >     // Update the global histogram in global memory, using the temporary histogram
