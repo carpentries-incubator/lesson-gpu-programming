@@ -358,7 +358,7 @@ Without much effort, we obtained a 18 times speedup.
 
 In this section, we will perform the four major steps in image processing for radio astronomy: determination of background characteristics, segmentation, connected component labelling and source measurements. 
 
-## Import the FITS image.
+## Import the FITS image
 
 Start by importing a 2048² pixels image of the Galactic Center, an image made from observations by the Indian Giant Metrewave Radio Telescope (GMRT) at 150 MHz.
 The image is stored as a [FITS](https://en.wikipedia.org/wiki/FITS) file, and to read it we need the `astropy` Python package.
@@ -373,7 +373,7 @@ with fits.open("GMRT_image_of_Galactic_Center.fits") as hdul:
 
 The latter two methods are needed to convert byte ordering from big endian to little endian.
 
-## Inspect the image.
+## Inspect the image
 
 Let us have a look at part of this image.
 
@@ -404,7 +404,7 @@ This shows us a few sources, with a bit more detail than just a single dot, but 
 
 ![Subimage of GC](../fig/subimage_of_GC.png)
 
-## Determine the background characteristics of the image.
+## Determine the background characteristics of the image
 
 We want to identify all the sources - meaning e.g. stars, supernova remnants and distant galaxies - in this image and measure their positions and fluxes. How do we separate source pixels from background pixels? When do we know if a pixel with a high value belongs to a source or is simply a noise peak? We assume the background noise, which is a reflection of the limited sensitivity of the radio telescope, has a normal distribution. The chance of having a background pixel with a value above 5 times the standard deviation is 2.9e-7. We have 2²² = 4.2e6 pixels in our image, so the chance of catching at least one random noise peak by setting a threshold of 5 times the standard deviation is less than 50%. We refer to the standard deviation as $\sigma$.
 
