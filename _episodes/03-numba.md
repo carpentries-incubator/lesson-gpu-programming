@@ -173,7 +173,7 @@ While this is an important argument, we will explain it later and for now we can
 Let us give the GPU a work load large enough to compensate for the overhead of data transfers to and from the GPU. For this example of computing primes we can best use the `vectorize` decorator for a new `check_prime_gpu` function that takes an array as input instead of `upper` in order to increase the work load. This is the array we have to use as input for our new `check_prime_gpu` function, instead of upper, a single integer:
 
 ~~~
-np.arange(0, 10_000, dtype=np.int32)
+numbers = np.arange(0, 10_000, dtype=np.int32)
 ~~~
 {: .language-python}
 
