@@ -28,7 +28,7 @@ cd /path/to/workshop/dir
 python -m virtualenv --prompt gpu-workshop venv
 source venv/bin/activate
 pip install -U pip  # it is good to update pip to the latest version
-pip install cupy-cuda11x numba jupyterlab matplotlib
+pip install cupy-cuda11x numba jupyterlab matplotlib scipy astropy
 ~~~
 
 **Note:** we are installing the precompiled `cupy` libraries compiled against the latest version of CUDA.  This is always faster to install, but if you want to use a custom CUDA installation, you can `pip install cupy` instead.  Also note, if you also want the cuda compiler `nvcc`, you have to install the CUDA toolkit manually.  However, this is not required to follow the workshop.  More information can be found in the [`cupy` documentation](https://docs.cupy.dev/en/stable/install.html).
@@ -39,7 +39,7 @@ pip install cupy-cuda11x numba jupyterlab matplotlib
 ~~~bash
 mamba create -n gpu-workshop
 mamba activate gpu-workshop
-mamba install cupy numba jupyterlab matplotlib
+mamba install cupy numba jupyterlab matplotlib scipy astropy
 ~~~
 If you are using `conda`, you can simply replace `mamba` with `conda` in the commands above.
 
