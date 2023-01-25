@@ -219,6 +219,7 @@ Everything as expected.
 We can now write the equivalent code in CUDA.
 
 ~~~
+extern "C"
 __global__ void histogram(const int * input, int * output)
 {
     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
@@ -234,6 +235,7 @@ __global__ void histogram(const int * input, int * output)
 > Can you find it?
 >
 > ~~~
+> extern "C"
 > __global__ void histogram(const int * input, int * output)
 > {
 >     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
@@ -254,6 +256,7 @@ To solve this problem, we need to use a function from the CUDA library named `at
 This function ensures that the increment of `output_array` happens in an atomic way, so that there are no conflicts in case multiple threads want to update the same item at the same time.
 
 ~~~
+extern "C"
 __global__ void histogram(const int * input, int * output)
 {
     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
@@ -330,6 +333,7 @@ As you may expect, we can improve the memory access pattern by using shared memo
 > Modify the following code and follow the suggestions in the comments.
 >
 > ~~~
+> extern "C"
 > __global__ void histogram(const int * input, int * output)
 > {
 >     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
@@ -353,6 +357,7 @@ As you may expect, we can improve the memory access pattern by using shared memo
 > > The following code shows one of the possible solutions.
 > > 
 > > ~~~
+> > extern "C"
 > > __global__ void histogram(const int * input, int * output)
 > > {
 > >     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
@@ -391,6 +396,7 @@ Moreover, shared memory is not initialized, and the programmer needs to take car
 So we need to first initialize `temp_histogram`, wait that all threads are done doing this, perform the computation in shared memory, wait again that all threads are done, and only then update the global array.
 
 ~~~
+extern "C"
 __global__ void histogram(const int * input, int * output)
 {
     int item = (blockIdx.x * blockDim.x) + threadIdx.x;
