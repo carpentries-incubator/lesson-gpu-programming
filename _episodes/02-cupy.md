@@ -406,7 +406,7 @@ mean_ = data.mean()
 median_ = np.median(data)
 stddev_ = np.std(data)
 max_ = np.amax(data)
-print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e},\
+print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e}, \
 maximum = {max_:.3e}")
 ~~~
 {: .language-python}
@@ -414,7 +414,7 @@ maximum = {max_:.3e}")
 The maximum flux density is 2506 mJy/beam, coming from the Galactic Center itself, so from the center of the image, while the overall standard deviation is 19.9 mJy/beam:
 
 ~~~
-mean = 3.898e-04, median = 1.571e-05, sttdev = 1.993e-02,maximum = 2.506e+00
+mean = 3.898e-04, median = 1.571e-05, sttdev = 1.993e-02, maximum = 2.506e+00
 ~~~
 {: .output}
 
@@ -458,7 +458,7 @@ mean_ = data_clipped.mean()
 median_ = np.median(data_clipped)
 stddev_ = np.std(data_clipped)
 max_ = np.amax(data_clipped)
-print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e},\
+print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e}, \
 maximum = {max_:.3e}")
 ~~~
 {: .language-python}
@@ -466,7 +466,7 @@ maximum = {max_:.3e}")
 All output statistics have become smaller which is reassuring; it seems data_clipped contains mostly background pixels:
 
 ~~~
-mean = -1.945e-06, median = -9.796e-06, sttdev = 1.334e-02,maximum = 4.000e-02
+mean = -1.945e-06, median = -9.796e-06, sttdev = 1.334e-02, maximum = 4.000e-02
 ~~~
 {: .output}
 
