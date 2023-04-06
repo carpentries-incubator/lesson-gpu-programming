@@ -382,27 +382,16 @@ from matplotlib.colors import LogNorm
 
 maxim = data.max()
 
-pyl.matshow(data, cmap=pyl.cm.gray_r, norm=LogNorm(vmin = maxim/100, vmax=maxim))
-pyl.colorbar()
+fig = pyl.figure(figsize=(50, 12.5))
+ax = fig.add_subplot(1, 1, 1)
+im_plot = ax.imshow(np.fliplr(data), cmap=pyl.cm.gray_r, norm=LogNorm(vmin = maxim/10, vmax=maxim/100))
+pyl.colorbar(im_plot, ax=ax)
 ~~~
 {: .language-python}
 
-![Image of GC](../fig/image_of_GC.png)
+![Image of GC](../fig/improved_image_of_GC.png)
 
-That does not show the level of detail that we are looking for. Let us zoom in a bit.
-
-~~~
-subimage = data[500:1000, 500:1000]
-maxim_sub = subimage.max()
-pyl.matshow(subimage, cmap=pyl.cm.gray_r, \
-            norm=LogNorm(vmin = maxim_sub/100, vmax=maxim_sub))
-pyl.colorbar()
-~~~
-{: .language-python}
-
-This shows us a few sources, with a bit more detail than just a single dot, but also the background noise:
-
-![Subimage of GC](../fig/subimage_of_GC.png)
+The data has been switched left to right because Right Ascension increases to the left, so now it adheres to this astronomical convention. We can see a few dozen sources, especially in the lower left and upper right, which both have relatively good image quality. The band across the image from upper left to lower right has the worst image quality because there are many extended sources - especially the Galactic Center itself, in the middle - which are hard to deconvolve with the limited spacings from this observation. You can, however, see a couple of ring-like structures. These are actually supernova shells, i.e. the remnants from massive stars that exploded at the end of their lifes.
 
 ## Determine the background characteristics of the image
 
