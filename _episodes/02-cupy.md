@@ -1,9 +1,9 @@
 ---
 title: "Using your GPU with CuPy"
 
-teaching: 90
+teaching: 210
 
-exercises: 30
+exercises: 60
 
 questions:
 - "How can I increase the performance of code that uses NumPy?"
@@ -16,7 +16,7 @@ objectives:
 - "Be able to quickly estimate the speed benefits for a simple calculation by moving it from the CPU to the GPU."
 
 keypoints:
-- "CuPy provides GPU accelerated version of many NumPy functions."
+- "CuPy provides GPU accelerated version of many NumPy and Scipy functions."
 - "Always have CPU and GPU versions of your code so that you can compare performance, as well as validate your code."
 ---
 
