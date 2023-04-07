@@ -697,7 +697,7 @@ Fastest CPU set of source measurements = 7.838e+02 ms.
 > >     np.amin(timing_complete_processing_CPU.cpu_times)
 > > 
 > > print(f"The four steps of image processing for astronomy take \
-> >         {1000 * fastest_complete_processing_CPU:.3e} ms on our CPU.\n")
+> > {1000 * fastest_complete_processing_CPU:.3e} ms\n on our CPU.")
 > > 
 > > from cupyx.scipy.ndimage import label as label_gpu
 > > from cupyx.scipy.ndimage import center_of_mass as com_gpu
@@ -729,12 +729,12 @@ Fastest CPU set of source measurements = 7.838e+02 ms.
 > >     np.amin(timing_complete_processing_GPU.gpu_times)
 > > 
 > > print(f"The four steps of image processing for astronomy take \
-> >         {1000 * fastest_complete_processing_GPU:.3e} ms on our GPU.\n")
+> > {1000 * fastest_complete_processing_GPU:.3e} ms\n on our GPU.")
 > > 
 > > overall_speedup_factor = fastest_complete_processing_CPU/ \
 > >                          fastest_complete_processing_GPU
-> > print(f"This means that the overall speedup factor GPU vs CPU equals:\
-> >         {overall_speedup_factor:.3e}\n")
+> > print(f"This means that the overall speedup factor GPU vs CPU equals: \
+> > {overall_speedup_factor:.3e}\n")
 > > 
 > > all_positions_agree = np.allclose(CPU_output[0], GPU_output[0])
 > > print(f"The CPU and GPU positions agree: {all_positions_agree}\n")
@@ -743,6 +743,17 @@ Fastest CPU set of source measurements = 7.838e+02 ms.
 > > print(f"The CPU and GPU fluxes agree: {all_positions_agree}\n")
 > > ~~~
 > > {: .language-python}
+> > ~~~
+> > The four steps of image processing for astronomy take 1.060e+03 ms 
+> >  on our CPU.
+> > The four steps of image processing for astronomy take 5.770e+01 ms 
+> >  on our GPU.
+> > This means that the overall speedup factor GPU vs CPU equals: 1.838e+01
+> > 
+> > The CPU and GPU positions agree: True
+> > 
+> > The CPU and GPU fluxes agree: True
+> > ~~~
 > > {: .output}
 > {: .solution}
 {: .challenge}
