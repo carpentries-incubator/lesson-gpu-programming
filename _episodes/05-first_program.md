@@ -473,7 +473,7 @@ vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))
 So putting this all together in a full snippet we can execute the code again.
 
 ~~~
-vector_add_gpu = cupy.RawKernel(r'''
+vector_add_cuda_code = r'''
 extern "C"
 __global__ void vector_add(const float * A, const float * B, float * C, const int size)
 {
@@ -483,7 +483,8 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
       C[item] = A[item] + B[item];
    }
 }
-''', "vector_add")
+'''
+vector_add_gpu = cupy.RawKernel(vector_add_cuda_code, "vector_add")
 
 threads_per_block = 1024
 grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
