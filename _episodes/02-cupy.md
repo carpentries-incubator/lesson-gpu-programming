@@ -361,7 +361,7 @@ In this section, we will perform the four major steps in image processing for ra
 ## Import the FITS image
 
 Start by importing a 2048² pixels image of the Galactic Center, an image made from observations by the Indian Giant Metrewave Radio Telescope (GMRT) at 150 MHz.
-The image is stored as a [FITS](https://en.wikipedia.org/wiki/FITS) file, and to read it we need the `astropy` Python package.
+The image is stored [here](../data/GMRT_image_of_Galactic_Center.fits) as a [FITS](https://en.wikipedia.org/wiki/FITS) file, and to read it we need the `astropy` Python package.
 
 ~~~
 from astropy.io import fits
