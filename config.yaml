@@ -67,7 +67,7 @@ episodes:
 - global_local_memory.Rmd
 - shared_memory_and_synchronization.Rmd
 - constant_memory.Rmd
-# - streams.Rmd
+- streams.Rmd
 
 # Information for Learners
 learners: 

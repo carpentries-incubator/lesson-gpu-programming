@@ -2,13 +2,15 @@
 title: "Concurrent access to the GPU"
 teaching: 20
 exercises: 20
-questions:
-- "Is it possible to concurrently execute more than one kernel on a single GPU?"
-objectives:
-- "Understand how to use CUDA streams and events"
-keypoints:
-- ""
 ---
+
+:::::::::::::::::::::::::::::::::::::: questions
+- "Is it possible to concurrently execute more than one kernel on a single GPU?"
+::::::::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::: objectives
+- "Understand how to use CUDA streams and events"
+::::::::::::::::::::::::::::::::::::::
 
 # Concurrently execute two kernels on the same GPU
 
@@ -18,7 +20,7 @@ However the GPU has enough resources to perform more than one task at the same t
 Let us assume that, for our program, we need to compute both a list of prime numbers, and a histogram, two kernels that we developed in this same lesson.
 We could write both kernels in CUDA, and then execute them on the GPU, as shown in the following code.
 
-~~~
+~~~python
 import numpy as np
 import cupy
 import math
@@ -92,7 +94,6 @@ histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))
 output_one = all_primes_gpu
 output_two = output_gpu
 ~~~
-{: .language-python}
 
 In the previous code, after allocating memory and compiling, we execute and measure the performance of one kernel, and when we are done we do the same for the other kernel.
 
@@ -109,21 +110,19 @@ The reason is that within a stream all operations are carried out in order, so t
 
 If we want to create new CUDA streams, we can do it this way using CuPy.
 
-~~~
+~~~python
 stream_one = cupy.cuda.Stream()
 stream_two = cupy.cuda.Stream()
 ~~~
-{: .language-python}
 
 We can then execute the kernels in different streams by using the Python `with` statement.
 
-~~~
+~~~python
 with stream_one:
     all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))
 with stream_two:
     histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))
 ~~~
-{: .language-python}
 
 Using the `with` statement we implicitly execute the CUDA operations in the code block using that stream.
 The result of doing this is that the second kernel, i.e. `histogram_gpu`, does not need to wait for `all_primes_to_gpu` to finish before being executed.
@@ -133,10 +132,9 @@ The result of doing this is that the second kernel, i.e. `histogram_gpu`, does n
 If we need to wait for all operations on a certain stream to finish, we can call the `synchronize` method.
 Continuing with the previous example, in the following Python snippet we wait for the execution of `all_primes_to_gpu` on `stream_one` to finish.
 
-~~~
+~~~python
 stream_one.synchronize()
 ~~~
-{: .language-python}
 
 This synchronization primitive is useful when we need to be sure that all operations on a stream are finished, before continuing.
 It is, however, a bit coarse grained.
@@ -146,15 +144,14 @@ If we use `synchronize`, we wait until all operations of said stream are complet
 A possible solution is to insert a CUDA *event* at a certain position in the stream, and then wait specifically for that event.
 Events are created in Python in the following way.
 
-~~~
+~~~python
 interesting_event = cupy.cuda.Event()
 ~~~
-{: .language-python}
 
 And can then be added to a stream by using the `record` method.
 In the following example we will create two streams: in the first we will execute `histogram_gpu` twice, while in the second one we will execute `all_primes_to_gpu` with the condition that the kernel in the second stream is executed only after the first histogram is computed.
 
-~~~
+~~~python
 stream_one = cupy.cuda.Stream()
 stream_two = cupy.cuda.Stream()
 sync_point = cupy.cuda.Event()
@@ -167,7 +164,6 @@ with stream_two:
     stream_two.wait_event(sync_point)
     histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))
 ~~~
-{: .language-python}
 
 With streams and events, it is possible to build up arbitrary execution graphs for complex operations on the GPU.
 
@@ -176,7 +172,7 @@ With streams and events, it is possible to build up arbitrary execution graphs f
 We can also use streams and events to measure the execution time of kernels, without having to use the CuPy `benchmark` function.
 In the following example, we go back to the `vector_add` code and add code that uses events on the default stream to measure the execution time.
 
-~~~
+~~~python
 import math
 import cupy
 import numpy as np
@@ -233,6 +229,7 @@ if np.allclose(c_cpu, c_gpu):
 else:
     print("Wrong results!")
 ~~~
-{: .language-python}
 
-{% include links.md %}
+:::::::::::::::::::::::::::::::::::::: keypoints
+- ""
+::::::::::::::::::::::::::::::::::::::
