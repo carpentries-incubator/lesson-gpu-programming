@@ -52,7 +52,7 @@ pyl.show()
 
 After executing the code, you should see the following image.
 
-![](/fig/deltas.png){alt='Deltas array'}
+![Deltas array.](./fig/deltas.png){alt='Deltas array'}
 
 ### Background
 The computation we want to perform on this image is a convolution, once on the host and once on the device so we can compare the results and execution times.
