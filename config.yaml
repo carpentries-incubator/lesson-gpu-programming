@@ -65,7 +65,7 @@ episodes:
 - gpu_introduction.Rmd
 - first_program.Rmd
 - global_local_memory.Rmd
-# - shared_memory_and_synchronization.Rmd
+- shared_memory_and_synchronization.Rmd
 # - constant_memory.Rmd
 # - streams.Rmd
 
