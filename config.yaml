@@ -61,7 +61,7 @@ contact: 'instructors@esciencecenter.nl'
 episodes: 
 - introduction.Rmd
 - cupy.Rmd
-# - numba.Rmd
+- numba.Rmd
 - gpu_introduction.Rmd
 - first_program.Rmd
 - global_local_memory.Rmd
