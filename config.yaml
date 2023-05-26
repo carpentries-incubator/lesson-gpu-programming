@@ -30,7 +30,7 @@ license: 'CC-BY 4.0'
 source: 'https://github.com/carpentries-incubator/lesson-gpu-programming'
 
 # Default branch of your lesson
-branch: 'gh-pages'
+branch: 'main'
 
 # Who to contact if there are any issues
 contact: 'instructors@esciencecenter.nl'
