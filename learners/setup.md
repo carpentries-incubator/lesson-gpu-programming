@@ -2,53 +2,65 @@
 title: Setup
 ---
 
-FIXME: Setup instructions live in this document. Please specify the tools and
-the data sets the Learner needs to have installed.
+# Programming environment
 
-## Data Sets
+The GPU programming lesson can be taught using [Jupyter Notebook](https://jupyter.org/), a programming environment that runs in a web browser.
+For this to work you we need a reasonably up-to-date browser.
+The current versions of the Chrome, Safari and Firefox browsers are all [supported](https://jupyter-notebook.readthedocs.io/en/stable/notebook.html#browser-compatibility) (some older browsers, including Internet Explorer version 9 and below, are not).
 
-<!--
-FIXME: place any data you want learners to use in `episodes/data` and then use
-       a relative link ( [data zip file](data/lesson-data.zip) ) to provide a
-       link to it, replacing the example.com link.
--->
-Download the [data zip file](https://example.com/FIXME) and unzip it to your Desktop
+In case you do not have any GPU available on your laptop, a good alternative is to use [Google Colab](https://colab.research.google.com).
 
-## Software Setup
+## Local setup
 
-::::::::::::::::::::::::::::::::::::::: discussion
+To setup locally, depending on how you installed Python, there are two alternatives:
+- use `pip` if you installed Python normally using your OS's package manager or app store,
+- use `conda` or `mamba` if you installed the conda distribution of Python.
 
-### Details
+In case you don't have Python installed, we recommend you start with a variant of the conda distribution: [mambaforge](https://mamba.readthedocs.io/en/latest/installation.html).  `mambaforge` by default sets the `conda-forge` channel as the default, and provides the alternative package manager `mamba`.  `mamba` is a lot more performant compared to `conda`, making the user experience significantly smoother.
 
-Setup for different systems can be presented in dropdown menus via a `solution`
-tag. They will join to this discussion block, so you can give a general overview
-of the software used in this lesson here and fill out the individual operating
-systems (and potentially add more, e.g. online setup) in the solutions blocks.
+Whichever case it is for you, the first step is to create an isolated environment for the workshop, this way you won't interfere with your existing setup.  You can install all the dependencies for the workshop within this environment.  In the Python ecosystem, this kind of isolated environments are known as *virtual environments*. 
 
-:::::::::::::::::::::::::::::::::::::::::::::::::::
+### Using `pip`
 
-:::::::::::::::: solution
+To create a virtual environment using `pip`, you need to install the `virtualenv` package using your OS's package manager (it may have alternate names like `python-virtualenv` or `python3-virtualenv`).  After you have done this, you can follow the steps below:
 
-### Windows
+~~~bash
+cd /path/to/workshop/dir
+python -m virtualenv --prompt gpu-workshop venv
+source venv/bin/activate
+pip install -U pip  # it is good to update pip to the latest version
+pip install cupy-cuda11x numba jupyterlab matplotlib scipy astropy
+~~~
 
-Use PuTTY
+::: callout
+We are installing the precompiled `cupy` libraries compiled against the latest version of CUDA.  This is always faster to install, but if you want to use a custom CUDA installation, you can `pip install cupy` instead.  Also note, if you also want the cuda compiler `nvcc`, you have to install the CUDA toolkit manually.  However, this is not required to follow the workshop.  More information can be found in the [`cupy` documentation](https://docs.cupy.dev/en/stable/install.html).
+:::
 
-:::::::::::::::::::::::::
+### Using `conda` or `mamba`
 
-:::::::::::::::: solution
+`conda` or `mamba` have support for virtual environments built-in.  You can create a new virtual environment with
 
-### MacOS
+~~~bash
+mamba create -n gpu-workshop
+mamba activate gpu-workshop
+mamba install cupy numba jupyterlab matplotlib scipy astropy
+~~~
 
-Use Terminal.app
+If you are using `conda`, you can simply replace `mamba` with `conda` in the commands above.
 
-:::::::::::::::::::::::::
+### Starting a Jupyter server
 
+Now you can start your Jupyter server as shown below, which will open a tab with Jupyter in your default browser:
 
-:::::::::::::::: solution
+~~~bash
+jupyter-lab
+~~~
 
-### Linux
+If you do not want Jupyter to open a tab in your browser automatically, you can use the alternative below:
 
-Use Terminal
+~~~bash
+jupyter-lab --no-browser
+~~~
 
-:::::::::::::::::::::::::
+This will print out a url in your terminal, which you can then open in the browser of your choice.
 
