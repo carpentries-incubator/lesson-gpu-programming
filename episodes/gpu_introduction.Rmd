@@ -17,7 +17,7 @@ So far we have learned how to replace calls to NumPy and SciPy functions to equi
 This was possible even without much knowledge of how a GPU works.
 In fact, the only thing we mentioned in previous episodes about the GPU is that it is a device specialized in running parallel workloads, and that it is its own system, connected to our main memory and CPU by some kind of bus.
 
-![](/fig/CPU_and_GPU_separated.png){alt="The connection between CPU and GPU."}
+![The connection between CPU and GPU](./fig/CPU_and_GPU_separated.png){alt="The connection between CPU and GPU"}
 
 However, before moving to a programming language designed especially for GPUs, we need to introduce some concepts that will be useful to understand the next episodes.
 
@@ -80,4 +80,4 @@ This memory is private, and cannot generally be used for communication.
 
 A short, but at the same time detailed, introduction to GPU hardware and programming model can be found in the following video, extracted from the University of Utah's undergraduate course on Computer Organization and presented by Rajeev Balasubramonian.
 
-[![GPU Hardware Introduction](https://img.youtube.com/vi/FcS_kQOIykU/0.jpg){alt="Screenshot of the YouTube video showing a slide"}](https://www.youtube.com/watch?v=FcS_kQOIykU)
+[![](https://img.youtube.com/vi/FcS_kQOIykU/0.jpg){alt="Screenshot of the YouTube video showing a slide"}](https://www.youtube.com/watch?v=FcS_kQOIykU)
