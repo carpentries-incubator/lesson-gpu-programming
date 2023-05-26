@@ -52,13 +52,13 @@ pyl.show()
 
 After executing the code, you should see the following image.
 
-![Deltas array.](./fig/deltas.png){alt='Deltas array'}
+![Deltas array](./fig/deltas.png){alt='Deltas array'}
 
 ### Background
 The computation we want to perform on this image is a convolution, once on the host and once on the device so we can compare the results and execution times.
 In computer vision applications, convolutions are often used to filter images and if you want to know more about them, we encourage you to check out [this github repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin with some great animations. We have already seen that we can think of an image as a matrix of color values, when we convolve that image with a particular filter, we generate a new matrix with different color values. An example of convolution can be seen in the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
 
-![](/fig/2D_Convolution_Animation.gif){alt="Example of animated convolution"}
+![Example of animated convolution](./fig/2D_Convolution_Animation.gif){alt="Example of animated convolution"}
 
 In our example, we will convolve our image with a 2D Gaussian function shown below:
 
@@ -69,11 +69,11 @@ where $x$ and $y$ are the "coordinates in our matrix, i.e. our row and columns, 
 ::: callout
 It is often useful to identify the dataflow inherent in a problem. Say, if we want to square a list of numbers, all the operations are independent. The dataflow of a one-to-one operation is called a *map*.
 
-![](/fig/mapping.svg){alt="Data flow of a map operation"}
+![Data flow of a map operation](./fig/mapping.svg){alt="Data flow of a map operation"}
 
 A convolution is slightly more complicated. Here we have a many-to-one data flow, which is also known as a stencil.
 
-![](/fig/stencil.svg){alt="Data flow of a stencil operation"}
+![Data flow of a stencil operation](./fig/stencil.svg){alt="Data flow of a stencil operation"}
 
 GPU's are exceptionally well suited to compute algorithms that follow one of these patterns.
 :::
@@ -93,7 +93,7 @@ pyl.show()
 
 This should show you a symmetrical two-dimensional Gaussian.
 
-![](/fig/gauss.png){alt="Two-dimensional Gaussian"}
+![Two-dimensional Gaussian](./fig/gauss.png){alt="Two-dimensional Gaussian"}
 
 Now we are ready to do the convolution on the host. We do not have to write this convolution function ourselves, as it is very conveniently provided by SciPy. Let us also record the time it takes to perform this convolution and inspect the top left corner of the convolved image.
 
@@ -114,7 +114,7 @@ Obviously, the time to perform this convolution will depend very much on the pow
 
 When you display the corner of the image, you can see that the "ones" surrounded by zeros have actually been blurred by a Gaussian, so we end up with a regular grid of Gaussians.
 
-![](/fig/convolved_image.png){alt="Regular grid of Gaussians."}
+![Regular grid of Gaussians](./fig/convolved_image.png){alt="Regular grid of Gaussians"}
 
 # Convolution on the GPU Using CuPy
 
@@ -122,7 +122,7 @@ This is part of a lesson on GPU programming, so let us use the GPU.
 Although there is a physical connection - i.e. a cable - between the CPU and the GPU, they do not share the same memory space.
 This image depicts the different components of CPU and GPU and how they are connected:
 
-![](/fig/CPU_and_GPU_separated.png){alt="CPU and GPU are two separate entities, each with its own memory."}
+![CPU and GPU are two separate entities, each with its own memory](./fig/CPU_and_GPU_separated.png){alt="CPU and GPU are two separate entities, each with its own memory"}
 
 This means that an array created from e.g. an iPython shell using NumPy is physically located into the main memory of the host, and therefore available for the CPU but not the GPU.
 It is not yet present in GPU memory, which means that we need to copy our data, the input image and the convolving function to the GPU, before we can execute any code on it.
@@ -339,7 +339,7 @@ In this section, we will perform the four major steps in image processing for ra
 ## Import the FITS image
 
 Start by importing a 2048² pixels image of the Galactic Center, an image made from observations by the Indian Giant Metrewave Radio Telescope (GMRT) at 150 MHz.
-The image is stored [in this repository](/data/GMRT_image_of_Galactic_Center.fits) as a [FITS](https://en.wikipedia.org/wiki/FITS) file, and to read it we need the `astropy` Python package.
+The image is stored [in this repository](./data/GMRT_image_of_Galactic_Center.fits) as a [FITS](https://en.wikipedia.org/wiki/FITS) file, and to read it we need the `astropy` Python package.
 
 ~~~python
 from astropy.io import fits
@@ -365,7 +365,7 @@ im_plot = ax.imshow(np.fliplr(data), cmap=pyl.cm.gray_r, norm=LogNorm(vmin = max
 pyl.colorbar(im_plot, ax=ax)
 ~~~
 
-![Image of GC](/fig/improved_image_of_GC.png){alt="Image of the Galactic Center"}
+![Image of the Galactic Center](./fig/improved_image_of_GC.png){alt="Image of the Galactic Center"}
 
 The data has been switched left to right because Right Ascension increases to the left, so now it adheres to this astronomical convention. We can see a few dozen sources, especially in the lower left and upper right, which both have relatively good image quality. The band across the image from upper left to lower right has the worst image quality because there are many extended sources - especially the Galactic Center itself, in the middle - which are hard to deconvolve with the limited spacings from this observation. You can, however, see a couple of ring-like structures. These are actually supernova shells, i.e. the remnants from massive stars that exploded at the end of their lifes.
 
