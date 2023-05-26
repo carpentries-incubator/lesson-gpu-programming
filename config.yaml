@@ -62,7 +62,7 @@ episodes:
 - introduction.Rmd
 - cupy.Rmd
 # - numba.Rmd
-# - gpu_introduction.Rmd
+- gpu_introduction.Rmd
 # - first_program.Rmd
 # - global_local_memory.Rmd
 # - shared_memory_and_synchronization.Rmd
