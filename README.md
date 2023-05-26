@@ -1,3 +1,10 @@
-## lesson-gpu-programming
+# GPU Programming
 
-    This is the lesson repository for lesson-gpu-programming
+Carpentries style lesson about programming with Graphics Processing Units (GPUs).
+
+## Maintainer(s)
+
+Current maintainers of this lesson are 
+
+* Alessio Sclocco [@isazi](https://github.com/isazi)
+* Hanno Spreeuw [@HannoSpreeuw](https://github.com/HannoSpreeuw)
