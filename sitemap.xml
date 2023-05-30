@@ -10,6 +10,9 @@
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/LICENSE.html</loc>
   </url>
   <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/aio.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/constant_memory.html</loc>
   </url>
   <url>
@@ -25,6 +28,9 @@
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/gpu_introduction.html</loc>
   </url>
   <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/images.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/index.html</loc>
   </url>
   <url>
@@ -35,6 +41,9 @@
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/aio.html</loc>
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/constant_memory.html</loc>
@@ -52,10 +61,19 @@
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/gpu_introduction.html</loc>
   </url>
   <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/images.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/index.html</loc>
   </url>
   <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/instructor-notes.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/introduction.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/key-points.html</loc>
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/numba.html</loc>
@@ -73,7 +91,13 @@
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/streams.html</loc>
   </url>
   <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor-notes.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/introduction.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/key-points.html</loc>
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/numba.html</loc>
