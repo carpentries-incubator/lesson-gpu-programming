@@ -339,7 +339,7 @@
         
 <section id="aio-introduction"><p>Content from <a href="introduction.html">Introduction</a></p>
 <hr>
-<p> Last updated on 2023-07-11 | 
+<p> Last updated on 2023-08-15 | 
         
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/introduction.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -550,7 +550,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-cupy"><p>Content from <a href="cupy.html">Using your GPU with CuPy</a></p>
 <hr>
-<p> Last updated on 2023-07-11 | 
+<p> Last updated on 2023-08-15 | 
         
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/cupy.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -1545,7 +1545,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-numba"><p>Content from <a href="numba.html">Accelerate your Python code with Numba</a></p>
 <hr>
-<p> Last updated on 2023-07-11 | 
+<p> Last updated on 2023-08-15 | 
         
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/numba.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -1846,7 +1846,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-gpu_introduction"><p>Content from <a href="gpu_introduction.html">A Better Look at the GPU</a></p>
 <hr>
-<p> Last updated on 2023-07-11 | 
+<p> Last updated on 2023-08-15 | 
         
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/gpu_introduction.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -1987,7 +1987,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-first_program"><p>Content from <a href="first_program.html">Your First GPU Kernel</a></p>
 <hr>
-<p> Last updated on 2023-07-11 | 
+<p> Last updated on 2023-08-15 | 
         
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/first_program.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -2835,7 +2835,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-global_local_memory"><p>Content from <a href="global_local_memory.html">Registers, Global, and Local Memory</a></p>
 <hr>
-<p> Last updated on 2023-07-11 | 
+<p> Last updated on 2023-08-15 | 
         
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/global_local_memory.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -3197,7 +3197,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-shared_memory_and_synchronization"><p>Content from <a href="shared_memory_and_synchronization.html">Shared Memory and Synchronization</a></p>
 <hr>
-<p> Last updated on 2023-07-11 | 
+<p> Last updated on 2023-08-15 | 
         
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/shared_memory_and_synchronization.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -3286,7 +3286,7 @@ shared memory.</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>To use shared memory for the <code>temp</code> array add the
 identifier <code>__shared__</code> to its definition, like in the
@@ -3338,7 +3338,7 @@ the result of its execution will be?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>The result is non deterministic, and definitely not the same as the
 previous versions of <code>vector_add</code>. Threads will overwrite
@@ -3526,7 +3526,7 @@ find it?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>The GPU is a highly parallel device, executing multiple threads at
 the same time. In the previous code different threads could be updating
@@ -3657,7 +3657,7 @@ memory.</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
 <div class="accordion-body">
 <p>The following code shows one of the possible solutions.</p>
 <div class="codewrapper sourceCode" id="cb15">
@@ -3833,7 +3833,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-constant_memory"><p>Content from <a href="constant_memory.html">Constant Memory</a></p>
 <hr>
-<p> Last updated on 2023-07-11 | 
+<p> Last updated on 2023-08-15 | 
         
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/constant_memory.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -3957,7 +3957,7 @@ memory<a class="anchor" aria-label="anchor" href="#challenge-print-the-content-o
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>In our case the output of this line of code is two floating point
 numbers, e.g. <code>[0.11390183 0.2585096 ]</code>. However, we are not
@@ -4031,7 +4031,7 @@ with some different input sizes.</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>One of the possible solutions is the following one.</p>
 <div class="codewrapper sourceCode" id="cb5">
@@ -4104,7 +4104,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-streams"><p>Content from <a href="streams.html">Concurrent access to the GPU</a></p>
 <hr>
-<p> Last updated on 2023-07-11 | 
+<p> Last updated on 2023-08-15 | 
         
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/streams.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -4432,7 +4432,7 @@ any links that you are not going to use.
         
         <p><a href="https://creativecommons.org/licenses/by-sa/4.0/" class="external-link">Template licensed under CC-BY 4.0</a> by <a href="https://carpentries.org" class="external-link">The Carpentries</a></p>
         <p>Built with <a href="https://github.com/carpentries/sandpaper" class="external-link">sandpaper (0.12.5)</a>,
-        <a href="https://github.com/carpentries/pegboard" class="external-link">pegboard (0.5.3)</a>,
+        <a href="https://github.com/carpentries/pegboard/tree/0.5.3" class="external-link">pegboard (0.5.3)</a>,
       and <a href="https://github.com/carpentries/varnish/tree/0.2.17" class="external-link">varnish (0.2.17)</a>.</p>
 			</div>
 		</footer>
@@ -4455,8 +4455,8 @@ any links that you are not going to use.
   "url": "https://carpentries-incubator.github.io/lesson-gpu-programming/aio.html",
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/aio.html",
   "dateCreated": "2020-09-25",
-  "dateModified": "2023-08-08",
-  "datePublished": "2023-08-08"
+  "dateModified": "2023-08-15",
+  "datePublished": "2023-08-15"
 }
 
   </script><script>
