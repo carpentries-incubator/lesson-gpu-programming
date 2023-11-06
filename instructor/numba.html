@@ -286,7 +286,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Accelerate your Python code with Numba</h1>
-        <p> Last updated on 2023-08-15 | 
+        <p> Last updated on 2023-11-06 | 
         
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/numba.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
         
@@ -484,7 +484,7 @@ to find all primes up to 10000?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>One possible implementation of this function is the following
 one.</p>
@@ -496,7 +496,7 @@ one.</p>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> num <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, upper):</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> np.zeros((<span class="dv">1</span>), np.int32)</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        check_prime_gpu_kernel[<span class="dv">1</span>,<span class="dv">1</span>](num, result)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> result[<span class="dv">0</span>] <span class="dv">0</span>:</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> result[<span class="dv">0</span>] <span class="op">!=</span> <span class="dv">0</span>:</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>            all_prime_numbers.append(num)</span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> all_prime_numbers</span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>   </span>
@@ -649,8 +649,8 @@ any links that you are not going to use.
   "url": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/numba.html",
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/numba.html",
   "dateCreated": "2020-09-25",
-  "dateModified": "2023-08-15",
-  "datePublished": "2023-10-31"
+  "dateModified": "2023-11-06",
+  "datePublished": "2023-11-06"
 }
 
   </script><script>

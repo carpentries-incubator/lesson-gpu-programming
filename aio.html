@@ -1548,7 +1548,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-numba"><p>Content from <a href="numba.html">Accelerate your Python code with Numba</a></p>
 <hr>
-<p> Last updated on 2023-08-15 | 
+<p> Last updated on 2023-11-06 | 
         
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/numba.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -1743,7 +1743,7 @@ to find all primes up to 10000?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>One possible implementation of this function is the following
 one.</p>
@@ -1755,7 +1755,7 @@ one.</p>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> num <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, upper):</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> np.zeros((<span class="dv">1</span>), np.int32)</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        check_prime_gpu_kernel[<span class="dv">1</span>,<span class="dv">1</span>](num, result)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> result[<span class="dv">0</span>] <span class="dv">0</span>:</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> result[<span class="dv">0</span>] <span class="op">!=</span> <span class="dv">0</span>:</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>            all_prime_numbers.append(num)</span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> all_prime_numbers</span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>   </span>
@@ -2249,7 +2249,7 @@ following line:</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>The correct answer is number 3, only the element <code>C[1]</code> is
 written, and we do not even know by which thread!</p>
@@ -2418,7 +2418,7 @@ kernel?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>The content of <code>blockDim</code> is <code>(512, 1, 1)</code> and
 the content of <code>gridDim</code> is <code>(4, 1, 1)</code>, for all
@@ -2507,7 +2507,7 @@ are larger than the largest CUDA block (i.e. 1024).</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>The correct answer is
 <code>(blockIdx.x * blockDim.x) + threadIdx.x</code>. The following code
@@ -2570,7 +2570,7 @@ now. Can you rewrite the code to make it work?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
 <div class="accordion-body">
 <p>The correct way to modify the <code>vector_add</code> to work on
 vectors of arbitrary size is to first compute the coordinates of each
@@ -2777,7 +2777,7 @@ value for <code>upper_bound</code>.</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution5" class="accordion-collapse collapse" data-bs-parent="#accordionSolution5" aria-labelledby="headingSolution5">
+<div id="collapseSolution5" class="accordion-collapse collapse" aria-labelledby="headingSolution5" data-bs-parent="#accordionSolution5">
 <div class="accordion-body">
 <p>One possible solution for the CUDA kernel is provided in the
 following code.</p>
@@ -3960,7 +3960,7 @@ memory<a class="anchor" aria-label="anchor" href="#challenge-print-the-content-o
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>In our case the output of this line of code is two floating point
 numbers, e.g. <code>[0.11390183 0.2585096 ]</code>. However, we are not
@@ -4034,7 +4034,7 @@ with some different input sizes.</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>One of the possible solutions is the following one.</p>
 <div class="codewrapper sourceCode" id="cb5">
@@ -4458,8 +4458,8 @@ any links that you are not going to use.
   "url": "https://carpentries-incubator.github.io/lesson-gpu-programming/aio.html",
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/aio.html",
   "dateCreated": "2020-09-25",
-  "dateModified": "2023-10-31",
-  "datePublished": "2023-10-31"
+  "dateModified": "2023-11-06",
+  "datePublished": "2023-11-06"
 }
 
   </script><script>
