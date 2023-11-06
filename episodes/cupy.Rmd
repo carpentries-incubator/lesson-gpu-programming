@@ -221,8 +221,7 @@ However, this gives a long error message ending with:
 TypeError: Unsupported type <class 'numpy.ndarray'>
 ~~~
 
-It is unfortunately not possible to access NumPy arrays directly from the GPU because they exist in the 
-Random Access Memory (RAM) of the host and not in GPU memory.
+It is unfortunately not possible to access NumPy arrays directly from the GPU because they exist in the Random Access Memory (RAM) of the host and not in GPU memory.
 :::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::
 
