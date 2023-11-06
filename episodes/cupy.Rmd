@@ -83,7 +83,7 @@ Here we have a many-to-one data flow, which is also known as a stencil.
 
 ![Data flow of a stencil operation](./fig/stencil.svg){alt="Data flow of a stencil operation"}
 
-GPU's are exceptionally well suited to compute algorithms that follow one of these patterns.
+GPUs are exceptionally well suited to compute algorithms that follow one of these patterns.
 :::
 
 # Convolution on the CPU Using SciPy
@@ -344,7 +344,7 @@ Without much effort, we obtained a 18 times speedup.
 
 # A real world example: image processing for radio astronomy
 
-In this section, we will perform the four major steps in image processing for radio astronomy: determination of background characteristics, segmentation, connected component labelling and source measurements.
+In this section, we will perform the four major steps in image processing for radio astronomy: determination of background characteristics, segmentation, connected component labeling and source measurements.
 
 ## Import the FITS image
 
@@ -381,7 +381,7 @@ The data has been switched left to right because Right Ascension increases to th
 We can see a few dozen sources, especially in the lower left and upper right, which both have relatively good image quality.
 The band across the image from upper left to lower right has the worst image quality because there are many extended sources - especially the Galactic Center itself, in the middle - which are hard to deconvolve with the limited spacings from this observation.
 You can, however, see a couple of ring-like structures.
-These are actually supernova shells, i.e. the remnants from massive stars that exploded at the end of their lifes.
+These are actually supernova shells, i.e. the remnants from massive stars that exploded at the end of their lives.
 
 ## Determine the background characteristics of the image
 
@@ -537,22 +537,22 @@ ms.")
 Fastest CPU segmentation time = 6.294e+00 ms.
 ~~~
 
-## Labelling of the segmented data 
+## Labeling of the segmented data 
 
-This is called connected component labelling (CCL).
+This is called connected component labeling (CCL).
 It will replace pixel values in the segmented image - just consisting of zeros and ones - of the first connected group of pixels with the value 1 - so nothing changed, but just for that first group - the pixel values in the second group of connected pixels will all be 2, the third connected group of pixels will all have the value 3 etc.
 
-This is a CPU code for connected component labelling.
+This is a CPU code for connected component labeling.
 
 ~~~python
 from scipy.ndimage import label as label_cpu
-labelled_image = np.empty(data.shape)
-number_of_sources_in_image = label_cpu(segmented_image, output = labelled_image)
+labeled_image = np.empty(data.shape)
+number_of_sources_in_image = label_cpu(segmented_image, output = labeled_image)
 sigma_unicode = "\u03C3"
 print(f"The number of sources in the image at the 5{sigma_unicode} level is \
 {number_of_sources_in_image}.")
 
-timing_CCL_CPU = %timeit -o label_cpu(segmented_image, output = labelled_image)
+timing_CCL_CPU = %timeit -o label_cpu(segmented_image, output = labeled_image)
 fastest_CCL_CPU = timing_CCL_CPU.best
 print(f"Fastest CPU CCL time = {1000 * fastest_CCL_CPU:.3e} ms.")
 ~~~
@@ -566,17 +566,17 @@ Fastest CPU CCL time = 2.546e+01 ms.
 ~~~
 
 Let us not just accept the answer, but also do a sanity check.
-What are the values in the labelled image?
+What are the values in the labeled image?
 
 ~~~python
-print(f"These are all the pixel values we can find in the labelled image: \
-{np.unique(labelled_image)}")
+print(f"These are all the pixel values we can find in the labeled image: \
+{np.unique(labeled_image)}")
 ~~~
 
 This should show the following output:
 
 ~~~output
-These are all the pixel values we can find in the labelled image: [  0.   1.   2.   3.   4.   5.   6.   7.   8.   9.  10.  11.  12.  13.
+These are all the pixel values we can find in the labeled image: [  0.   1.   2.   3.   4.   5.   6.   7.   8.   9.  10.  11.  12.  13.
   14.  15.  16.  17.  18.  19.  20.  21.  22.  23.  24.  25.  26.  27.
   28.  29.  30.  31.  32.  33.  34.  35.  36.  37.  38.  39.  40.  41.
   42.  43.  44.  45.  46.  47.  48.  49.  50.  51.  52.  53.  54.  55.
@@ -604,9 +604,9 @@ This is the CPU code for measuring our sources.
 ~~~python
 from scipy.ndimage import center_of_mass as com_cpu
 from scipy.ndimage import sum_labels as sl_cpu
-all_positions = com_cpu(data, labelled_image, \
+all_positions = com_cpu(data, labeled_image, \
                                range(1, number_of_sources_in_image+1))
-all_integrated_fluxes = sl_cpu(data, labelled_image, \
+all_integrated_fluxes = sl_cpu(data, labeled_image, \
                                range(1, number_of_sources_in_image+1))
 
 print (f'These are the ten highest integrated fluxes of the sources in my \n\
@@ -624,9 +624,9 @@ Now we can try to measure the execution times for both algorithms, like this:
 
 ~~~python
 %%timeit -o
-all_positions = com_cpu(data, labelled_image, \
+all_positions = com_cpu(data, labeled_image, \
                                range(1, number_of_sources_in_image+1))
-all_integrated_fluxes = sl_cpu(data, labelled_image, \
+all_integrated_fluxes = sl_cpu(data, labeled_image, \
                                range(1, number_of_sources_in_image+1))
 ~~~
 
@@ -656,7 +656,7 @@ Fastest CPU set of source measurements = 7.838e+02 ms.
 :::::::::::::::::::::::::::::::::::::: challenge
 ## Challenge: putting it all together
 Combine the first two steps of image processing for astronomy, i.e. determining background characteristics e.g. through $\kappa, \sigma$ clipping and segmentation into a single function, that works for both CPU and GPU.
-Next, write a function for connected component labelling and source measurements on the GPU and calculate the overall speedup factor for the combined four steps of image processing in astronomy on the GPU relative to the CPU.
+Next, write a function for connected component labeling and source measurements on the GPU and calculate the overall speedup factor for the combined four steps of image processing in astronomy on the GPU relative to the CPU.
 Finally, verify your output by comparing with the previous output, using the CPU.
 
 ::::::::::::::::::::::::::::::::::::: solution
@@ -670,12 +670,12 @@ def first_two_steps_for_both_CPU_and_GPU(data):
     return segmented_image
 
 def ccl_and_source_measurements_on_CPU(data_CPU, segmented_image_CPU):
-    labelled_image_CPU = np.empty(data_CPU.shape)
+    labeled_image_CPU = np.empty(data_CPU.shape)
     number_of_sources_in_image = label_cpu(segmented_image_CPU, 
-                                       output= labelled_image_CPU)
-    all_positions = com_cpu(data_CPU, labelled_image_CPU, 
+                                       output= labeled_image_CPU)
+    all_positions = com_cpu(data_CPU, labeled_image_CPU, 
                             np.arange(1, number_of_sources_in_image+1))
-    all_fluxes = sl_cpu(data_CPU, labelled_image_CPU, 
+    all_fluxes = sl_cpu(data_CPU, labeled_image_CPU, 
                             np.arange(1, number_of_sources_in_image+1))
     return np.array(all_positions), np.array(all_fluxes)
 
@@ -698,12 +698,12 @@ from cupyx.scipy.ndimage import center_of_mass as com_gpu
 from cupyx.scipy.ndimage import sum_labels as sl_gpu
 
 def ccl_and_source_measurements_on_GPU(data_GPU, segmented_image_GPU):
-    labelled_image_GPU = cp.empty(data_GPU.shape)
+    labeled_image_GPU = cp.empty(data_GPU.shape)
     number_of_sources_in_image = label_gpu(segmented_image_GPU, 
-                                           output= labelled_image_GPU)
-    all_positions = com_gpu(data_GPU, labelled_image_GPU, 
+                                           output= labeled_image_GPU)
+    all_positions = com_gpu(data_GPU, labeled_image_GPU, 
                             cp.arange(1, number_of_sources_in_image+1))
-    all_fluxes = sl_gpu(data_GPU, labelled_image_GPU, 
+    all_fluxes = sl_gpu(data_GPU, labeled_image_GPU, 
                             cp.arange(1, number_of_sources_in_image+1))
     # This seems redundant, but we want to return ndarrays (Numpy)
     # and what we have are lists.
