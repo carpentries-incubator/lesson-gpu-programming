@@ -139,7 +139,7 @@ def find_all_primes_cpu_and_gpu(upper):
     for num in range(0, upper):
         result = np.zeros((1), np.int32)
         check_prime_gpu_kernel[1,1](num, result)
-        if result[0] 0:
+        if result[0] != 0:
             all_prime_numbers.append(num)
     return all_prime_numbers
    
