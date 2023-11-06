@@ -24,7 +24,8 @@ This makes it a very convenient tool to use the compute power of GPUs for people
 # Convolution in Python
 
 We start by generating an artificial "image" on the host using Python and NumPy; the host is the CPU on the laptop, desktop, or cluster node you are using right now, and from now on we may use *host* to refer to the CPU and *device* to refer to the GPU.
-The image will be all zeros, except for isolated pixels with value one, on a regular grid. The plan is to convolve it with a Gaussian and inspect the result.
+The image will be all zeros, except for isolated pixels with value one, on a regular grid.
+The plan is to convolve it with a Gaussian and inspect the result.
 We will also record the time it takes to execute this convolution on the host.
 
 We can interactively write and executed the code in an iPython shell or a Jupyter notebook.
@@ -56,7 +57,9 @@ After executing the code, you should see the following image.
 
 ### Background
 The computation we want to perform on this image is a convolution, once on the host and once on the device so we can compare the results and execution times.
-In computer vision applications, convolutions are often used to filter images and if you want to know more about them, we encourage you to check out [this github repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin with some great animations. We have already seen that we can think of an image as a matrix of color values, when we convolve that image with a particular filter, we generate a new matrix with different color values. An example of convolution can be seen in the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
+In computer vision applications, convolutions are often used to filter images and if you want to know more about them, we encourage you to check out [this github repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin with some great animations.
+We have already seen that we can think of an image as a matrix of color values, when we convolve that image with a particular filter, we generate a new matrix with different color values.
+An example of convolution can be seen in the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
 
 ![Example of animated convolution](./fig/2D_Convolution_Animation.gif){alt="Example of animated convolution"}
 
@@ -64,14 +67,19 @@ In our example, we will convolve our image with a 2D Gaussian function shown bel
 
 $$G(x,y) = \frac{1}{2\pi \sigma^2} \exp\left(-\frac{x^2 + y^2}{2 \sigma^2}\right),$$
 
-where $x$ and $y$ are the "coordinates in our matrix, i.e. our row and columns, and $$\sigma$$ controls the width of the Gaussian distribution. Convolving images with 2D Gaussian functions will change the value of each pixel to be a weighted average of the pixels around it, thereby "smoothing" the image. Convolving images with a Gaussian function reduces the noise in the image, which is often required in [edge-detection](https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection) since most algorithms to do this are sensitive to noise.
+where $x$ and $y$ are the "coordinates in our matrix, i.e. our row and columns, and $$\sigma$$ controls the width of the Gaussian distribution.
+Convolving images with 2D Gaussian functions will change the value of each pixel to be a weighted average of the pixels around it, thereby "smoothing" the image.
+Convolving images with a Gaussian function reduces the noise in the image, which is often required in [edge-detection](https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection) since most algorithms to do this are sensitive to noise.
 
 ::: callout
-It is often useful to identify the dataflow inherent in a problem. Say, if we want to square a list of numbers, all the operations are independent. The dataflow of a one-to-one operation is called a *map*.
+It is often useful to identify the dataflow inherent in a problem.
+Say, if we want to square a list of numbers, all the operations are independent.
+The dataflow of a one-to-one operation is called a *map*.
 
 ![Data flow of a map operation](./fig/mapping.svg){alt="Data flow of a map operation"}
 
-A convolution is slightly more complicated. Here we have a many-to-one data flow, which is also known as a stencil.
+A convolution is slightly more complicated.
+Here we have a many-to-one data flow, which is also known as a stencil.
 
 ![Data flow of a stencil operation](./fig/stencil.svg){alt="Data flow of a stencil operation"}
 
@@ -79,7 +87,8 @@ GPU's are exceptionally well suited to compute algorithms that follow one of the
 :::
 
 # Convolution on the CPU Using SciPy
-Let us first construct the Gaussian, and then display it. Remember that at this point we are still doing everything with standard Python, and not using the GPU yet.
+Let us first construct the Gaussian, and then display it.
+Remember that at this point we are still doing everything with standard Python, and not using the GPU yet.
 
 ~~~python
 x, y = np.meshgrid(np.linspace(-2, 2, 15), np.linspace(-2, 2, 15))
@@ -95,7 +104,9 @@ This should show you a symmetrical two-dimensional Gaussian.
 
 ![Two-dimensional Gaussian](./fig/gauss.png){alt="Two-dimensional Gaussian"}
 
-Now we are ready to do the convolution on the host. We do not have to write this convolution function ourselves, as it is very conveniently provided by SciPy. Let us also record the time it takes to perform this convolution and inspect the top left corner of the convolved image.
+Now we are ready to do the convolution on the host.
+We do not have to write this convolution function ourselves, as it is very conveniently provided by SciPy.
+Let us also record the time it takes to perform this convolution and inspect the top left corner of the convolved image.
 
 ~~~python
 from scipy.signal import convolve2d as convolve2d_cpu
@@ -193,7 +204,7 @@ We now have a more reasonable, but still impressive, speedup of 116 times over t
 :::::::::::::::::::::::::::::::::::::: challenge
 ## Challenge: convolution on the GPU without CuPy 
 
-Try to convolve the NumPy array `deltas` with the NumPy array `gauss` directly on the GPU, without using CuPy arrays. 
+Try to convolve the NumPy array `deltas` with the NumPy array `gauss` directly on the GPU, without using CuPy arrays.
 If this works, it should save us the time and effort of transferring `deltas` and `gauss` to the GPU.
 
 ::::::::::::::::::::::::::::::::::::: solution
@@ -214,7 +225,6 @@ It is unfortunately not possible to access NumPy arrays directly from the GPU be
 Random Access Memory (RAM) of the host and not in GPU memory.
 :::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::
-
 
 # Validation
 
@@ -280,7 +290,8 @@ This results in
 ......
 ......
 ......
-TypeError: Implicit conversion to a NumPy array is not allowed. Please use `.get()` to construct a NumPy array explicitly.
+TypeError: Implicit conversion to a NumPy array is not allowed.
+Please use `.get()` to construct a NumPy array explicitly.
 ~~~
 
 So SciPy routines cannot have CuPy arrays as input.
@@ -319,7 +330,7 @@ print(f"{gpu_avg_time:.6f} s")
 
 You may be surprised that we can issue these commands without error.
 Contrary to SciPy routines, NumPy accepts CuPy arrays, i.e. arrays that exist in GPU memory, as input.
-[In the CuPy documentation](https://docs.cupy.dev/en/stable/user_guide/interoperability.html#numpy) you can find some background on why NumPy routines can handle CuPy arrays. 
+[In the CuPy documentation](https://docs.cupy.dev/en/stable/user_guide/interoperability.html#numpy) you can find some background on why NumPy routines can handle CuPy arrays.
 
 Also, remember when we used `np.allclose` with a NumPy and a CuPy array as input?
 That worked for the same reason.
@@ -330,11 +341,11 @@ The linear convolution is actually performed on the GPU, which also results in a
 0.014529 s
 ~~~
 
-Without much effort, we obtained a 18 times speedup. 
+Without much effort, we obtained a 18 times speedup.
 
 # A real world example: image processing for radio astronomy
 
-In this section, we will perform the four major steps in image processing for radio astronomy: determination of background characteristics, segmentation, connected component labelling and source measurements. 
+In this section, we will perform the four major steps in image processing for radio astronomy: determination of background characteristics, segmentation, connected component labelling and source measurements.
 
 ## Import the FITS image
 
@@ -367,13 +378,27 @@ pyl.colorbar(im_plot, ax=ax)
 
 ![Image of the Galactic Center](./fig/improved_image_of_GC.png){alt="Image of the Galactic Center"}
 
-The data has been switched left to right because Right Ascension increases to the left, so now it adheres to this astronomical convention. We can see a few dozen sources, especially in the lower left and upper right, which both have relatively good image quality. The band across the image from upper left to lower right has the worst image quality because there are many extended sources - especially the Galactic Center itself, in the middle - which are hard to deconvolve with the limited spacings from this observation. You can, however, see a couple of ring-like structures. These are actually supernova shells, i.e. the remnants from massive stars that exploded at the end of their lifes.
+The data has been switched left to right because Right Ascension increases to the left, so now it adheres to this astronomical convention.
+We can see a few dozen sources, especially in the lower left and upper right, which both have relatively good image quality.
+The band across the image from upper left to lower right has the worst image quality because there are many extended sources - especially the Galactic Center itself, in the middle - which are hard to deconvolve with the limited spacings from this observation.
+You can, however, see a couple of ring-like structures.
+These are actually supernova shells, i.e. the remnants from massive stars that exploded at the end of their lifes.
 
 ## Determine the background characteristics of the image
 
-We want to identify all the sources - meaning e.g. stars, supernova remnants and distant galaxies - in this image and measure their positions and fluxes. How do we separate source pixels from background pixels? When do we know if a pixel with a high value belongs to a source or is simply a noise peak? We assume the background noise, which is a reflection of the limited sensitivity of the radio telescope, has a normal distribution. The chance of having a background pixel with a value above 5 times the standard deviation is 2.9e-7. We have 2²² = 4.2e6 pixels in our image, so the chance of catching at least one random noise peak by setting a threshold of 5 times the standard deviation is less than 50%. We refer to the standard deviation as $\sigma$.
+We want to identify all the sources - meaning e.g. stars, supernova remnants and distant galaxies - in this image and measure their positions and fluxes.
+How do we separate source pixels from background pixels? When do we know if a pixel with a high value belongs to a source or is simply a noise peak? We assume the background noise, which is a reflection of the limited sensitivity of the radio telescope, has a normal distribution.
+The chance of having a background pixel with a value above 5 times the standard deviation is 2.9e-7.
+We have 2²² = 4.2e6 pixels in our image, so the chance of catching at least one random noise peak by setting a threshold of 5 times the standard deviation is less than 50%.
+We refer to the standard deviation as $\sigma$.
 
-How do we measure the standard deviation of the background pixels? First we need to separate them from the source pixels, based on their values, in the sense that high pixel values more likely come from sources. The technique we use is called $\kappa, \sigma$ clipping. First we take all pixels and compute the standard deviation ($\sigma$). Then we compute the median and clip all pixels larger than $median + 3 * \sigma$ and smaller than $median - 3 * \sigma$. From the clipped set, we compute the median and standard deviation again and clip again. Continue until no more pixels are clipped. The standard deviation from this final set of pixel values is the basis for the next step.
+How do we measure the standard deviation of the background pixels? First we need to separate them from the source pixels, based on their values, in the sense that high pixel values more likely come from sources.
+The technique we use is called $\kappa, \sigma$ clipping.
+First we take all pixels and compute the standard deviation ($\sigma$).
+Then we compute the median and clip all pixels larger than $median + 3 * \sigma$ and smaller than $median - 3 * \sigma$.
+From the clipped set, we compute the median and standard deviation again and clip again.
+Continue until no more pixels are clipped.
+The standard deviation from this final set of pixel values is the basis for the next step.
 
 Before clipping, let us investigate some properties of our unclipped data.
 
@@ -392,7 +417,8 @@ The maximum flux density is 2506 mJy/beam, coming from the Galactic Center itsel
 mean = 3.898e-04, median = 1.571e-05, sttdev = 1.993e-02, maximum = 2.506e+00
 ~~~
 
-You might observe that $\kappa, \sigma$ clipping is a compute intense task, that is why we want to do it on a GPU. But let's first issue the algorithm on a CPU.
+You might observe that $\kappa, \sigma$ clipping is a compute intense task, that is why we want to do it on a GPU.
+But let's first issue the algorithm on a CPU.
 
 This is the NumPy code to do this:
 
@@ -423,7 +449,8 @@ print(f"Fastest CPU ks clipping time = \
 Fastest CPU ks clipping time = 7.777e+02 ms.
 ~~~
 
-So that is close to 1 second to perform these computations. Hopefully, we can speed this up using the GPU.
+So that is close to 1 second to perform these computations.
+Hopefully, we can speed this up using the GPU.
 How has $\kappa, \sigma$ clipping influenced our statistics?
 
 ~~~python
@@ -445,7 +472,8 @@ mean of clipped = -1.945e-06, median of clipped = -9.796e-06
 
 :::::::::::::::::::::::::::::::::::::: challenge
 ## Challenge: $\kappa, \sigma$ clipping on the GPU
-Now that you understand how the $\kappa, \sigma$ clipping algorithm works, perform it on the GPU using CuPy and compute the speedup. Include the data transfer to and from the GPU in your calculation.
+Now that you understand how the $\kappa, \sigma$ clipping algorithm works, perform it on the GPU using CuPy and compute the speedup.
+Include the data transfer to and from the GPU in your calculation.
 
 ::::::::::::::::::::::::::::::::::::: solution
 ## Solution
@@ -479,10 +507,10 @@ The speedup factor for ks clipping is: 1.232e+01
 :::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::
 
-
 ## Segment the image
 
-We have seen that clipping at the $5 \sigma$ level of an image this size (2048² pixels) will yield a chance of less than 50% that from all the sources we detect at least one will be a noise peak. So let us set the threshold at $5 \sigma$ and segment it.
+We have seen that clipping at the $5 \sigma$ level of an image this size (2048² pixels) will yield a chance of less than 50% that from all the sources we detect at least one will be a noise peak.
+So let us set the threshold at $5 \sigma$ and segment it.
 First check that we find the same standard deviation from our clipper on the GPU:
 
 ~~~python
@@ -512,7 +540,8 @@ Fastest CPU segmentation time = 6.294e+00 ms.
 
 ## Labelling of the segmented data 
 
-This is called connected component labelling (CCL). It will replace pixel values in the segmented image - just consisting of zeros and ones - of the first connected group of pixels with the value 1 - so nothing changed, but just for that first group - the pixel values in the second group of connected pixels will all be 2, the third connected group of pixels will all have the value 3 etc.
+This is called connected component labelling (CCL).
+It will replace pixel values in the segmented image - just consisting of zeros and ones - of the first connected group of pixels with the value 1 - so nothing changed, but just for that first group - the pixel values in the second group of connected pixels will all be 2, the third connected group of pixels will all have the value 3 etc.
 
 This is a CPU code for connected component labelling.
 
@@ -537,7 +566,8 @@ The number of sources in the image at the 5σ level is 185.
 Fastest CPU CCL time = 2.546e+01 ms.
 ~~~
 
-Let us not just accept the answer, but also do a sanity check. What are the values in the labelled image?
+Let us not just accept the answer, but also do a sanity check.
+What are the values in the labelled image?
 
 ~~~python
 print(f"These are all the pixel values we can find in the labelled image: \
@@ -565,7 +595,9 @@ These are all the pixel values we can find in the labelled image: [  0.   1.   2
 
 # Source measurements
 
-We are ready for the final step. We have been given observing time to make this beautiful image of the Galactic Center, we have determined its background statistics, we have separated actual cosmic sources from noise and now we want to measure these cosmic sources. What are their positions and what are their flux densities?
+We are ready for the final step.
+We have been given observing time to make this beautiful image of the Galactic Center, we have determined its background statistics, we have separated actual cosmic sources from noise and now we want to measure these cosmic sources.
+What are their positions and what are their flux densities?
 	
 Again, the algorithms from `scipy.ndimage` help us to determine these quantities.
 This is the CPU code for measuring our sources.
@@ -625,7 +657,8 @@ Fastest CPU set of source measurements = 7.838e+02 ms.
 :::::::::::::::::::::::::::::::::::::: challenge
 ## Challenge: putting it all together
 Combine the first two steps of image processing for astronomy, i.e. determining background characteristics e.g. through $\kappa, \sigma$ clipping and segmentation into a single function, that works for both CPU and GPU.
-Next, write a function for connected component labelling and source measurements on the GPU and calculate the overall speedup factor for the combined four steps of image processing in astronomy on the GPU relative to the CPU. Finally, verify your output by comparing with the previous output, using the CPU.
+Next, write a function for connected component labelling and source measurements on the GPU and calculate the overall speedup factor for the combined four steps of image processing in astronomy on the GPU relative to the CPU.
+Finally, verify your output by comparing with the previous output, using the CPU.
 
 ::::::::::::::::::::::::::::::::::::: solution
 ~~~python
@@ -674,7 +707,8 @@ def ccl_and_source_measurements_on_GPU(data_GPU, segmented_image_GPU):
     all_fluxes = sl_gpu(data_GPU, labelled_image_GPU, 
                             cp.arange(1, number_of_sources_in_image+1))
     # This seems redundant, but we want to return ndarrays (Numpy)
-    # and what we have are lists. These first have to be converted to
+    # and what we have are lists.
+    # These first have to be converted to
     # Cupy arrays before they can be converted to Numpy arrays.
     return cp.asnumpy(cp.asarray(all_positions)), \
            cp.asnumpy(cp.asarray(all_fluxes))
@@ -705,12 +739,9 @@ all_fluxes_agree = np.allclose(CPU_output[1], GPU_output[1])
 print(f"The CPU and GPU fluxes agree: {all_positions_agree}\n")
 ~~~
 
-
 ~~~output
-The four steps of image processing for astronomy take 1.060e+03 ms 
- on our CPU.
-The four steps of image processing for astronomy take 5.770e+01 ms 
- on our GPU.
+The four steps of image processing for astronomy take 1.060e+03 ms on our CPU.
+The four steps of image processing for astronomy take 5.770e+01 ms on our GPU.
 This means that the overall speedup factor GPU vs CPU equals: 1.838e+01
 
 The CPU and GPU positions agree: True
@@ -720,7 +751,6 @@ The CPU and GPU fluxes agree: True
 
 :::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::
-
 
 :::::: keypoints
 - "CuPy provides GPU accelerated version of many NumPy and Scipy functions."
