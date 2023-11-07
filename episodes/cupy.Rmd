@@ -92,7 +92,7 @@ GPUs are exceptionally well suited to compute algorithms that follow either data
 
 ## Convolution on the CPU Using SciPy
 
-Let us first construct and then display the Gaussian filter.
+Let's first construct and then display the Gaussian filter.
 Remember that we are still coding everything in standard Python, without using the GPU.
 
 ~~~python
@@ -111,7 +111,7 @@ The code above produces this image of a symmetrical two-dimensional Gaussian:
 
 Now we are ready to compute the convolution on the host.
 Very conveniently, SciPy provides a method for convolutions.
-Let us also record the time to perform this convolution and inspect the top-left corner of the convolved image, as follows:
+Let's also record the time to perform this convolution and inspect the top-left corner of the convolved image, as follows:
 
 ~~~python
 from scipy.signal import convolve2d as convolve2d_cpu
@@ -134,7 +134,7 @@ Displaying just a corner of the image shows that the Gaussian has so much blurre
 
 ## Convolution on the GPU Using CuPy
 
-This is a lesson on GPU programming, so let us use the GPU.
+This is a lesson on GPU programming, so let's use the GPU.
 In spite of being physically connected -- typically with special [interconnects](https://en.wikipedia.org/wiki/Interconnect_(integrated_circuits)) -- the CPU and the GPU do not share the same memory space.
 This picture depicts the different components of CPU and GPU and how they are connected:
 
@@ -142,7 +142,7 @@ This picture depicts the different components of CPU and GPU and how they are co
 
 This means that the array created with NumPy is physically stored in the host's main memory and, therefore, is only available to the CPU.
 Since our input image and convolution filter are not yet present in the device memory, we need to copy both data to the GPU before executing any code on it.
-In practice, we use CuPy to copy the arrays `deltas` and `gauss` from the host's RAM to the GPU memory as follows:
+In practice, we use CuPy to copy the arrays `deltas` and `gauss` from the host's Random Access Memory (RAM) to the GPU memory as follows:
 
 ~~~python
 import cupy as cp
@@ -156,7 +156,7 @@ Inconveniently, SciPy does not offer methods running on GPUs.
 Hence, we import the convolution function from a CuPy package aliased as `cupyx`, whose package [`cupyx.scipy`](https://docs.cupy.dev/en/stable/reference/scipy.html), in turn, performs a subset of the SciPy operations.
 We will soon verify that the GPU convolution function in `cupyx` works like the convolution function from SciPy called on the CPU.
 In general, CuPy proper and NumPy look so much similar as do the `cupyx` methods and SciPy; this is intended to invite programmers already familiar with NumPy and SciPy to use the GPU.
-For now, let us again record the time to execute on the device the same convolution as the host, so that we can compare the respective performances.
+For now, let's again record the execution time on the device the same convolution as the host, so that we can compare the respective performances.
 
 ~~~python
 from cupyx.scipy.signal import convolve2d as convolve2d_gpu
@@ -175,13 +175,13 @@ The timing using a NVIDIA Tesla T4 on Google Colab was:
 This is way faster than the host: more than a 24000-fold performance improvement, or speedup.
 Impressive, but is that true?
 
-# Measuring performance
+## Measuring performance
 
-So far we used `timeit` to measure the performance of our Python code, no matter if it was running on the CPU or was GPU accelerated.
-However, execution on the GPU is asynchronous: the control is given back to the Python interpreter immediately, while the GPU is still executing the task.
-Because of this, we cannot use `timeit` anymore: the timing would not be correct.
+So far we used `timeit` to measure the performance of our Python code, no matter whether it was running on the CPU or was GPU-accelerated.
+However, the execution on the GPU is *asynchronous*: the Python interpreter takes control of the program execution immediately, while the GPU is still executing the task.
+Therefore, the timing of `timeit` is not reliable.
 
-CuPy provides a function, `benchmark` that we can use to measure the time it takes the GPU to execute our kernels.
+Conveniently, `cupyx` provides the function `benchmark` that measures the actual execution time in the GPU.
 
 ~~~python
 from cupyx.profiler import benchmark
@@ -189,57 +189,56 @@ from cupyx.profiler import benchmark
 execution_gpu = benchmark(convolve2d_gpu, (deltas_gpu, gauss_gpu), n_repeat=10)
 ~~~
 
-The previous code executes `convolve2d_gpu` ten times, and stores the execution time of each run, in seconds, inside the `gpu_times` attribute of the variable `execution_gpu`.
-We can then compute the average execution time and print it, as shown.
+The previous code executes `convolve2d_gpu` with the appropriate arguments ten times, and stores inside the `gpu_times` attribute of the variable `execution_gpu` the execution time of each run in seconds.
+These measurements are also more stable and representative because `benchmarks` excludes the compile time and the repetitions warm up the GPU.
+We can then average the execution times, as follows:
 
 ~~~python
 gpu_avg_time = np.average(execution_gpu.gpu_times)
 print(f"{gpu_avg_time:.6f} s")
 ~~~
 
-Another advantage of the `benchmark` method is that it excludes the compile time, and warms up the GPU, so that measurements are more stable and representative.
-
-With the new measuring code in place, we can measure performance again.
+whereby the performance revisited is:
 
 ~~~output
 0.020642 s
 ~~~
 
-We now have a more reasonable, but still impressive, speedup of 116 times over the host code.
+We now have a more reasonable, but still impressive, 116-fold speedup with respect to the host code.
 
 :::::::::::::::::::::::::::::::::::::: challenge
 ## Challenge: convolution on the GPU without CuPy 
 
 Try to convolve the NumPy array `deltas` with the NumPy array `gauss` directly on the GPU, without using CuPy arrays.
-If this works, it should save us the time and effort of transferring `deltas` and `gauss` to the GPU.
+If this works, it will save us the time and effort of transferring the arrays `deltas` and `gauss` to the GPU.
 
 ::::::::::::::::::::::::::::::::::::: solution
 
-We can directly try to use the GPU convolution function `convolve2d_gpu` with `deltas` and `gauss` as inputs.
+We can call the GPU convolution function `convolve2d_gpu` directly with `deltas` and `gauss` as argument:
 
 ~~~python
 convolve2d_gpu(deltas, gauss)
 ~~~
 
-However, this gives a long error message ending with:
+However, this throws a long error message ending with:
 
 ~~~output
 TypeError: Unsupported type <class 'numpy.ndarray'>
 ~~~
 
-It is unfortunately not possible to access NumPy arrays directly from the GPU because they exist in the Random Access Memory (RAM) of the host and not in GPU memory.
+Unfortunately, it is impossible to directly access from the GPU the NumPy arrays that live in the host RAM.
 :::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::
 
-# Validation
+## Validation
 
-To check that we actually computed the same output on the host and the device we can compare the two output arrays `convolved_image_using_GPU` and `convolved_image_using_CPU`.
+To check that we actually computed the same output on the host and on the device, we compare the two output arrays `convolved_image_using_GPU` and `convolved_image_using_CPU`, as follows:
 
 ~~~python
 np.allclose(convolved_image_using_GPU, convolved_image_using_CPU)
 ~~~
 
-As you may expect, the result of the comparison is positive, and in fact we computed the same results on the host and the device.
+As you may have expected, the positive result of the comparison confirms that we computed the same results on the host and on the device:
 
 ~~~output
 array(True)
@@ -248,13 +247,13 @@ array(True)
 :::::::::::::::::::::::::::::::::::::: challenge
 ## Challenge: fairer comparison of CPU vs. GPU
 
-Compute again the speedup achieved using the GPU, but try to take also into account the time spent transferring the data to the GPU and back.
+Compute again the speedup achieved using the GPU, taking into account also the time spent transferring the data from the CPU to the GPU and back.
 
-Hint: to copy a CuPy array back to the host (CPU), use the `cp.asnumpy()` function.
+Hint: use the `cp.asnumpy()` method to copy a CuPy array back to the host.
 
 :::::::::::::::::::::::::::::::::::::: solution
 
-A convenient solution is to group both the transfers, to and from the GPU, and the convolution into a single Python function, and then time its execution, like in the following example.
+A convenient strategy is to time the execution of a single Python function that groups the transfers to and from the GPU and the convolution, as follows:
 
 ~~~python
 def transfer_compute_transferback():
@@ -272,24 +271,24 @@ print(f"{gpu_avg_time:.6f} s")
 0.035400 s
 ~~~
 
-The speedup taking into account the data transfers decreased from 116 to 67.
-Taking into account the necessary data transfers when computing the speedup is a better, and more fair, way to compare performance.
-As a note, because data transfers force the GPU to sync with the host, this could also be measured with `timeit` and still provide correct measurements.
+The speedup taking into account the data transfer decreased from 116 to 67.
+Accounting for the necessary data transfers is a better and fairer way to compute performance speedups.
+As an side note, here `timeit` would still provide correct measurements, because the data transfers force the device to *sync* with the host.
 :::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::
 
-# A shortcut: performing NumPy routines on the GPU
+## A shortcut: performing NumPy routines on the GPU
 
-We saw earlier that we cannot execute routines from the `cupyx` library directly on NumPy arrays.
-In fact we need to first transfer the data from host to device memory.
-Vice versa, if we try to execute a regular SciPy routine (i.e. designed to run the CPU) on a CuPy array, we will also encounter an error.
-Try the following:
+We saw in a previous challenge that we cannot launch the routines of the `cupyx` library directly on NumPy arrays.
+In fact, we first need to transfer the data from the host to the device memory.
+Vice versa, we will encounter an error also if we launch on a CuPy array a regular SciPy routine designed to run on CPUs.
+Try out the following:
 
 ~~~python
 convolve2d_cpu(deltas_gpu, gauss_gpu)
 ~~~
 
-This results in 
+which results in 
 
 ~~~output
 ......
@@ -299,13 +298,10 @@ TypeError: Implicit conversion to a NumPy array is not allowed.
 Please use `.get()` to construct a NumPy array explicitly.
 ~~~
 
-So SciPy routines cannot have CuPy arrays as input.
-We can, however, execute a simpler command that does not require SciPy.
-Instead of 2D convolution, we can do 1D convolution.
-For that we can use a NumPy routine instead of a SciPy routine.
-The `convolve` routine from NumPy performs linear (1D) convolution.
-To generate some input for a linear convolution, we can flatten our image from 2D to 1D (using `ravel()`), but we also need a 1D kernel.
-For the latter we will take the diagonal elements of our 2D Gaussian kernel.
+So, SciPy routines do not accept CuPy arrays as input.
+However, instead of performing a 2D convolution, we can execute a simpler 1D (linear) convolution that uses the NumPy routine `convolve` instead of a SciPy routine.
+To generate the appropriate input for a linear convolution, we flatten our input image from 2D to 1D using the method `ravel`.
+To generate a 1D filter, we take the diagonal elements of our 2D Gaussian filter.
 Try the following three instructions for linear convolution on the CPU:
 
 ~~~python
@@ -314,15 +310,14 @@ gauss_1d = gauss.diagonal()
 %timeit -n 1 -r 1 np.convolve(deltas_1d, gauss_1d)
 ~~~
 
-You could arrive at something similar to this timing result:
+A realistic execution time is:
 
 ~~~output
 270 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
 ~~~
 
-We have performed a regular linear convolution using our CPU.
-Now let us try something bold.
-We will transfer the 1D arrays to the GPU and use the NumPy routine to do the convolution.
+After having performed a regular linear convolution on the host using NumPy, let's try something bold.
+We transfer the 1D arrays to the device and do the convolution with a NumPy routine.
 
 ~~~python
 deltas_1d_gpu = cp.asarray(deltas_1d)
@@ -333,20 +328,19 @@ gpu_avg_time = np.average(execution_gpu.gpu_times)
 print(f"{gpu_avg_time:.6f} s")
 ~~~
 
-You may be surprised that we can issue these commands without error.
-Contrary to SciPy routines, NumPy accepts CuPy arrays, i.e. arrays that exist in GPU memory, as input.
-[In the CuPy documentation](https://docs.cupy.dev/en/stable/user_guide/interoperability.html#numpy) you can find some background on why NumPy routines can handle CuPy arrays.
-
-Also, remember when we used `np.allclose` with a NumPy and a CuPy array as input?
+You may be surprised that these commands do not throw any error.
+Contrary to SciPy, NumPy routines accept CuPy arrays as input, even though the latter exist only in GPU memory.
+Indeed, can you recall when we validated our codes using a NumPy and a CuPy array as input of `np.allclose`?
 That worked for the same reason.
+[The CuPy documentation](https://docs.cupy.dev/en/stable/user_guide/interoperability.html#numpy) explains why NumPy routines can handle CuPy arrays.
 
-The linear convolution is actually performed on the GPU, which also results in a lower execution time.
+The linear convolution is actually performed on the GPU and results in a faster execution time:
 
 ~~~output
 0.014529 s
 ~~~
 
-Without much effort, we obtained a 18 times speedup.
+Without much coding effort, we obtained a 18-fold speedup.
 
 # A real world example: image processing for radio astronomy
 
@@ -368,7 +362,7 @@ The latter two methods are needed to convert byte ordering from big endian to li
 
 ## Inspect the image
 
-Let us have a look at part of this image.
+Let's have a look at part of this image.
 
 ~~~python
 from matplotlib.colors import LogNorm
@@ -405,7 +399,7 @@ From the clipped set, we compute the median and standard deviation again and cli
 Continue until no more pixels are clipped.
 The standard deviation from this final set of pixel values is the basis for the next step.
 
-Before clipping, let us investigate some properties of our unclipped data.
+Before clipping, let's investigate some properties of our unclipped data.
 
 ~~~python
 mean_ = data.mean()
@@ -515,7 +509,7 @@ The speedup factor for ks clipping is: 1.232e+01
 ## Segment the image
 
 We have seen that clipping at the $5 \sigma$ level of an image this size (2048² pixels) will yield a chance of less than 50% that from all the sources we detect at least one will be a noise peak.
-So let us set the threshold at $5 \sigma$ and segment it.
+So let's set the threshold at $5 \sigma$ and segment it.
 First check that we find the same standard deviation from our clipper on the GPU:
 
 ~~~python
@@ -571,7 +565,7 @@ The number of sources in the image at the 5σ level is 185.
 Fastest CPU CCL time = 2.546e+01 ms.
 ~~~
 
-Let us not just accept the answer, but also do a sanity check.
+Let's not just accept the answer, but also do a sanity check.
 What are the values in the labeled image?
 
 ~~~python
