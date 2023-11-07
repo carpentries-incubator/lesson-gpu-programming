@@ -29,7 +29,7 @@ We start by generating an image using Python and NumPy code.
 We want to compute a convolution on this input image, once on the host and once on the device, and then compare both the execution times and the results.
 
 In an iPython shell or a Jupyter notebook, we can write and execute the following code on the host.
-The pixel values will be zero everywhere except for a regular grid of single pixels having value one, named deltas.
+The pixel values will be zero everywhere except for a regular grid of single pixels having value one, very much like a Dirac's delta function, hence here named `deltas`.
 
 ~~~python
 import numpy as np
@@ -58,21 +58,23 @@ and you should obtain the following image:
 
 ## Gaussian convolutions
 
-The illustration below shows an example of convolution (by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
+The illustration below shows an example of convolution (courtesy of Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
+Looking at the terminology in the illustration, be forewarned that the word *kernel* happens to have different meanings that, inconveniently, apply to both mathematical convolution and coding on a GPU device.
 To know more about convolutions, we encourage you to check out [this GitHub repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin with some great animations.
 
-![Example of animated convolution](./fig/2D_Convolution_Animation.gif){alt="Example of animated convolution"}
+![Example of animated convolution.](./fig/2D_Convolution_Animation.gif){alt="Example of animated convolution"}
 
 In this course section, we will convolve our image with a 2D Gaussian function, having the general form:
 
 $$G(x,y) = \frac{1}{2\pi \sigma^2} \exp\left(-\frac{x^2 + y^2}{2 \sigma^2}\right),$$
 
-where $x$ and $y$ are distances from the origin, and $$\sigma$$ controls the width of the Gaussian curve.
-Since we can think of an image as a matrix of color values, the convolution of that image with a filter generates a new matrix with different color values.
-In particular, convolving images with 2D Gaussian functions changes the value of each pixel into a weighted average of the neighboring pixels, thereby smoothing out the features in the input image.
+where $x$ and $y$ are distances from the origin, and $\sigma$ controls the width of the Gaussian curve.
+Since we can think of an image as a matrix of color values, the convolution of that image with a kernel generates a new matrix with different color values.
+In particular, convolving images with 2D Gaussian kernel changes the value of each pixel into a weighted average of the neighboring pixels, thereby smoothing out the features in the input image.
 
-Convolutions are frequently used in computer vision applications to filter images.
+Convolutions are frequently used in computer vision to filter images.
 For example, Gaussian convolution can be required before applying algorithms for [edge detection](https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection), which are sensitive to the noise in the original image.
+To avoid conflicting vocabularies, in the remainder we refer to *convolution kernels* as *filters*.
 
 ::: callout
 Identifying the dataflow inherent in an algorithm is often useful.
@@ -81,7 +83,7 @@ The dataflow of a one-to-one operation is called a *map*.
 
 ![Dataflow of a map operation.](./fig/mapping.svg){alt="Data flow of a map operation"}
 
-A convolution is slightly more complex because of a many-to-one dataflow, also known as a **stencil**.
+A convolution is slightly more complex because of a many-to-one dataflow, also known as a *stencil*.
 
 ![Dataflow of a stencil operation.](./fig/stencil.svg){alt="Data flow of a stencil operation"}
 
@@ -90,7 +92,7 @@ GPUs are exceptionally well suited to compute algorithms that follow either data
 
 ## Convolution on the CPU Using SciPy
 
-Let us first construct the Gaussian filter and then display it.
+Let us first construct and then display the Gaussian filter.
 Remember that we are still coding everything in standard Python, without using the GPU.
 
 ~~~python
@@ -103,7 +105,7 @@ pyl.imshow(gauss)
 pyl.show()
 ~~~
 
-The code above produces this image that shows you the symmetrical two-dimensional Gaussian:
+The code above produces this image of a symmetrical two-dimensional Gaussian:
 
 ![Two-dimensional Gaussian.](./fig/gauss.png){alt="Two-dimensional Gaussian"}
 
@@ -120,7 +122,7 @@ pyl.show()
 %timeit -n 1 -r 1 convolve2d_cpu(deltas, gauss)
 ~~~
 
-Obviously, the power of your CPU influences the actual execution time very much on, and we expect that to be in the region of a couple of seconds.
+Obviously, the compute power of your CPU influences the actual execution time very much, and we expect that to be in the region of a couple of seconds.
 
 ~~~output
 2.4 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
@@ -139,7 +141,7 @@ This picture depicts the different components of CPU and GPU and how they are co
 ![CPU and GPU are separate entities with an own memory.](./fig/CPU_and_GPU_separated.png){alt="CPU and GPU are separate entities with an own memory"}
 
 This means that the array created with NumPy is physically stored in the host's main memory and, therefore, is only available to the CPU.
-Since our input image and convolving function are not yet present in the GPU memory, we need to copy both to the GPU before executing any code on it.
+Since our input image and convolution filter are not yet present in the device memory, we need to copy both data to the GPU before executing any code on it.
 In practice, we use CuPy to copy the arrays `deltas` and `gauss` from the host's RAM to the GPU memory as follows:
 
 ~~~python
