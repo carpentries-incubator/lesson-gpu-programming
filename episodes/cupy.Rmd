@@ -111,8 +111,8 @@ Let us also record the time it takes to perform this convolution and inspect the
 ~~~python
 from scipy.signal import convolve2d as convolve2d_cpu
 
-convolved_image_using_CPU = convolve2d_cpu(diracs, gauss)
-pyl.imshow(convolved_image_using_CPU[0:32, 0:32])
+convolved_image_cpu = convolve2d_cpu(diracs, gauss)
+pyl.imshow(convolved_image_cpu[0:32, 0:32])
 pyl.show()
 %timeit -n 1 -r 1 convolve2d_cpu(diracs, gauss)
 ~~~
@@ -155,8 +155,8 @@ Let us again record the time to execute the convolution, so that we can compare 
 ~~~python
 from cupyx.scipy.signal import convolve2d as convolve2d_gpu
 
-convolved_image_using_GPU = convolve2d_gpu(diracs_gpu, gauss_gpu)
-%timeit -n 7 -r 1 convolved_image_using_GPU = convolve2d_gpu(diracs_gpu, gauss_gpu)
+convolved_image_gpu = convolve2d_gpu(diracs_gpu, gauss_gpu)
+%timeit -n 7 -r 1 convolved_image_gpu = convolve2d_gpu(diracs_gpu, gauss_gpu)
 ~~~
 
 Similar to what we had previously on the host, the execution time of the GPU convolution will depend very much on the GPU used.
@@ -180,15 +180,15 @@ CuPy provides a function, `benchmark` that we can use to measure the time it tak
 ~~~python
 from cupyx.profiler import benchmark
 
-execution_gpu = benchmark(convolve2d_gpu, (diracs_gpu, gauss_gpu), n_repeat=10)
+benchmark_gpu = benchmark(convolve2d_gpu, (diracs_gpu, gauss_gpu), n_repeat=10)
 ~~~
 
-The previous code executes `convolve2d_gpu` ten times, and stores the execution time of each run, in seconds, inside the `gpu_times` attribute of the variable `execution_gpu`.
+The previous code executes `convolve2d_gpu` ten times, and stores the execution time of each run, in seconds, inside the `gpu_times` attribute of the variable `benchmark_gpu`.
 We can then compute the average execution time and print it, as shown.
 
 ~~~python
-gpu_avg_time = np.average(execution_gpu.gpu_times)
-print(f"{gpu_avg_time:.6f} s")
+gpu_execution_avg = np.average(benchmark_gpu.gpu_times)
+print(f"{gpu_execution_avg:.6f} s")
 ~~~
 
 Another advantage of the `benchmark` method is that it excludes the compile time, and warms up the GPU, so that measurements are more stable and representative.
@@ -227,10 +227,10 @@ It is unfortunately not possible to access NumPy arrays directly from the GPU be
 
 # Validation
 
-To check that we actually computed the same output on the host and the device we can compare the two output arrays `convolved_image_using_GPU` and `convolved_image_using_CPU`.
+To check that we actually computed the same output on the host and the device we can compare the two output arrays `convolved_image_gpu` and `convolved_image_cpu`.
 
 ~~~python
-np.allclose(convolved_image_using_GPU, convolved_image_using_CPU)
+np.allclose(convolved_image_gpu, convolved_image_cpu)
 ~~~
 
 As you may expect, the result of the comparison is positive, and in fact we computed the same results on the host and the device.
@@ -251,15 +251,15 @@ Hint: to copy a CuPy array back to the host (CPU), use the `cp.asnumpy()` functi
 A convenient solution is to group both the transfers, to and from the GPU, and the convolution into a single Python function, and then time its execution, like in the following example.
 
 ~~~python
-def transfer_compute_transferback():
+def push_compute_pull():
     diracs_gpu = cp.asarray(diracs)
     gauss_gpu = cp.asarray(gauss)
-    convolved_image_using_GPU = convolve2d_gpu(diracs_gpu, gauss_gpu)
-    convolved_image_using_GPU_copied_to_host = cp.asnumpy(convolved_image_using_GPU)
+    convolved_image_gpu = convolve2d_gpu(diracs_gpu, gauss_gpu)
+    convolved_image_gpu_in_host = cp.asnumpy(convolved_image_gpu)
    
-execution_gpu = benchmark(transfer_compute_transferback, (), n_repeat=10)
-gpu_avg_time = np.average(execution_gpu.gpu_times)
-print(f"{gpu_avg_time:.6f} s")
+benchmark_gpu = benchmark(push_compute_pull, (), n_repeat=10)
+gpu_execution_avg = np.average(benchmark_gpu.gpu_times)
+print(f"{gpu_execution_avg:.6f} s")
 ~~~
 
 ~~~output
@@ -286,9 +286,9 @@ convolve2d_cpu(diracs_gpu, gauss_gpu)
 This results in 
 
 ~~~output
-......
-......
-......
+...
+...
+...
 TypeError: Implicit conversion to a NumPy array is not allowed.
 Please use `.get()` to construct a NumPy array explicitly.
 ~~~
@@ -303,9 +303,9 @@ For the latter we will take the diagonal elements of our 2D Gaussian kernel.
 Try the following three instructions for linear convolution on the CPU:
 
 ~~~python
-diracs_1d = diracs.ravel()
-gauss_1d = gauss.diagonal()
-%timeit -n 1 -r 1 np.convolve(diracs_1d, gauss_1d)
+diracs_1d_cpu = diracs.ravel()
+gauss_1d_cpu = gauss.diagonal()
+%timeit -n 1 -r 1 np.convolve(diracs_1d_cpu, gauss_1d_cpu)
 ~~~
 
 You could arrive at something similar to this timing result:
@@ -319,12 +319,12 @@ Now let us try something bold.
 We will transfer the 1D arrays to the GPU and use the NumPy routine to do the convolution.
 
 ~~~python
-diracs_1d_gpu = cp.asarray(diracs_1d)
-gauss_1d_gpu = cp.asarray(gauss_1d)
+diracs_1d_gpu = cp.asarray(diracs_1d_cpu)
+gauss_1d_gpu = cp.asarray(gauss_1d_cpu)
 
-execution_gpu = benchmark(np.convolve, (diracs_1d_gpu, gauss_1d_gpu), n_repeat=10)
-gpu_avg_time = np.average(execution_gpu.gpu_times)
-print(f"{gpu_avg_time:.6f} s")
+benchmark_gpu = benchmark(np.convolve, (diracs_1d_gpu, gauss_1d_gpu), n_repeat=10)
+gpu_execution_avg = np.average(benchmark_gpu.gpu_times)
+print(f"{gpu_execution_avg:.6f} s")
 ~~~
 
 You may be surprised that we can issue these commands without error.
