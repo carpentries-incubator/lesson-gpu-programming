@@ -92,10 +92,10 @@ Remember that at this point we are still doing everything with standard Python, 
 
 ~~~python
 x, y = np.meshgrid(np.linspace(-2, 2, 15), np.linspace(-2, 2, 15))
-dst = np.sqrt(x*x + y*y)
+dist = np.sqrt(x*x + y*y)
 sigma = 1
-muu = 0.000
-gauss = np.exp(-(dst - muu)**2 / (2.0 * sigma**2))
+origin = 0.000
+gauss = np.exp(-(dist - origin)**2 / (2.0 * sigma**2))
 pyl.imshow(gauss)
 pyl.show()
 ~~~
