@@ -95,7 +95,7 @@ x, y = np.meshgrid(np.linspace(-2, 2, 15), np.linspace(-2, 2, 15))
 dst = np.sqrt(x*x + y*y)
 sigma = 1
 muu = 0.000
-gauss = np.exp(-((dst-muu)**2/(2.0 * sigma**2)))
+gauss = np.exp(-(dst - muu)**2 / (2.0 * sigma**2))
 pyl.imshow(gauss)
 pyl.show()
 ~~~
@@ -406,8 +406,7 @@ mean_ = data.mean()
 median_ = np.median(data)
 stddev_ = np.std(data)
 max_ = np.amax(data)
-print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e}, \
-maximum = {max_:.3e}")
+print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e}, maximum = {max_:.3e}")
 ~~~
 
 The maximum flux density is 2506 mJy/beam, coming from the Galactic Center itself, so from the center of the image, while the overall standard deviation is 19.9 mJy/beam:
@@ -439,8 +438,7 @@ def kappa_sigma_clipper(data_flat):
 data_clipped = kappa_sigma_clipper(data_flat)
 timing_ks_clipping_cpu = %timeit -o kappa_sigma_clipper(data_flat)
 fastest_ks_clipping_cpu = timing_ks_clipping_cpu.best
-print(f"Fastest CPU ks clipping time = \
-       {1000 * fastest_ks_clipping_cpu:.3e} ms.")
+print(f"Fastest CPU ks clipping time = {1000 * fastest_ks_clipping_cpu:.3e} ms.")
 ~~~
 
 ~~~output
@@ -457,16 +455,17 @@ clipped_mean_ = data_clipped.mean()
 clipped_median_ = np.median(data_clipped)
 clipped_stddev_ = np.std(data_clipped)
 clipped_max_ = np.amax(data_clipped)
-print(f"mean of clipped = {clipped_mean_:.3e}, median of clipped = \
-{clipped_median_:.3e} \n standard deviation of clipped = \
-{clipped_stddev_:.3e}, maximum of clipped = {clipped_max_:.3e}")
+print(f"mean of clipped = {clipped_mean_:.3e},
+      median of clipped = {clipped_median_:.3e} \n
+      standard deviation of clipped = {clipped_stddev_:.3e},
+      maximum of clipped = {clipped_max_:.3e}")
 ~~~
 
 All output statistics have become smaller which is reassuring; it seems data_clipped contains mostly background pixels:
 
 ~~~output
 mean of clipped = -1.945e-06, median of clipped = -9.796e-06 
- standard deviation of clipped = 1.334e-02, maximum of clipped = 4.000e-02
+standard deviation of clipped = 1.334e-02, maximum of clipped = 4.000e-02
 ~~~
 
 :::::::::::::::::::::::::::::::::::::: challenge
@@ -484,8 +483,9 @@ def ks_clipper_gpu(data_flat):
     return cp.asnumpy(data_gpu_clipped)
 
 data_clipped_on_GPU = ks_clipper_gpu(data_flat)
-timing_ks_clipping_gpu = benchmark(ks_clipper_gpu, \
-                                   (data_flat, ), n_repeat=10)
+timing_ks_clipping_gpu = benchmark(ks_clipper_gpu,
+                                   (data_flat, ),
+                                   n_repeat=10)
 fastest_ks_clipping_gpu = np.amin(timing_ks_clipping_gpu.gpu_times)
 print(f"{1000 * fastest_ks_clipping_gpu:.3e} ms")
 ~~~
@@ -528,8 +528,7 @@ threshold = 5 * stddev_gpu_
 segmented_image = np.where(data > threshold, 1,  0)
 timing_segmentation_CPU = %timeit -o np.where(data > threshold, 1,  0)
 fastest_segmentation_CPU = timing_segmentation_CPU.best 
-print(f"Fastest CPU segmentation time = {1000 * fastest_segmentation_CPU:.3e} \
-ms.")
+print(f"Fastest CPU segmentation time = {1000 * fastest_segmentation_CPU:.3e} ms.")
 ~~~
 
 ~~~output
@@ -549,8 +548,7 @@ from scipy.ndimage import label as label_cpu
 labeled_image = np.empty(data.shape)
 number_of_sources_in_image = label_cpu(segmented_image, output = labeled_image)
 sigma_unicode = "\u03C3"
-print(f"The number of sources in the image at the 5{sigma_unicode} level is \
-{number_of_sources_in_image}.")
+print(f"The number of sources in the image at the 5{sigma_unicode} level is {number_of_sources_in_image}.")
 
 timing_CCL_CPU = %timeit -o label_cpu(segmented_image, output = labeled_image)
 fastest_CCL_CPU = timing_CCL_CPU.best
@@ -569,14 +567,14 @@ Let us not just accept the answer, but also do a sanity check.
 What are the values in the labeled image?
 
 ~~~python
-print(f"These are all the pixel values we can find in the labeled image: \
-{np.unique(labeled_image)}")
+print(f"These are all the pixel values we can find in the labeled image: {np.unique(labeled_image)}")
 ~~~
 
 This should show the following output:
 
 ~~~output
-These are all the pixel values we can find in the labeled image: [  0.   1.   2.   3.   4.   5.   6.   7.   8.   9.  10.  11.  12.  13.
+These are all the pixel values we can find in the labeled image:
+[  0.   1.   2.   3.   4.   5.   6.   7.   8.   9.  10.  11.  12.  13.
   14.  15.  16.  17.  18.  19.  20.  21.  22.  23.  24.  25.  26.  27.
   28.  29.  30.  31.  32.  33.  34.  35.  36.  37.  38.  39.  40.  41.
   42.  43.  44.  45.  46.  47.  48.  49.  50.  51.  52.  53.  54.  55.
@@ -604,19 +602,19 @@ This is the CPU code for measuring our sources.
 ~~~python
 from scipy.ndimage import center_of_mass as com_cpu
 from scipy.ndimage import sum_labels as sl_cpu
-all_positions = com_cpu(data, labeled_image, \
-                               range(1, number_of_sources_in_image+1))
-all_integrated_fluxes = sl_cpu(data, labeled_image, \
+all_positions = com_cpu(data, labeled_image,
+                        range(1, number_of_sources_in_image+1))
+all_integrated_fluxes = sl_cpu(data, labeled_image,
                                range(1, number_of_sources_in_image+1))
 
-print (f'These are the ten highest integrated fluxes of the sources in my \n\
-image: {np.sort(all_integrated_fluxes)[-10:]}')
+print (f'These are the ten highest integrated fluxes of the sources in my \n image: {np.sort(all_integrated_fluxes)[-10:]}')
 ~~~
 
 which gives the Galactic Center as the most luminous source, which makes sense when we look at our image.
 
 ~~~output
-These are the ten highest integrated fluxes of the sources in my image: [ 38.90615184  41.91485894  43.02203498  47.30590784  51.23707351
+These are the ten highest integrated fluxes of the sources in my image:
+[ 38.90615184  41.91485894  43.02203498  47.30590784  51.23707351
   58.07289425  68.85673917  70.31223921  95.16443585 363.58937774]
 ~~~
 
@@ -624,9 +622,9 @@ Now we can try to measure the execution times for both algorithms, like this:
 
 ~~~python
 %%timeit -o
-all_positions = com_cpu(data, labeled_image, \
-                               range(1, number_of_sources_in_image+1))
-all_integrated_fluxes = sl_cpu(data, labeled_image, \
+all_positions = com_cpu(data, labeled_image,
+                        range(1, number_of_sources_in_image+1))
+all_integrated_fluxes = sl_cpu(data, labeled_image,
                                range(1, number_of_sources_in_image+1))
 ~~~
 
@@ -643,8 +641,7 @@ To collect the result from that timing in our next cell block, we need a trick t
 ~~~python
 timing_source_measurements_CPU = _
 fastest_source_measurements_CPU = timing_source_measurements_CPU.best
-print(f"Fastest CPU set of source measurements = \
-{1000 * fastest_source_measurements_CPU:.3e} ms.")
+print(f"Fastest CPU set of source measurements = {1000 * fastest_source_measurements_CPU:.3e} ms.")
 ~~~
 
 Which yields
@@ -672,26 +669,24 @@ def first_two_steps_for_both_CPU_and_GPU(data):
 def ccl_and_source_measurements_on_CPU(data_CPU, segmented_image_CPU):
     labeled_image_CPU = np.empty(data_CPU.shape)
     number_of_sources_in_image = label_cpu(segmented_image_CPU, 
-                                       output= labeled_image_CPU)
+                                           output= labeled_image_CPU)
     all_positions = com_cpu(data_CPU, labeled_image_CPU, 
                             np.arange(1, number_of_sources_in_image+1))
     all_fluxes = sl_cpu(data_CPU, labeled_image_CPU, 
-                            np.arange(1, number_of_sources_in_image+1))
+                        np.arange(1, number_of_sources_in_image+1))
     return np.array(all_positions), np.array(all_fluxes)
 
-CPU_output = ccl_and_source_measurements_on_CPU(data, \
-                 first_two_steps_for_both_CPU_and_GPU(data))
+CPU_output = ccl_and_source_measurements_on_CPU(data,
+                                            first_two_steps_for_both_CPU_and_GPU(data))
 
-timing_complete_processing_CPU =  \
-    benchmark(ccl_and_source_measurements_on_CPU, (data, \
-       first_two_steps_for_both_CPU_and_GPU(data)), \
-       n_repeat=10)
+timing_complete_processing_CPU =  benchmark(
+                                            ccl_and_source_measurements_on_CPU,
+                                            (data,
+                                            first_two_steps_for_both_CPU_and_GPU(data)),                                             n_repeat=10)
 
-fastest_complete_processing_CPU = \
-    np.amin(timing_complete_processing_CPU.cpu_times)
+fastest_complete_processing_CPU = np.amin(timing_complete_processing_CPU.cpu_times)
 
-print(f"The four steps of image processing for astronomy take \
-{1000 * fastest_complete_processing_CPU:.3e} ms\n on our CPU.")
+print(f"The four steps of image processing for astronomy take {1000 * fastest_complete_processing_CPU:.3e} ms\n on our CPU.")
 
 from cupyx.scipy.ndimage import label as label_gpu
 from cupyx.scipy.ndimage import center_of_mass as com_gpu
@@ -704,32 +699,24 @@ def ccl_and_source_measurements_on_GPU(data_GPU, segmented_image_GPU):
     all_positions = com_gpu(data_GPU, labeled_image_GPU, 
                             cp.arange(1, number_of_sources_in_image+1))
     all_fluxes = sl_gpu(data_GPU, labeled_image_GPU, 
-                            cp.arange(1, number_of_sources_in_image+1))
+                        cp.arange(1, number_of_sources_in_image+1))
     # This seems redundant, but we want to return ndarrays (Numpy)
     # and what we have are lists.
     # These first have to be converted to
     # Cupy arrays before they can be converted to Numpy arrays.
-    return cp.asnumpy(cp.asarray(all_positions)), \
-           cp.asnumpy(cp.asarray(all_fluxes))
+    return cp.asnumpy(cp.asarray(all_positions)),
+                      cp.asnumpy(cp.asarray(all_fluxes))
 
-GPU_output = ccl_and_source_measurements_on_GPU(cp.asarray(data), \
-                 first_two_steps_for_both_CPU_and_GPU(cp.asarray(data)))
+GPU_output = ccl_and_source_measurements_on_GPU(cp.asarray(data), first_two_steps_for_both_CPU_and_GPU(cp.asarray(data)))
 
-timing_complete_processing_GPU =  \
-    benchmark(ccl_and_source_measurements_on_GPU, (cp.asarray(data), \
-       first_two_steps_for_both_CPU_and_GPU(cp.asarray(data))), \
-       n_repeat=10)
+timing_complete_processing_GPU =  benchmark(ccl_and_source_measurements_on_GPU, (cp.asarray(data), first_two_steps_for_both_CPU_and_GPU(cp.asarray(data))), n_repeat=10)
 
-fastest_complete_processing_GPU = \
-    np.amin(timing_complete_processing_GPU.gpu_times)
+fastest_complete_processing_GPU = np.amin(timing_complete_processing_GPU.gpu_times)
 
-print(f"The four steps of image processing for astronomy take \
-{1000 * fastest_complete_processing_GPU:.3e} ms\n on our GPU.")
+print(f"The four steps of image processing for astronomy take {1000 * fastest_complete_processing_GPU:.3e} ms\n on our GPU.")
 
-overall_speedup_factor = fastest_complete_processing_CPU/ \
-                         fastest_complete_processing_GPU
-print(f"This means that the overall speedup factor GPU vs CPU equals: \
-{overall_speedup_factor:.3e}\n")
+overall_speedup_factor = fastest_complete_processing_CPU /                         fastest_complete_processing_GPU
+print(f"This means that the overall speedup factor GPU vs CPU equals: {overall_speedup_factor:.3e}\n")
 
 all_positions_agree = np.allclose(CPU_output[0], GPU_output[0])
 print(f"The CPU and GPU positions agree: {all_positions_agree}\n")
@@ -741,7 +728,7 @@ print(f"The CPU and GPU fluxes agree: {all_positions_agree}\n")
 ~~~output
 The four steps of image processing for astronomy take 1.060e+03 ms on our CPU.
 The four steps of image processing for astronomy take 5.770e+01 ms on our GPU.
-This means that the overall speedup factor GPU vs CPU equals: 1.838e+01
+This means that the overall speedup factor GPU vs _mCPU equals: 1.838e+01
 
 The CPU and GPU positions agree: True
 
