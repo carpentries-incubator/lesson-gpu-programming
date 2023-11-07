@@ -19,16 +19,17 @@ exercises: 60
 # Introduction to CuPy
 
 [CuPy](https://cupy.dev) is a GPU array library that implements a subset of the NumPy and SciPy interfaces.
-This makes it a very convenient tool to use the compute power of GPUs for people that have some experience with NumPy, without the need to write code in a GPU programming language such as CUDA, OpenCL, or HIP.
+Thanks to CuPy, people conversant with NumPy can very conveniently harvest the compute power of GPUs without writing code in GPU programming languages such as CUDA, OpenCL, and HIP.
 
-# Convolution in Python
+From now on we can also use the word *host* to refer to the CPU on the laptop, desktop, or cluster node you are using as usual, and *device* to refer to the GPU.
 
-We start by generating an artificial "image" on the host using Python and NumPy; the host is the CPU on the laptop, desktop, or cluster node you are using right now, and from now on we may use *host* to refer to the CPU and *device* to refer to the GPU.
-The image will be all zeros, except for isolated pixels with value one, on a regular grid.
-The plan is to convolve it with a Gaussian and inspect the result.
-We will also record the time it takes to execute this convolution on the host.
+# Convolutions in Python
 
-We can interactively write and executed the code in an iPython shell or a Jupyter notebook.
+We start by generating an image using Python and NumPy code.
+We want to compute a convolution on this input image, once on the host and once on the device, and then compare both the execution times and the results.
+
+In an iPython shell or a Jupyter notebook, we can write and execute the following code on the host.
+The pixel values will be zero everywhere except for a regular grid of single pixels having value one, named deltas.
 
 ~~~python
 import numpy as np
@@ -38,57 +39,59 @@ deltas = np.zeros((2048, 2048))
 deltas[8::16,8::16] = 1
 ~~~
 
-To get a feeling of how the whole image looks like, we can display the top-left corner of it.
+We can display the top-left corner of the input image to get a feeling of how it looks like, as follows:
 
 ~~~python
 import pylab as pyl
-# Necessary command to render a matplotlib image in a Jupyter notebook.
+# Jupyter 'magic' command to render a Matplotlib image in the notebook
 %matplotlib inline
 
 # Display the image
-# You can zoom in using the menu in the window that will appear
+# You can zoom in/out using the menu in the window that will appear
 pyl.imshow(deltas[0:32, 0:32])
 pyl.show()
 ~~~
 
-After executing the code, you should see the following image.
+and you should obtain the following image:
 
-![Deltas array](./fig/deltas.png){alt='Deltas array'}
+![Grid of delta functions.](./fig/deltas.png){alt='Grid of delta functions'}
 
-### Background
-The computation we want to perform on this image is a convolution, once on the host and once on the device so we can compare the results and execution times.
-In computer vision applications, convolutions are often used to filter images and if you want to know more about them, we encourage you to check out [this github repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin with some great animations.
-We have already seen that we can think of an image as a matrix of color values, when we convolve that image with a particular filter, we generate a new matrix with different color values.
-An example of convolution can be seen in the figure below (illustration by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
+## Gaussian convolutions
+
+The illustration below shows an example of convolution (by Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
+To know more about convolutions, we encourage you to check out [this GitHub repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin with some great animations.
 
 ![Example of animated convolution](./fig/2D_Convolution_Animation.gif){alt="Example of animated convolution"}
 
-In our example, we will convolve our image with a 2D Gaussian function shown below:
+In this course section, we will convolve our image with a 2D Gaussian function, having the general form:
 
 $$G(x,y) = \frac{1}{2\pi \sigma^2} \exp\left(-\frac{x^2 + y^2}{2 \sigma^2}\right),$$
 
-where $x$ and $y$ are the "coordinates in our matrix, i.e. our row and columns, and $$\sigma$$ controls the width of the Gaussian distribution.
-Convolving images with 2D Gaussian functions will change the value of each pixel to be a weighted average of the pixels around it, thereby "smoothing" the image.
-Convolving images with a Gaussian function reduces the noise in the image, which is often required in [edge-detection](https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection) since most algorithms to do this are sensitive to noise.
+where $x$ and $y$ are distances from the origin, and $$\sigma$$ controls the width of the Gaussian curve.
+Since we can think of an image as a matrix of color values, the convolution of that image with a filter generates a new matrix with different color values.
+In particular, convolving images with 2D Gaussian functions changes the value of each pixel into a weighted average of the neighboring pixels, thereby smoothing out the features in the input image.
+
+Convolutions are frequently used in computer vision applications to filter images.
+For example, Gaussian convolution can be required before applying algorithms for [edge detection](https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection), which are sensitive to the noise in the original image.
 
 ::: callout
-It is often useful to identify the dataflow inherent in a problem.
-Say, if we want to square a list of numbers, all the operations are independent.
+Identifying the dataflow inherent in an algorithm is often useful.
+Say, if we want to square the numbers in a list, the operations on each item of the list are independent one of another.
 The dataflow of a one-to-one operation is called a *map*.
 
-![Data flow of a map operation](./fig/mapping.svg){alt="Data flow of a map operation"}
+![Dataflow of a map operation.](./fig/mapping.svg){alt="Data flow of a map operation"}
 
-A convolution is slightly more complicated.
-Here we have a many-to-one data flow, which is also known as a stencil.
+A convolution is slightly more complex because of a many-to-one dataflow, also known as a **stencil**.
 
-![Data flow of a stencil operation](./fig/stencil.svg){alt="Data flow of a stencil operation"}
+![Dataflow of a stencil operation.](./fig/stencil.svg){alt="Data flow of a stencil operation"}
 
-GPUs are exceptionally well suited to compute algorithms that follow one of these patterns.
+GPUs are exceptionally well suited to compute algorithms that follow either dataflow.
 :::
 
-# Convolution on the CPU Using SciPy
-Let us first construct the Gaussian, and then display it.
-Remember that at this point we are still doing everything with standard Python, and not using the GPU yet.
+## Convolution on the CPU Using SciPy
+
+Let us first construct the Gaussian filter and then display it.
+Remember that we are still coding everything in standard Python, without using the GPU.
 
 ~~~python
 x, y = np.meshgrid(np.linspace(-2, 2, 15), np.linspace(-2, 2, 15))
@@ -100,13 +103,13 @@ pyl.imshow(gauss)
 pyl.show()
 ~~~
 
-This should show you a symmetrical two-dimensional Gaussian.
+The code above produces this image that shows you the symmetrical two-dimensional Gaussian:
 
-![Two-dimensional Gaussian](./fig/gauss.png){alt="Two-dimensional Gaussian"}
+![Two-dimensional Gaussian.](./fig/gauss.png){alt="Two-dimensional Gaussian"}
 
-Now we are ready to do the convolution on the host.
-We do not have to write this convolution function ourselves, as it is very conveniently provided by SciPy.
-Let us also record the time it takes to perform this convolution and inspect the top left corner of the convolved image.
+Now we are ready to compute the convolution on the host.
+Very conveniently, SciPy provides a method for convolutions.
+Let us also record the time to perform this convolution and inspect the top-left corner of the convolved image, as follows:
 
 ~~~python
 from scipy.signal import convolve2d as convolve2d_cpu
@@ -117,27 +120,27 @@ pyl.show()
 %timeit -n 1 -r 1 convolve2d_cpu(deltas, gauss)
 ~~~
 
-Obviously, the time to perform this convolution will depend very much on the power of your CPU, but I expect you to find that it takes a couple of seconds.
+Obviously, the power of your CPU influences the actual execution time very much on, and we expect that to be in the region of a couple of seconds.
 
 ~~~output
 2.4 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
 ~~~
 
-When you display the corner of the image, you can see that the "ones" surrounded by zeros have actually been blurred by a Gaussian, so we end up with a regular grid of Gaussians.
+Displaying just a corner of the image shows that the Gaussian has so much blurred the original pattern of ones surrounded by zeros that we end up with a regular pattern of Gaussians.
 
-![Regular grid of Gaussians](./fig/convolved_image.png){alt="Regular grid of Gaussians"}
+![Grid of Gaussians in the convoluted image.](./fig/convolved_image.png){alt="Grid of Gaussians in the convoluted image"}
 
-# Convolution on the GPU Using CuPy
+## Convolution on the GPU Using CuPy
 
-This is part of a lesson on GPU programming, so let us use the GPU.
-Although there is a physical connection - i.e. a cable - between the CPU and the GPU, they do not share the same memory space.
-This image depicts the different components of CPU and GPU and how they are connected:
+This is a lesson on GPU programming, so let us use the GPU.
+In spite of being physically connected -- typically with special [interconnects](https://en.wikipedia.org/wiki/Interconnect_(integrated_circuits)) -- the CPU and the GPU do not share the same memory space.
+This picture depicts the different components of CPU and GPU and how they are connected:
 
-![CPU and GPU are two separate entities, each with its own memory](./fig/CPU_and_GPU_separated.png){alt="CPU and GPU are two separate entities, each with its own memory"}
+![CPU and GPU are separate entities with an own memory.](./fig/CPU_and_GPU_separated.png){alt="CPU and GPU are separate entities with an own memory"}
 
-This means that an array created from e.g. an iPython shell using NumPy is physically located into the main memory of the host, and therefore available for the CPU but not the GPU.
-It is not yet present in GPU memory, which means that we need to copy our data, the input image and the convolving function to the GPU, before we can execute any code on it.
-In practice, we have the arrays `deltas` and `gauss` in the host's RAM, and we need to copy them to GPU memory using CuPy.
+This means that the array created with NumPy is physically stored in the host's main memory and, therefore, is only available to the CPU.
+Since our input image and convolving function are not yet present in the GPU memory, we need to copy both to the GPU before executing any code on it.
+In practice, we use CuPy to copy the arrays `deltas` and `gauss` from the host's RAM to the GPU memory as follows:
 
 ~~~python
 import cupy as cp
@@ -146,11 +149,12 @@ deltas_gpu = cp.asarray(deltas)
 gauss_gpu = cp.asarray(gauss)
 ~~~
 
-Now it is time to do the convolution on the GPU.
-SciPy does not offer functions that can use the GPU, so we need to import the convolution function from another library, called `cupyx`; `cupyx.scipy` contains a subset of all SciPy routines.
-You will see that the GPU convolution function from the `cupyx` library looks very much like the convolution function from SciPy we used previously.
-In general, NumPy and CuPy look very similar, as well as the SciPy and `cupyx` libraries, and this is on purpose to facilitate the use of the GPU by programmers that are already familiar with NumPy and SciPy.
-Let us again record the time to execute the convolution, so that we can compare it with the time it took on the host.
+Now it is time to compute the convolution on our GPU.
+Inconveniently, SciPy does not offer methods running on GPUs.
+Hence, we import the convolution function from a CuPy package aliased as `cupyx`, whose package [`cupyx.scipy`](https://docs.cupy.dev/en/stable/reference/scipy.html), in turn, performs a subset of the SciPy operations.
+We will soon verify that the GPU convolution function in `cupyx` works like the convolution function from SciPy called on the CPU.
+In general, CuPy proper and NumPy look so much similar as do the `cupyx` methods and SciPy; this is intended to invite programmers already familiar with NumPy and SciPy to use the GPU.
+For now, let us again record the time to execute on the device the same convolution as the host, so that we can compare the respective performances.
 
 ~~~python
 from cupyx.scipy.signal import convolve2d as convolve2d_gpu
@@ -159,15 +163,15 @@ convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
 %timeit -n 7 -r 1 convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
 ~~~
 
-Similar to what we had previously on the host, the execution time of the GPU convolution will depend very much on the GPU used.
-These are the results using a NVIDIA Tesla T4 on Google Colab.
+Also the execution time of the GPU convolution will depend very much on the hardware used, as seen for the host.
+The timing using a NVIDIA Tesla T4 on Google Colab was:
 
 ~~~output
 98.2 µs ± 0 ns per loop (mean ± std. dev. of 1 run, 7 loops each)
 ~~~
 
-This is a lot faster than on the host, a performance improvement, or speedup, of 24439 times.
-Impressive, but is it true?
+This is way faster than the host: more than a 24000-fold performance improvement, or speedup.
+Impressive, but is that true?
 
 # Measuring performance
 
