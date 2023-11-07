@@ -34,8 +34,8 @@ We can interactively write and executed the code in an iPython shell or a Jupyte
 import numpy as np
 
 # Construct an image with repeated delta functions
-deltas = np.zeros((2048, 2048))
-deltas[8::16,8::16] = 1
+diracs = np.zeros((2048, 2048))
+diracs[8::16,8::16] = 1
 ~~~
 
 To get a feeling of how the whole image looks like, we can display the top-left corner of it.
@@ -47,13 +47,13 @@ import pylab as pyl
 
 # Display the image
 # You can zoom in using the menu in the window that will appear
-pyl.imshow(deltas[0:32, 0:32])
+pyl.imshow(diracs[0:32, 0:32])
 pyl.show()
 ~~~
 
 After executing the code, you should see the following image.
 
-![Deltas array](./fig/deltas.png){alt='Deltas array'}
+![Deltas array](./fig/diracs.png){alt='Deltas array'}
 
 ### Background
 The computation we want to perform on this image is a convolution, once on the host and once on the device so we can compare the results and execution times.
@@ -111,10 +111,10 @@ Let us also record the time it takes to perform this convolution and inspect the
 ~~~python
 from scipy.signal import convolve2d as convolve2d_cpu
 
-convolved_image_using_CPU = convolve2d_cpu(deltas, gauss)
+convolved_image_using_CPU = convolve2d_cpu(diracs, gauss)
 pyl.imshow(convolved_image_using_CPU[0:32, 0:32])
 pyl.show()
-%timeit -n 1 -r 1 convolve2d_cpu(deltas, gauss)
+%timeit -n 1 -r 1 convolve2d_cpu(diracs, gauss)
 ~~~
 
 Obviously, the time to perform this convolution will depend very much on the power of your CPU, but I expect you to find that it takes a couple of seconds.
@@ -137,12 +137,12 @@ This image depicts the different components of CPU and GPU and how they are conn
 
 This means that an array created from e.g. an iPython shell using NumPy is physically located into the main memory of the host, and therefore available for the CPU but not the GPU.
 It is not yet present in GPU memory, which means that we need to copy our data, the input image and the convolving function to the GPU, before we can execute any code on it.
-In practice, we have the arrays `deltas` and `gauss` in the host's RAM, and we need to copy them to GPU memory using CuPy.
+In practice, we have the arrays `diracs` and `gauss` in the host's RAM, and we need to copy them to GPU memory using CuPy.
 
 ~~~python
 import cupy as cp
 
-deltas_gpu = cp.asarray(deltas)
+diracs_gpu = cp.asarray(diracs)
 gauss_gpu = cp.asarray(gauss)
 ~~~
 
@@ -155,8 +155,8 @@ Let us again record the time to execute the convolution, so that we can compare 
 ~~~python
 from cupyx.scipy.signal import convolve2d as convolve2d_gpu
 
-convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
-%timeit -n 7 -r 1 convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
+convolved_image_using_GPU = convolve2d_gpu(diracs_gpu, gauss_gpu)
+%timeit -n 7 -r 1 convolved_image_using_GPU = convolve2d_gpu(diracs_gpu, gauss_gpu)
 ~~~
 
 Similar to what we had previously on the host, the execution time of the GPU convolution will depend very much on the GPU used.
@@ -180,7 +180,7 @@ CuPy provides a function, `benchmark` that we can use to measure the time it tak
 ~~~python
 from cupyx.profiler import benchmark
 
-execution_gpu = benchmark(convolve2d_gpu, (deltas_gpu, gauss_gpu), n_repeat=10)
+execution_gpu = benchmark(convolve2d_gpu, (diracs_gpu, gauss_gpu), n_repeat=10)
 ~~~
 
 The previous code executes `convolve2d_gpu` ten times, and stores the execution time of each run, in seconds, inside the `gpu_times` attribute of the variable `execution_gpu`.
@@ -204,15 +204,15 @@ We now have a more reasonable, but still impressive, speedup of 116 times over t
 :::::::::::::::::::::::::::::::::::::: challenge
 ## Challenge: convolution on the GPU without CuPy 
 
-Try to convolve the NumPy array `deltas` with the NumPy array `gauss` directly on the GPU, without using CuPy arrays.
-If this works, it should save us the time and effort of transferring `deltas` and `gauss` to the GPU.
+Try to convolve the NumPy array `diracs` with the NumPy array `gauss` directly on the GPU, without using CuPy arrays.
+If this works, it should save us the time and effort of transferring `diracs` and `gauss` to the GPU.
 
 ::::::::::::::::::::::::::::::::::::: solution
 
-We can directly try to use the GPU convolution function `convolve2d_gpu` with `deltas` and `gauss` as inputs.
+We can directly try to use the GPU convolution function `convolve2d_gpu` with `diracs` and `gauss` as inputs.
 
 ~~~python
-convolve2d_gpu(deltas, gauss)
+convolve2d_gpu(diracs, gauss)
 ~~~
 
 However, this gives a long error message ending with:
@@ -252,9 +252,9 @@ A convenient solution is to group both the transfers, to and from the GPU, and t
 
 ~~~python
 def transfer_compute_transferback():
-    deltas_gpu = cp.asarray(deltas)
+    diracs_gpu = cp.asarray(diracs)
     gauss_gpu = cp.asarray(gauss)
-    convolved_image_using_GPU = convolve2d_gpu(deltas_gpu, gauss_gpu)
+    convolved_image_using_GPU = convolve2d_gpu(diracs_gpu, gauss_gpu)
     convolved_image_using_GPU_copied_to_host = cp.asnumpy(convolved_image_using_GPU)
    
 execution_gpu = benchmark(transfer_compute_transferback, (), n_repeat=10)
@@ -280,7 +280,7 @@ Vice versa, if we try to execute a regular SciPy routine (i.e. designed to run t
 Try the following:
 
 ~~~python
-convolve2d_cpu(deltas_gpu, gauss_gpu)
+convolve2d_cpu(diracs_gpu, gauss_gpu)
 ~~~
 
 This results in 
@@ -303,9 +303,9 @@ For the latter we will take the diagonal elements of our 2D Gaussian kernel.
 Try the following three instructions for linear convolution on the CPU:
 
 ~~~python
-deltas_1d = deltas.ravel()
+diracs_1d = diracs.ravel()
 gauss_1d = gauss.diagonal()
-%timeit -n 1 -r 1 np.convolve(deltas_1d, gauss_1d)
+%timeit -n 1 -r 1 np.convolve(diracs_1d, gauss_1d)
 ~~~
 
 You could arrive at something similar to this timing result:
@@ -319,10 +319,10 @@ Now let us try something bold.
 We will transfer the 1D arrays to the GPU and use the NumPy routine to do the convolution.
 
 ~~~python
-deltas_1d_gpu = cp.asarray(deltas_1d)
+diracs_1d_gpu = cp.asarray(diracs_1d)
 gauss_1d_gpu = cp.asarray(gauss_1d)
 
-execution_gpu = benchmark(np.convolve, (deltas_1d_gpu, gauss_1d_gpu), n_repeat=10)
+execution_gpu = benchmark(np.convolve, (diracs_1d_gpu, gauss_1d_gpu), n_repeat=10)
 gpu_avg_time = np.average(execution_gpu.gpu_times)
 print(f"{gpu_avg_time:.6f} s")
 ~~~
