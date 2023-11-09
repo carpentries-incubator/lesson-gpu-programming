@@ -343,14 +343,16 @@ The last linear convolution has actually been performed on the GPU, and faster t
 
 With this Numpy shortcut and without much coding effort, we obtained a good 18-fold speedup.
 
-# A real world example: image processing for radio astronomy
+# A scientific application: image processing for radio astronomy
 
-In this section, we will perform the four major steps in image processing for radio astronomy: determination of background characteristics, segmentation, connected component labeling and source measurements.
+In this section, we will perform four classical steps in image processing for radio astronomy: determination of the background characteristics, segmentation, connected component labeling, and source measurements.
 
-## Import the FITS image
+## Import the FITS file
 
-Start by importing a 2048² pixels image of the Galactic Center, an image made from observations by the Indian Giant Metrewave Radio Telescope (GMRT) at 150 MHz.
-The image is stored [in this repository](./data/GMRT_image_of_Galactic_Center.fits) as a [FITS](https://en.wikipedia.org/wiki/FITS) file, and to read it we need the `astropy` Python package.
+We import a 2048²-pixel image of the electromagnetic radiation at 150 MHz around the Galactic Center, as observed by the Indian Giant Metrewave Radio Telescope (GMRT).
+
+The image is stored [in this lesson's repository](./data/GMRT_image_of_Galactic_Center.fits) as a [FITS](https://en.wikipedia.org/wiki/FITS) file.
+The `astropy` Python package enables us to read in this file and, for compatibility with Python, convert the [byte ordering](https://en.wikipedia.org/wiki/Endianness) from the big to little endian, as follows:
 
 ~~~python
 from astropy.io import fits
@@ -359,11 +361,10 @@ with fits.open("GMRT_image_of_Galactic_Center.fits") as hdul:
     data = hdul[0].data.byteswap().newbyteorder()
 ~~~
 
-The latter two methods are needed to convert byte ordering from big endian to little endian.
-
 ## Inspect the image
 
-Let's have a look at part of this image.
+Let's have a look at this image.
+Left and right in the data will be swapped with the method `fliplr` just to adhere to the astronomical convention of the [right ascension](https://en.wikipedia.org/wiki/Right_ascension) increasing leftwards.
 
 ~~~python
 from matplotlib.colors import LogNorm
@@ -376,31 +377,20 @@ im_plot = ax.imshow(np.fliplr(data), cmap=pyl.cm.gray_r, norm=LogNorm(vmin = max
 pyl.colorbar(im_plot, ax=ax)
 ~~~
 
-![Image of the Galactic Center](./fig/improved_image_of_GC.png){alt="Image of the Galactic Center"}
+![Image of the Galactic Center at the radio frequency of 150 MHz](./fig/improved_image_of_GC.png){alt="Image of the Galactic Center"}
 
-The data has been switched left to right because Right Ascension increases to the left, so now it adheres to this astronomical convention.
-We can see a few dozen sources, especially in the lower left and upper right, which both have relatively good image quality.
-The band across the image from upper left to lower right has the worst image quality because there are many extended sources - especially the Galactic Center itself, in the middle - which are hard to deconvolve with the limited spacings from this observation.
-You can, however, see a couple of ring-like structures.
-These are actually supernova shells, i.e. the remnants from massive stars that exploded at the end of their lives.
+Stars, remnants of supernovas (massive exploded stars), and distant galaxies are possible radiation sources observed in this image.
+We can spot a few dozen radiation sources in fairly good quality in the lower left and upper right.
+In contrast, the quality is worse in the diagonal from the upper left to the lower right, because the radio telescope has a limited sensitivity and cannot look into large radiation sources.
+Nonetheless, you can notice the Galactic Center in the middle of the image and supernova shells as ring-like formations elsewhere.
 
-## Determine the background characteristics of the image
+The telescope accuracy has added background noise to the image.
+Yet, we want to identify all the radiation sources in this image, determine their positions, and measure their radiation fluxes.
+How can we then assert whether a high-intensity pixel is a peak of the noise or a genuine source?
+Assuming that the background noise is normally distributed with standard deviation $\sigma$, the chance of its intensity being larger than 5$\sigma$ is 2.9e-7.
+The chance of picking from our image of 2048² (4.2e6) pixels at least one that is so extremely bright because of noise is thus less than 50%.
 
-We want to identify all the sources - meaning e.g. stars, supernova remnants and distant galaxies - in this image and measure their positions and fluxes.
-How do we separate source pixels from background pixels? When do we know if a pixel with a high value belongs to a source or is simply a noise peak? We assume the background noise, which is a reflection of the limited sensitivity of the radio telescope, has a normal distribution.
-The chance of having a background pixel with a value above 5 times the standard deviation is 2.9e-7.
-We have 2²² = 4.2e6 pixels in our image, so the chance of catching at least one random noise peak by setting a threshold of 5 times the standard deviation is less than 50%.
-We refer to the standard deviation as $\sigma$.
-
-How do we measure the standard deviation of the background pixels? First we need to separate them from the source pixels, based on their values, in the sense that high pixel values more likely come from sources.
-The technique we use is called $\kappa, \sigma$ clipping.
-First we take all pixels and compute the standard deviation ($\sigma$).
-Then we compute the median and clip all pixels larger than $median + 3 * \sigma$ and smaller than $median - 3 * \sigma$.
-From the clipped set, we compute the median and standard deviation again and clip again.
-Continue until no more pixels are clipped.
-The standard deviation from this final set of pixel values is the basis for the next step.
-
-Before clipping, let's investigate some properties of our unclipped data.
+Before moving on, let's determine some summary statistics of the radiation intensity in the input image:
 
 ~~~python
 mean_ = data.mean()
@@ -411,16 +401,25 @@ print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e}, \
 maximum = {max_:.3e}")
 ~~~
 
-The maximum flux density is 2506 mJy/beam, coming from the Galactic Center itself, so from the center of the image, while the overall standard deviation is 19.9 mJy/beam:
+This gives (in Jy/beam):
 
 ~~~output
 mean = 3.898e-04, median = 1.571e-05, sttdev = 1.993e-02, maximum = 2.506e+00
 ~~~
 
-You might observe that $\kappa, \sigma$ clipping is a compute intense task, that is why we want to do it on a GPU.
-But let's first issue the algorithm on a CPU.
+The maximum flux density is 2506 mJy/beam coming from the Galactic Center, the overall standard deviation 19.9 mJy/beam, and the median 1.57e-05 mJy/beam.
 
-This is the NumPy code to do this:
+
+## Step 1: Determining the characteristics of the background
+
+First, we separate the background pixels from the source pixels using an iterative procedure called $\kappa$-$\sigma$ clipping, which assumes that high intensity is more likely to result from genuine sources.
+We start from the standard deviation ($\sigma$) and the median ($\mu_{1/2}$) of all pixel intensities, as computed above.
+We then discard (clip) the pixels whose intensity is larger than $\mu_{1/2} + 3\sigma$ or smaller than $\mu_{1/2} - 3\sigma$.
+In the next pass, we compute again the median and standard deviation of the clipped set, and clip once more.
+We repeat these operations until no more pixels are clipped, that is, there are no outliers in the designated tails.
+
+In the meantime, you may have noticed already that $\kappa$-$\sigma$ clipping is a compute intensive task that could be implemented in a GPU.
+For the moment, let's implement the algorithm with the NumPy code for a CPU, as follows:
 
 ~~~python
 # Flattening our 2D data first makes subsequent steps easier.
@@ -444,14 +443,14 @@ print(f"Fastest CPU ks clipping time = \
        {1000 * fastest_ks_clipping_cpu:.3e} ms.")
 ~~~
 
+The performance is close to 1 s and, hopefully, can be sped up on the GPU.
+
 ~~~output
 793 ms ± 17.2 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
 Fastest CPU ks clipping time = 7.777e+02 ms.
 ~~~
 
-So that is close to 1 second to perform these computations.
-Hopefully, we can speed this up using the GPU.
-How has $\kappa, \sigma$ clipping influenced our statistics?
+Finally, let's see how the $\kappa$-$\sigma$ clipping has influenced the summary statistics:
 
 ~~~python
 clipped_mean_ = data_clipped.mean()
@@ -463,17 +462,20 @@ print(f"mean of clipped = {clipped_mean_:.3e}, median of clipped = \
 {clipped_stddev_:.3e}, maximum of clipped = {clipped_max_:.3e}")
 ~~~
 
-All output statistics have become smaller which is reassuring; it seems data_clipped contains mostly background pixels:
+The first-order statistics have become smaller, which reassures us that `data_clipped` contains background pixels:
 
 ~~~output
 mean of clipped = -1.945e-06, median of clipped = -9.796e-06 
  standard deviation of clipped = 1.334e-02, maximum of clipped = 4.000e-02
 ~~~
 
+The standard deviation of the intensity in the background pixels is be the basis for the next step.
+
 :::::::::::::::::::::::::::::::::::::: challenge
-## Challenge: $\kappa, \sigma$ clipping on the GPU
-Now that you understand how the $\kappa, \sigma$ clipping algorithm works, perform it on the GPU using CuPy and compute the speedup.
-Include the data transfer to and from the GPU in your calculation.
+## Challenge: $\kappa$-$\sigma$ clipping on the GPU
+
+Now that you know how the $\kappa$-$\sigma$ clipping algorithm works, perform it on the GPU using CuPy.
+Compute the speedup, including the data transfer to and from the GPU.
 
 ::::::::::::::::::::::::::::::::::::: solution
 ## Solution
@@ -507,11 +509,12 @@ The speedup factor for ks clipping is: 1.232e+01
 :::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::
 
-## Segment the image
+## Step 2: Segmenting the image
 
-We have seen that clipping at the $5 \sigma$ level of an image this size (2048² pixels) will yield a chance of less than 50% that from all the sources we detect at least one will be a noise peak.
-So let's set the threshold at $5 \sigma$ and segment it.
-First check that we find the same standard deviation from our clipper on the GPU:
+We have already estimated that clipping an image of 2048² pixels at the $5 \sigma$ level yields a chance of less than 50% that at least one out of all the sources we detect is a noise peak.
+So let's set the threshold at $5\sigma$ and segment it.
+
+First let's check that the standard deviation from our clipper on the GPU is the same:
 
 ~~~python
 stddev_gpu_ = np.std(data_clipped_on_GPU)
@@ -522,7 +525,7 @@ print(f"standard deviation of background_noise = {stddev_gpu_:.4f} Jy/beam")
 standard deviation of background_noise = 0.0133 Jy/beam
 ~~~
 
-With the standard deviation computed we apply the $5 \sigma$ threshold to the image.
+We then apply the $5 \sigma$ threshold to the image with this standard deviation: 
 
 ~~~python
 threshold = 5 * stddev_gpu_
@@ -538,7 +541,7 @@ ms.")
 Fastest CPU segmentation time = 6.294e+00 ms.
 ~~~
 
-## Labeling of the segmented data 
+## Step 3: Labeling the segmented data 
 
 This is called connected component labeling (CCL).
 It will replace pixel values in the segmented image - just consisting of zeros and ones - of the first connected group of pixels with the value 1 - so nothing changed, but just for that first group - the pixel values in the second group of connected pixels will all be 2, the third connected group of pixels will all have the value 3 etc.
@@ -593,7 +596,7 @@ These are all the pixel values we can find in the labeled image: [  0.   1.   2.
  182. 183. 184. 185.]
 ~~~
 
-# Source measurements
+## Step 4: Measuring the radiation sources
 
 We are ready for the final step.
 We have been given observing time to make this beautiful image of the Galactic Center, we have determined its background statistics, we have separated actual cosmic sources from noise and now we want to measure these cosmic sources.
@@ -656,7 +659,7 @@ Fastest CPU set of source measurements = 7.838e+02 ms.
 
 :::::::::::::::::::::::::::::::::::::: challenge
 ## Challenge: putting it all together
-Combine the first two steps of image processing for astronomy, i.e. determining background characteristics e.g. through $\kappa, \sigma$ clipping and segmentation into a single function, that works for both CPU and GPU.
+Combine the first two steps of image processing for astronomy, i.e. determining background characteristics e.g. through $\kappa$-$\sigma$ clipping and segmentation into a single function, that works for both CPU and GPU.
 Next, write a function for connected component labeling and source measurements on the GPU and calculate the overall speedup factor for the combined four steps of image processing in astronomy on the GPU relative to the CPU.
 Finally, verify your output by comparing with the previous output, using the CPU.
 
