@@ -421,29 +421,30 @@ But let's first issue the algorithm on a CPU.
 This is the NumPy code to do this:
 
 ~~~python
-# Flattening our 2D data first makes subsequent steps easier.
+# Flattening our 2D data makes subsequent steps easier
 data_flat = data.ravel()
-# Here is a kappa, sigma clipper for the CPU
-def kappa_sigma_clipper(data_flat):
+
+# Here is a kappa-sigma clipper for the CPU
+def ks_clipper_cpu(data_flat):
     while True:
          med = np.median(data_flat)
          std = np.std(data_flat)
-         clipped_lower = data_flat.compress(data_flat > med - 3 * std)
-         clipped_both = clipped_lower.compress(clipped_lower < med + 3 * std)
-         if len(clipped_both) == len(data_flat):
+         clipped_below = data_flat.compress(data_flat > med - 3 * std)
+         clipped_data = clipped_below.compress(clipped_below < med + 3 * std)
+         if len(clipped_data) == len(data_flat):
              break
-         data_flat = clipped_both  
+         data_flat = clipped_data  
     return data_flat
 
-data_clipped = kappa_sigma_clipper(data_flat)
-timing_ks_clipping_cpu = %timeit -o kappa_sigma_clipper(data_flat)
+data_clipped_cpu = ks_clipper_cpu(data_flat)
+timing_ks_clipping_cpu = %timeit -o ks_clipper_cpu(data_flat)
 fastest_ks_clipping_cpu = timing_ks_clipping_cpu.best
-print(f"Fastest CPU ks clipping time = {1000 * fastest_ks_clipping_cpu:.3e} ms.")
+print(f"Fastest ks clipping time on CPU = {1000 * fastest_ks_clipping_cpu:.3e} ms.")
 ~~~
 
 ~~~output
 793 ms ± 17.2 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
-Fastest CPU ks clipping time = 7.777e+02 ms.
+Fastest ks clipping time on CPU = 7.777e+02 ms.
 ~~~
 
 So that is close to 1 second to perform these computations.
@@ -452,9 +453,9 @@ How has $\kappa, \sigma$ clipping influenced our statistics?
 
 ~~~python
 clipped_mean_ = data_clipped.mean()
-clipped_median_ = np.median(data_clipped)
-clipped_stddev_ = np.std(data_clipped)
-clipped_max_ = np.amax(data_clipped)
+clipped_median_ = np.median(data_clipped_cpu)
+clipped_stddev_ = np.std(data_clipped_cpu)
+clipped_max_ = np.amax(data_clipped_cpu)
 print(f"mean of clipped = {clipped_mean_:.3e},
       median of clipped = {clipped_median_:.3e} \n
       standard deviation of clipped = {clipped_stddev_:.3e},
@@ -479,10 +480,10 @@ Include the data transfer to and from the GPU in your calculation.
 ~~~python
 def ks_clipper_gpu(data_flat):
     data_flat_gpu = cp.asarray(data_flat)
-    data_gpu_clipped = kappa_sigma_clipper(data_flat_gpu)
+    data_gpu_clipped = ks_clipper_cpu(data_flat_gpu)
     return cp.asnumpy(data_gpu_clipped)
 
-data_clipped_on_GPU = ks_clipper_gpu(data_flat)
+data_clipped_gpu = ks_clipper_gpu(data_flat)
 timing_ks_clipping_gpu = benchmark(ks_clipper_gpu,
                                    (data_flat, ),
                                    n_repeat=10)
@@ -513,7 +514,7 @@ So let us set the threshold at $5 \sigma$ and segment it.
 First check that we find the same standard deviation from our clipper on the GPU:
 
 ~~~python
-stddev_gpu_ = np.std(data_clipped_on_GPU)
+stddev_gpu_ = np.std(data_clipped_gpu)
 print(f"standard deviation of background_noise = {stddev_gpu_:.4f} Jy/beam")
 ~~~
 
@@ -660,7 +661,7 @@ Finally, verify your output by comparing with the previous output, using the CPU
 ~~~python
 def first_two_steps_for_both_CPU_and_GPU(data):
     data_flat = data.ravel()
-    data_clipped = kappa_sigma_clipper(data_flat)
+    data_clipped = ks_clipper_cpu(data_flat)
     stddev_ = np.std(data_clipped)
     threshold = 5 * stddev_
     segmented_image = np.where(data > threshold, 1,  0)
