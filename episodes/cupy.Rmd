@@ -182,8 +182,8 @@ So far we used `timeit` to measure the performance of our Python code, no matter
 However, the execution on the GPU is *asynchronous*: the Python interpreter takes back control of the program execution immediately, while the GPU is still executing the task.
 Therefore, the timing of `timeit` is not reliable.
 
-Conveniently, `cupyx` provides the function `benchmark` that measures the actual execution time in the GPU.
-The following code executes `convolve2d_gpu` with the appropriate arguments ten times, and stores inside the `gpu_times` attribute of the variable `execution_gpu` the execution time of each run in seconds.
+Conveniently, `cupyx` provides the function `benchmark()` that measures the actual execution time in the GPU.
+The following code executes `convolve2d_gpu()` with the appropriate arguments ten times, and stores inside the `.gpu_times` attribute of the variable `execution_gpu` the execution time of each run in seconds.
 
 ~~~python
 from cupyx.profiler import benchmark
@@ -191,7 +191,7 @@ from cupyx.profiler import benchmark
 benchmark_gpu = benchmark(convolve2d_gpu, (diracs_gpu, gauss_gpu), n_repeat=10)
 ~~~
 
-These measurements are also more stable and representative, because `benchmarks` disregards the compile time and the repetitions warm up the GPU.
+These measurements are also more stable and representative, because `benchmark()` disregards the compile time and the repetitions warm up the GPU.
 We can then average the execution times, as follows:
 
 ~~~python
@@ -215,7 +215,7 @@ If this works, it will save us the time and effort of transferring the arrays `d
 
 ::::::::::::::::::::::::::::::::::::: solution
 
-We can call the GPU convolution function `convolve2d_gpu` directly with `deltas` and `gauss` as argument:
+We can call the GPU convolution function `convolve2d_gpu()` directly with `deltas` and `gauss` as argument:
 
 ~~~python
 convolve2d_gpu(diracs, gauss)
@@ -250,7 +250,7 @@ array(True)
 
 Compute again the speedup achieved using the GPU, taking into account also the time spent transferring the data from the CPU to the GPU and back.
 
-Hint: use the `cp.asnumpy` method to copy a CuPy array back to the host.
+Hint: use the `cp.asnumpy()` method to copy a CuPy array back to the host.
 
 :::::::::::::::::::::::::::::::::::::: solution
 
@@ -300,8 +300,8 @@ Please use `.get()` to construct a NumPy array explicitly.
 ~~~
 
 So, SciPy routines do not accept CuPy arrays as input.
-However, instead of performing a 2D convolution, we can execute a simpler 1D (linear) convolution that uses the NumPy routine `convolve` instead of a SciPy routine.
-To generate the input appropriate to a linear convolution, we flatten our input image from 2D to 1D using the method `ravel`.
+However, instead of performing a 2D convolution, we can execute a simpler 1D (linear) convolution that uses the NumPy routine `np.convolve()` instead of a SciPy routine.
+To generate the input appropriate to a linear convolution, we flatten our input image from 2D to 1D using the method `.ravel()`.
 To generate a 1D filter, we take the diagonal elements of our 2D Gaussian filter.
 Let's launch a linear convolution on the CPU with the following three instructions:
 
@@ -331,7 +331,7 @@ print(f"{gpu_execution_avg:.6f} s")
 
 You may be surprised that these commands do not throw any error.
 Contrary to SciPy, NumPy routines accept CuPy arrays as input, even though the latter exist only in GPU memory.
-Indeed, can you recall when we validated our codes using a NumPy and a CuPy array as input of `np.allclose`?
+Indeed, can you recall when we validated our codes using a NumPy and a CuPy array as input of `np.allclose()`?
 That worked for the same reason.
 [The CuPy documentation](https://docs.cupy.dev/en/stable/user_guide/interoperability.html#numpy) explains why NumPy routines can handle CuPy arrays.
 
@@ -364,7 +364,7 @@ with fits.open("GMRT_image_of_Galactic_Center.fits") as hdul:
 ## Inspect the image
 
 Let's have a look at this image.
-Left and right in the data will be swapped with the method `fliplr` just to adhere to the astronomical convention of the [right ascension](https://en.wikipedia.org/wiki/Right_ascension) increasing leftwards.
+Left and right in the data will be swapped with the method `np.fliplr()` just to adhere to the astronomical convention of the [right ascension](https://en.wikipedia.org/wiki/Right_ascension) increasing leftwards.
 
 ~~~python
 from matplotlib.colors import LogNorm
