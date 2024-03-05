@@ -336,78 +336,78 @@ on the GPU, as shown in the following code.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cupy</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cupyx.profiler <span class="im">import</span> benchmark</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>upper_bound <span class="op">=</span> <span class="dv">100_000</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>histogram_size <span class="op">=</span> <span class="dv">2</span><span class="op">**</span><span class="dv">25</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># GPU code</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>check_prime_gpu_code <span class="op">=</span> <span class="vs">r'''</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C"</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void all_primes_to(int size, int * const all_prime_numbers)</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="vs">    int number = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="vs">    int result = 1;</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="vs">    if ( number &lt; size )</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="vs">    {</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="vs">        for ( int factor = 2; factor &lt;= number / 2; factor++ )</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="vs">        {</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="vs">            if ( number </span><span class="sc">% f</span><span class="vs">actor == 0 )</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="vs">            {</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="vs">                result = 0;</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="vs">                break;</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="vs">            }</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="vs">        }</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="vs">        all_prime_numbers[number] = result;</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="vs">    }</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>histogram_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C"</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void histogram(const int * input, int * output)</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="vs">    int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="vs">    __shared__ int temp_histogram[256];</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="vs"> </span></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="vs">    // Initialize shared memory and synchronize</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="vs">    temp_histogram[threadIdx.x] = 0;</span></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="vs">    __syncthreads();</span></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="vs">    // Compute shared memory histogram and synchronize</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="vs">    atomicAdd(&amp;(temp_histogram[input[item]]), 1);</span></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="vs">    __syncthreads();</span></span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="vs">    // Update global histogram</span></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="vs">    atomicAdd(&amp;(output[threadIdx.x]), temp_histogram[threadIdx.x]);</span></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Allocate memory</span></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>all_primes_gpu <span class="op">=</span> cupy.zeros(upper_bound, dtype<span class="op">=</span>cupy.int32)</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>input_gpu <span class="op">=</span> cupy.random.randint(<span class="dv">256</span>, size<span class="op">=</span>histogram_size, dtype<span class="op">=</span>cupy.int32)</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>output_gpu <span class="op">=</span> cupy.zeros(<span class="dv">256</span>, dtype<span class="op">=</span>cupy.int32)</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Compile and setup the grid</span></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>all_primes_to_gpu <span class="op">=</span> cupy.RawKernel(check_prime_gpu_code, <span class="st">"all_primes_to"</span>)</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>grid_size_primes <span class="op">=</span> (<span class="bu">int</span>(math.ceil(upper_bound <span class="op">/</span> <span class="dv">1024</span>)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>block_size_primes <span class="op">=</span> (<span class="dv">1024</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>histogram_gpu <span class="op">=</span> cupy.RawKernel(histogram_cuda_code, <span class="st">"histogram"</span>)</span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>threads_per_block_hist <span class="op">=</span> <span class="dv">256</span></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>grid_size_hist <span class="op">=</span> (<span class="bu">int</span>(math.ceil(histogram_size <span class="op">/</span> threads_per_block_hist)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>block_size_hist <span class="op">=</span> (threads_per_block_hist, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="co"># Execute the kernels</span></span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Save results</span></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>output_one <span class="op">=</span> all_primes_gpu</span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>output_two <span class="op">=</span> output_gpu</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="im">import</span> cupy</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="im">from</span> cupyx.profiler <span class="im">import</span> benchmark</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>upper_bound <span class="op">=</span> <span class="dv">100_000</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>histogram_size <span class="op">=</span> <span class="dv">2</span><span class="op">**</span><span class="dv">25</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co"># GPU code</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>check_prime_gpu_code <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="vs">extern "C"</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="vs">__global__ void all_primes_to(int size, int * const all_prime_numbers)</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="vs">    int number = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="vs">    int result = 1;</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="vs">    if ( number &lt; size )</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="vs">    {</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="vs">        for ( int factor = 2; factor &lt;= number / 2; factor++ )</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="vs">        {</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="vs">            if ( number </span><span class="sc">% f</span><span class="vs">actor == 0 )</span></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="vs">            {</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="vs">                result = 0;</span></span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a><span class="vs">                break;</span></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a><span class="vs">            }</span></span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a><span class="vs">        }</span></span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a><span class="vs">        all_prime_numbers[number] = result;</span></span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a><span class="vs">    }</span></span>
+<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a><span class="vs">'''</span></span>
+<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>histogram_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a><span class="vs">extern "C"</span></span>
+<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a><span class="vs">__global__ void histogram(const int * input, int * output)</span></span>
+<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a><span class="vs">    int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
+<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a><span class="vs">    __shared__ int temp_histogram[256];</span></span>
+<span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a><span class="vs"> </span></span>
+<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a><span class="vs">    // Initialize shared memory and synchronize</span></span>
+<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a><span class="vs">    temp_histogram[threadIdx.x] = 0;</span></span>
+<span id="cb1-41"><a href="#cb1-41" tabindex="-1"></a><span class="vs">    __syncthreads();</span></span>
+<span id="cb1-42"><a href="#cb1-42" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" tabindex="-1"></a><span class="vs">    // Compute shared memory histogram and synchronize</span></span>
+<span id="cb1-44"><a href="#cb1-44" tabindex="-1"></a><span class="vs">    atomicAdd(&amp;(temp_histogram[input[item]]), 1);</span></span>
+<span id="cb1-45"><a href="#cb1-45" tabindex="-1"></a><span class="vs">    __syncthreads();</span></span>
+<span id="cb1-46"><a href="#cb1-46" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" tabindex="-1"></a><span class="vs">    // Update global histogram</span></span>
+<span id="cb1-48"><a href="#cb1-48" tabindex="-1"></a><span class="vs">    atomicAdd(&amp;(output[threadIdx.x]), temp_histogram[threadIdx.x]);</span></span>
+<span id="cb1-49"><a href="#cb1-49" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb1-50"><a href="#cb1-50" tabindex="-1"></a><span class="vs">'''</span></span>
+<span id="cb1-51"><a href="#cb1-51" tabindex="-1"></a></span>
+<span id="cb1-52"><a href="#cb1-52" tabindex="-1"></a><span class="co"># Allocate memory</span></span>
+<span id="cb1-53"><a href="#cb1-53" tabindex="-1"></a>all_primes_gpu <span class="op">=</span> cupy.zeros(upper_bound, dtype<span class="op">=</span>cupy.int32)</span>
+<span id="cb1-54"><a href="#cb1-54" tabindex="-1"></a>input_gpu <span class="op">=</span> cupy.random.randint(<span class="dv">256</span>, size<span class="op">=</span>histogram_size, dtype<span class="op">=</span>cupy.int32)</span>
+<span id="cb1-55"><a href="#cb1-55" tabindex="-1"></a>output_gpu <span class="op">=</span> cupy.zeros(<span class="dv">256</span>, dtype<span class="op">=</span>cupy.int32)</span>
+<span id="cb1-56"><a href="#cb1-56" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" tabindex="-1"></a><span class="co"># Compile and setup the grid</span></span>
+<span id="cb1-58"><a href="#cb1-58" tabindex="-1"></a>all_primes_to_gpu <span class="op">=</span> cupy.RawKernel(check_prime_gpu_code, <span class="st">"all_primes_to"</span>)</span>
+<span id="cb1-59"><a href="#cb1-59" tabindex="-1"></a>grid_size_primes <span class="op">=</span> (<span class="bu">int</span>(math.ceil(upper_bound <span class="op">/</span> <span class="dv">1024</span>)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb1-60"><a href="#cb1-60" tabindex="-1"></a>block_size_primes <span class="op">=</span> (<span class="dv">1024</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb1-61"><a href="#cb1-61" tabindex="-1"></a>histogram_gpu <span class="op">=</span> cupy.RawKernel(histogram_cuda_code, <span class="st">"histogram"</span>)</span>
+<span id="cb1-62"><a href="#cb1-62" tabindex="-1"></a>threads_per_block_hist <span class="op">=</span> <span class="dv">256</span></span>
+<span id="cb1-63"><a href="#cb1-63" tabindex="-1"></a>grid_size_hist <span class="op">=</span> (<span class="bu">int</span>(math.ceil(histogram_size <span class="op">/</span> threads_per_block_hist)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb1-64"><a href="#cb1-64" tabindex="-1"></a>block_size_hist <span class="op">=</span> (threads_per_block_hist, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb1-65"><a href="#cb1-65" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" tabindex="-1"></a><span class="co"># Execute the kernels</span></span>
+<span id="cb1-67"><a href="#cb1-67" tabindex="-1"></a>all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))</span>
+<span id="cb1-68"><a href="#cb1-68" tabindex="-1"></a>histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))</span>
+<span id="cb1-69"><a href="#cb1-69" tabindex="-1"></a></span>
+<span id="cb1-70"><a href="#cb1-70" tabindex="-1"></a><span class="co"># Save results</span></span>
+<span id="cb1-71"><a href="#cb1-71" tabindex="-1"></a>output_one <span class="op">=</span> all_primes_gpu</span>
+<span id="cb1-72"><a href="#cb1-72" tabindex="-1"></a>output_two <span class="op">=</span> output_gpu</span></code></pre>
 </div>
 <p>In the previous code, after allocating memory and compiling, we
 execute and measure the performance of one kernel, and when we are done
@@ -435,18 +435,18 @@ CuPy.</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>stream_one <span class="op">=</span> cupy.cuda.Stream()</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>stream_two <span class="op">=</span> cupy.cuda.Stream()</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>stream_one <span class="op">=</span> cupy.cuda.Stream()</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>stream_two <span class="op">=</span> cupy.cuda.Stream()</span></code></pre>
 </div>
 <p>We can then execute the kernels in different streams by using the
 Python <code>with</code> statement.</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> stream_one:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> stream_two:</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="cf">with</span> stream_one:</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="cf">with</span> stream_two:</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))</span></code></pre>
 </div>
 <p>Using the <code>with</code> statement we implicitly execute the CUDA
 operations in the code block using that stream. The result of doing this
@@ -464,7 +464,7 @@ to finish.</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>stream_one.synchronize()</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>stream_one.synchronize()</span></code></pre>
 </div>
 <p>This synchronization primitive is useful when we need to be sure that
 all operations on a stream are finished, before continuing. It is,
@@ -480,7 +480,7 @@ Events are created in Python in the following way.</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>interesting_event <span class="op">=</span> cupy.cuda.Event()</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>interesting_event <span class="op">=</span> cupy.cuda.Event()</span></code></pre>
 </div>
 <p>And can then be added to a stream by using the <code>record</code>
 method. In the following example we will create two streams: in the
@@ -491,17 +491,17 @@ the first histogram is computed.</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>stream_one <span class="op">=</span> cupy.cuda.Stream()</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>stream_two <span class="op">=</span> cupy.cuda.Stream()</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sync_point <span class="op">=</span> cupy.cuda.Event()</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> stream_one:</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    sync_point.record(stream<span class="op">=</span>stream_one)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> stream_two:</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    stream_two.wait_event(sync_point)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>stream_one <span class="op">=</span> cupy.cuda.Stream()</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>stream_two <span class="op">=</span> cupy.cuda.Stream()</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>sync_point <span class="op">=</span> cupy.cuda.Event()</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="cf">with</span> stream_one:</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    sync_point.record(stream<span class="op">=</span>stream_one)</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="cf">with</span> stream_two:</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    stream_two.wait_event(sync_point)</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>    histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))</span></code></pre>
 </div>
 <p>With streams and events, it is possible to build up arbitrary
 execution graphs for complex operations on the GPU.</p>
@@ -516,61 +516,61 @@ execution time.</p>
 <div class="codewrapper sourceCode" id="cb7">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cupy</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">100_000_000</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>a_cpu <span class="op">=</span> cupy.asnumpy(a_gpu)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>b_cpu <span class="op">=</span> cupy.asnumpy(b_gpu)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>c_cpu <span class="op">=</span> np.zeros(size, dtype<span class="op">=</span>np.float32)</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># CPU code</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vector_add(A, B, C, size):</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, size):</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        C[item] <span class="op">=</span> A[item] <span class="op">+</span> B[item]</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co"># CUDA vector_add</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(<span class="vs">r'''</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C"</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="vs">   int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="vs">   if ( item &lt; size )</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="vs">   {</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="vs">      C[item] = A[item] + B[item];</span></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="vs">   }</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span>, <span class="st">"vector_add"</span>)</span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co"># execute the code and measure time</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> vector_add(a_cpu, b_cpu, c_cpu, size)</span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>gpu_times <span class="op">=</span> []</span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">10</span>):</span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    start_gpu <span class="op">=</span> cupy.cuda.Event()</span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    end_gpu <span class="op">=</span> cupy.cuda.Event()</span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    start_gpu.record()</span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))</span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    end_gpu.record()</span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>    end_gpu.synchronize()</span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    gpu_times.append(cupy.cuda.get_elapsed_time(start_gpu, end_gpu))</span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>gpu_avg_time <span class="op">=</span> np.average(gpu_times)</span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>gpu_avg_time<span class="sc">:.6f}</span><span class="ss"> s"</span>)</span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="co"># test</span></span>
-<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> np.allclose(c_cpu, c_gpu):</span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
-<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="im">import</span> cupy</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">100_000_000</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>a_cpu <span class="op">=</span> cupy.asnumpy(a_gpu)</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>b_cpu <span class="op">=</span> cupy.asnumpy(b_gpu)</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>c_cpu <span class="op">=</span> np.zeros(size, dtype<span class="op">=</span>np.float32)</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co"># CPU code</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="kw">def</span> vector_add(A, B, C, size):</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, size):</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>        C[item] <span class="op">=</span> A[item] <span class="op">+</span> B[item]</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co"># CUDA vector_add</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(<span class="vs">r'''</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="vs">extern "C"</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="vs">   int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="vs">   if ( item &lt; size )</span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a><span class="vs">   {</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a><span class="vs">      C[item] = A[item] + B[item];</span></span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a><span class="vs">   }</span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a><span class="vs">'''</span>, <span class="st">"vector_add"</span>)</span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a></span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a><span class="co"># execute the code and measure time</span></span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> vector_add(a_cpu, b_cpu, c_cpu, size)</span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a>gpu_times <span class="op">=</span> []</span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">10</span>):</span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a>    start_gpu <span class="op">=</span> cupy.cuda.Event()</span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a>    end_gpu <span class="op">=</span> cupy.cuda.Event()</span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a>    start_gpu.record()</span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a>    vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))</span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a>    end_gpu.record()</span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a>    end_gpu.synchronize()</span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a>    gpu_times.append(cupy.cuda.get_elapsed_time(start_gpu, end_gpu))</span>
+<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a>gpu_avg_time <span class="op">=</span> np.average(gpu_times)</span>
+<span id="cb7-49"><a href="#cb7-49" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>gpu_avg_time<span class="sc">:.6f}</span><span class="ss"> s"</span>)</span>
+<span id="cb7-50"><a href="#cb7-50" tabindex="-1"></a></span>
+<span id="cb7-51"><a href="#cb7-51" tabindex="-1"></a><span class="co"># test</span></span>
+<span id="cb7-52"><a href="#cb7-52" tabindex="-1"></a><span class="cf">if</span> np.allclose(c_cpu, c_gpu):</span>
+<span id="cb7-53"><a href="#cb7-53" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
+<span id="cb7-54"><a href="#cb7-54" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb7-55"><a href="#cb7-55" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span></code></pre>
 </div>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
@@ -651,7 +651,7 @@ any links that you are not going to use.
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/streams.html",
   "dateCreated": "2020-09-25",
   "dateModified": "2023-11-21",
-  "datePublished": "2024-02-27"
+  "datePublished": "2024-03-05"
 }
 
   </script><script>

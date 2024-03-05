@@ -356,16 +356,16 @@ using?<a class="anchor" aria-label="anchor" href="#challenge-how-many-registers-
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>   <span class="op">{</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>   <span class="op">}</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>   </span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>   <span class="op">{</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>   <span class="op">}</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -375,7 +375,7 @@ using?<a class="anchor" aria-label="anchor" href="#challenge-how-many-registers-
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1">Show me the solution</h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>In general, it is not possible to exactly know how many registers the
 compiler will use without examining the output generated by the compiler
@@ -396,20 +396,20 @@ different, but equivalent, way.</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>   <span class="dt">float</span> temp_a<span class="op">,</span> temp_b<span class="op">,</span> temp_c<span class="op">;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>   <span class="op">{</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>       temp_a <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>       temp_b <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>       temp_c <span class="op">=</span> temp_a <span class="op">+</span> temp_b<span class="op">;</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>       C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> temp_c<span class="op">;</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>   <span class="op">}</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>   <span class="dt">float</span> temp_a<span class="op">,</span> temp_b<span class="op">,</span> temp_c<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>   <span class="op">{</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>       temp_a <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>       temp_b <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>       temp_c <span class="op">=</span> temp_a <span class="op">+</span> temp_b<span class="op">;</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>       C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> temp_c<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>   <span class="op">}</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <p>In this new version of <code>vector_add</code> we explicitly declare
 three <code>float</code> variables to store the values loaded from
@@ -420,13 +420,12 @@ compiler will determine on its own the right amount of registers to
 allocate per thread, and what to store in them. However, explicit
 register usage can be important for reusing items already loaded from
 memory.</p>
-<div id="callout1" class="callout callout">
+<div id="callout1" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
-<div class="callout-inner">
-<h3 class="callout-title">Callout<a class="anchor" aria-label="anchor" href="#callout1"></a>
-</h3>
+<div class="section level3 callout-title callout-inner">
+<h3 class="callout-title">Callout</h3>
 <div class="callout-content">
 <p>Registers are the fastest memory on the GPU, so using them to
 increase data reuse is an important performance optimization. We will
@@ -442,20 +441,20 @@ registers.</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>   <span class="dt">float</span> temp<span class="op">[</span><span class="dv">3</span><span class="op">];</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>   <span class="op">{</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>       temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>       temp<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>       temp<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> temp<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>       C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">2</span><span class="op">];</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>   <span class="op">}</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>   <span class="dt">float</span> temp<span class="op">[</span><span class="dv">3</span><span class="op">];</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>   <span class="op">{</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>       temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>       temp<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>       temp<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> temp<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>       C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">2</span><span class="op">];</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>   <span class="op">}</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <p>Once again, this is not something that we would normally do, and it
 is provided only as an example of how to work with arrays of
@@ -484,16 +483,16 @@ identify where global memory is used.</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>   <span class="op">{</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>   <span class="op">}</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>   </span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>   <span class="op">{</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>   <span class="op">}</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -503,7 +502,7 @@ identify where global memory is used.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2">Show me the solution</h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>The vectors <code>A</code>, <code>B</code>, and <code>C</code> are
 stored in global memory.</p>
@@ -516,13 +515,12 @@ is by default allocated in global memory.</p>
 <p>Global memory is accessible by all threads, from all thread blocks.
 This means that a thread can read and write any value in global
 memory.</p>
-<div id="callout2" class="callout callout">
+<div id="callout2" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
-<div class="callout-inner">
-<h3 class="callout-title">Callout<a class="anchor" aria-label="anchor" href="#callout2"></a>
-</h3>
+<div class="section level3 callout-title callout-inner">
+<h3 class="callout-title">Callout</h3>
 <div class="callout-content">
 <p>While global memory is visible to all threads, remember that global
 memory is not coherent, and changes made by one thread block may not be
@@ -553,16 +551,16 @@ saved into global memory.</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>   <span class="op">{</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>   <span class="op">}</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>   </span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>   <span class="op">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>   <span class="op">}</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <p>Hint: have a look at the example using an array of registers, but
 find a way to use a variable and not a constant for the size.</p>
@@ -574,7 +572,7 @@ find a way to use a variable and not a constant for the size.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3">Show me the solution</h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>We need to pass the size of the local array as a new parameter to the
 kernel, because if we just specified <code>3</code> in the code, the
@@ -582,28 +580,28 @@ compiler would allocate registers and not local memory.</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> local_memory_size<span class="op">)</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>   <span class="dt">float</span> local_memory<span class="op">[</span>local_memory_size<span class="op">];</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>   <span class="op">{</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      local_memory<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      local_memory<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      local_memory<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> local_memory<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> local_memory<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> local_memory<span class="op">[</span><span class="dv">2</span><span class="op">];</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>   <span class="op">}</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> local_memory_size<span class="op">)</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>   <span class="dt">float</span> local_memory<span class="op">[</span>local_memory_size<span class="op">];</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>   </span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>   <span class="op">{</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>      local_memory<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>      local_memory<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>      local_memory<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> local_memory<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> local_memory<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> local_memory<span class="op">[</span><span class="dv">2</span><span class="op">];</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>   <span class="op">}</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <p>The host code could be modified adding one line and changing the way
 the kernel is called.</p>
 <div class="codewrapper sourceCode" id="cb7">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>local_memory_size <span class="op">=</span> <span class="dv">3</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>vector_add_gpu((<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size <span class="op">//</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size, local_memory_size))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>local_memory_size <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>vector_add_gpu((<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size <span class="op">//</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size, local_memory_size))</span></code></pre>
 </div>
 </div>
 </div>
@@ -701,7 +699,7 @@ any links that you are not going to use.
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/global_local_memory.html",
   "dateCreated": "2020-09-25",
   "dateModified": "2023-11-21",
-  "datePublished": "2024-02-27"
+  "datePublished": "2024-03-05"
 }
 
   </script><script>

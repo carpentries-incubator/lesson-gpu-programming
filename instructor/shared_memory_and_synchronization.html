@@ -354,20 +354,20 @@ shared memory.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> temp<span class="op">[</span><span class="dv">3</span><span class="op">];</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> temp<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">2</span><span class="op">];</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="dt">float</span> temp<span class="op">[</span><span class="dv">3</span><span class="op">];</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> temp<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">2</span><span class="op">];</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -377,7 +377,7 @@ shared memory.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1">Show me the solution</h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>To use shared memory for the <code>temp</code> array add the
 identifier <code>__shared__</code> to its definition, like in the
@@ -385,20 +385,20 @@ following code.</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  __shared__ <span class="dt">float</span> temp<span class="op">[</span><span class="dv">3</span><span class="op">];</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> temp<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">2</span><span class="op">];</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  __shared__ <span class="dt">float</span> temp<span class="op">[</span><span class="dv">3</span><span class="op">];</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="op">&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>      temp<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> temp<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span><span class="dv">2</span><span class="op">];</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -427,7 +427,7 @@ the result of its execution will be?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2">Show me the solution</h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>The result is non deterministic, and definitely not the same as the
 previous versions of <code>vector_add</code>. Threads will overwrite
@@ -447,7 +447,7 @@ following:</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>__shared__ <span class="dt">float</span> temp<span class="op">[</span><span class="dv">3</span> <span class="op">*</span> <span class="dv">1024</span><span class="op">];</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>__shared__ <span class="dt">float</span> temp<span class="op">[</span><span class="dv">3</span> <span class="op">*</span> <span class="dv">1024</span><span class="op">];</span></span></code></pre>
 </div>
 <p>But we know by experience that having constants in the code is not a
 scalable and maintainable solution. The problem is that we need to have
@@ -458,7 +458,7 @@ and allocate the memory somewhere else.</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> __shared__ <span class="dt">float</span> temp<span class="op">[];</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="kw">extern</span> __shared__ <span class="dt">float</span> temp<span class="op">[];</span></span></code></pre>
 </div>
 <p>And then use CuPy to instruct CUDA about how much shared memory, in
 bytes, each thread block needs. This can be done by adding the named
@@ -466,7 +466,7 @@ parameter <code>shared_mem</code> to the kernel call.</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>vector_add_gpu((<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size <span class="op">//</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size), shared_mem<span class="op">=</span>((size <span class="op">//</span> <span class="dv">2</span>) <span class="op">*</span> <span class="dv">3</span> <span class="op">*</span> cupy.dtype(cupy.float32).itemsize))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>vector_add_gpu((<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size <span class="op">//</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size), shared_mem<span class="op">=</span>((size <span class="op">//</span> <span class="dv">2</span>) <span class="op">*</span> <span class="dv">3</span> <span class="op">*</span> cupy.dtype(cupy.float32).itemsize))</span></code></pre>
 </div>
 <p>As you may have noticed, we had to retrieve the size in bytes of the
 data type <code>cupy.float32</code>, and this is done with
@@ -476,73 +476,73 @@ use the right indices:</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> offset <span class="op">=</span> threadIdx<span class="op">.</span>x <span class="op">*</span> <span class="dv">3</span><span class="op">;</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">extern</span> __shared__ <span class="dt">float</span> temp<span class="op">[];</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">0</span><span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">1</span><span class="op">]</span> <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">2</span><span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">0</span><span class="op">]</span> <span class="op">+</span> temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">1</span><span class="op">];</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">2</span><span class="op">];</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="dt">int</span> offset <span class="op">=</span> threadIdx<span class="op">.</span>x <span class="op">*</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="kw">extern</span> __shared__ <span class="dt">float</span> temp<span class="op">[];</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>      temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">0</span><span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>      temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">1</span><span class="op">]</span> <span class="op">=</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>      temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">2</span><span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">0</span><span class="op">]</span> <span class="op">+</span> temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">1</span><span class="op">];</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> temp<span class="op">[</span>offset <span class="op">+</span> <span class="dv">2</span><span class="op">];</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <p>And for completeness, we present the full Python code.</p>
 <div class="codewrapper sourceCode" id="cb7">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cupy</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># vector size</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2048</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># GPU memory allocation</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>gpu_args <span class="op">=</span> (a_gpu, b_gpu, c_gpu, size)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># CPU memory allocation</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>a_cpu <span class="op">=</span> cupy.asnumpy(a_gpu)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>b_cpu <span class="op">=</span> cupy.asnumpy(b_gpu)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>c_cpu <span class="op">=</span> np.zeros(size, dtype<span class="op">=</span>np.float32)</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># CUDA code</span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>vector_add_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C"</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="vs">  int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="vs">  int offset = threadIdx.x * 3;</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="vs">  extern __shared__ float temp[];</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="vs">  if ( item &lt; size )</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="vs">  {</span></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="vs">      temp[offset + 0] = A[item];</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="vs">      temp[offset + 1] = B[item];</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="vs">      temp[offset + 2] = temp[offset + 0] + temp[offset + 1];</span></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="vs">      C[item] = temp[offset + 2];</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="vs">  }</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="co"># compile and execute code</span></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(vector_add_cuda_code, <span class="st">"vector_add"</span>)</span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">32</span></span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>vector_add_gpu(grid_size, block_size, gpu_args, shared_mem<span class="op">=</span>(threads_per_block <span class="op">*</span> <span class="dv">3</span> <span class="op">*</span> cupy.dtype(cupy.float32).itemsize))</span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="co"># execute Python code and compare results</span></span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>vector_add(a_cpu, b_cpu, c_cpu, size)</span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>np.allclose(c_cpu, c_gpu)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="im">import</span> cupy</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># vector size</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2048</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co"># GPU memory allocation</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>gpu_args <span class="op">=</span> (a_gpu, b_gpu, c_gpu, size)</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co"># CPU memory allocation</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>a_cpu <span class="op">=</span> cupy.asnumpy(a_gpu)</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>b_cpu <span class="op">=</span> cupy.asnumpy(b_gpu)</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>c_cpu <span class="op">=</span> np.zeros(size, dtype<span class="op">=</span>np.float32)</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co"># CUDA code</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>vector_add_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="vs">extern "C"</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="vs">  int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="vs">  int offset = threadIdx.x * 3;</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="vs">  extern __shared__ float temp[];</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a><span class="vs">  if ( item &lt; size )</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a><span class="vs">  {</span></span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a><span class="vs">      temp[offset + 0] = A[item];</span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a><span class="vs">      temp[offset + 1] = B[item];</span></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a><span class="vs">      temp[offset + 2] = temp[offset + 0] + temp[offset + 1];</span></span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a><span class="vs">      C[item] = temp[offset + 2];</span></span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a><span class="vs">  }</span></span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a><span class="vs">'''</span></span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a></span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a><span class="co"># compile and execute code</span></span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(vector_add_cuda_code, <span class="st">"vector_add"</span>)</span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a>vector_add_gpu(grid_size, block_size, gpu_args, shared_mem<span class="op">=</span>(threads_per_block <span class="op">*</span> <span class="dv">3</span> <span class="op">*</span> cupy.dtype(cupy.float32).itemsize))</span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a></span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a><span class="co"># execute Python code and compare results</span></span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a>vector_add(a_cpu, b_cpu, c_cpu, size)</span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a>np.allclose(c_cpu, c_gpu)</span></code></pre>
 </div>
 <p>The code is now correct, although it is still not very useful. We are
 definitely using shared memory, and we are using it the correct way, but
@@ -554,9 +554,9 @@ actually useful. We start again with some Python code.</p>
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> histogram(input_array, output_array):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> input_array:</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        output_array[item] <span class="op">=</span> output_array[item] <span class="op">+</span> <span class="dv">1</span></span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="kw">def</span> histogram(input_array, output_array):</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> input_array:</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>        output_array[item] <span class="op">=</span> output_array[item] <span class="op">+</span> <span class="dv">1</span></span></code></pre>
 </div>
 <p>The <code>histogram</code> function, as the name suggests, computes
 the histogram of an array of integers, i.e. counts how many instances of
@@ -566,22 +566,22 @@ code.</p>
 <div class="codewrapper sourceCode" id="cb9">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>input_array <span class="op">=</span> np.random.randint(<span class="dv">256</span>, size<span class="op">=</span><span class="dv">2048</span>, dtype<span class="op">=</span>np.int32)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>output_array <span class="op">=</span> np.zeros(<span class="dv">256</span>, dtype<span class="op">=</span>np.int32)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>histogram(input_array, output_array)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>input_array <span class="op">=</span> np.random.randint(<span class="dv">256</span>, size<span class="op">=</span><span class="dv">2048</span>, dtype<span class="op">=</span>np.int32)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>output_array <span class="op">=</span> np.zeros(<span class="dv">256</span>, dtype<span class="op">=</span>np.int32)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>histogram(input_array, output_array)</span></code></pre>
 </div>
 <p>Everything as expected. We can now write the equivalent code in
 CUDA.</p>
 <div class="codewrapper sourceCode" id="cb10">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    output<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]</span> <span class="op">=</span> output<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]</span> <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    output<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]</span> <span class="op">=</span> output<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]</span> <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <div id="challenge-error-in-the-histogram" class="callout challenge">
 <div class="callout-square">
@@ -597,13 +597,13 @@ find it?</p>
 <div class="codewrapper sourceCode" id="cb11">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    output<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]</span> <span class="op">=</span> output<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]</span> <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    output<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]</span> <span class="op">=</span> output<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]</span> <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -613,7 +613,7 @@ find it?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3">Show me the solution</h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>The GPU is a highly parallel device, executing multiple threads at
 the same time. In the previous code different threads could be updating
@@ -630,66 +630,66 @@ item at the same time.</p>
 <div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    atomicAdd<span class="op">(&amp;(</span>output<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]),</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>    atomicAdd<span class="op">(&amp;(</span>output<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]),</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <p>And the full Python code snippet.</p>
 <div class="codewrapper sourceCode" id="cb13">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cupy</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cupyx.profiler <span class="im">import</span> benchmark</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> histogram(input_array, output_array):</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> input_array:</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        output_array[item] <span class="op">=</span> output_array[item] <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># input size</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2</span><span class="op">**</span><span class="dv">25</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># allocate memory on CPU and GPU</span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>input_gpu <span class="op">=</span> cupy.random.randint(<span class="dv">256</span>, size<span class="op">=</span>size, dtype<span class="op">=</span>cupy.int32)</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>input_cpu <span class="op">=</span> cupy.asnumpy(input_gpu)</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>output_gpu <span class="op">=</span> cupy.zeros(<span class="dv">256</span>, dtype<span class="op">=</span>cupy.int32)</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>output_cpu <span class="op">=</span> cupy.asnumpy(output_gpu)</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co"># CUDA code</span></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>histogram_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C"</span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void histogram(const int * input, int * output)</span></span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="vs">    int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="vs">    atomicAdd(&amp;(output[input[item]]), 1);</span></span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span></span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co"># compile and setup CUDA code</span></span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>histogram_gpu <span class="op">=</span> cupy.RawKernel(histogram_cuda_code, <span class="st">"histogram"</span>)</span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">256</span></span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="co"># check correctness</span></span>
-<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>histogram(input_cpu, output_cpu)</span>
-<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))</span>
-<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> np.allclose(output_cpu, output_gpu):</span>
-<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
-<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span>
-<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="co"># measure performance</span></span>
-<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> histogram(input_cpu, output_cpu)</span>
-<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>execution_gpu <span class="op">=</span> benchmark(histogram_gpu, (grid_size, block_size, (input_gpu, output_gpu)), n_repeat<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>gpu_avg_time <span class="op">=</span> np.average(execution_gpu.gpu_times)</span>
-<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>gpu_avg_time<span class="sc">:.6f}</span><span class="ss"> s"</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="im">import</span> cupy</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="im">from</span> cupyx.profiler <span class="im">import</span> benchmark</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="kw">def</span> histogram(input_array, output_array):</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> input_array:</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>        output_array[item] <span class="op">=</span> output_array[item] <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co"># input size</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2</span><span class="op">**</span><span class="dv">25</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co"># allocate memory on CPU and GPU</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>input_gpu <span class="op">=</span> cupy.random.randint(<span class="dv">256</span>, size<span class="op">=</span>size, dtype<span class="op">=</span>cupy.int32)</span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>input_cpu <span class="op">=</span> cupy.asnumpy(input_gpu)</span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>output_gpu <span class="op">=</span> cupy.zeros(<span class="dv">256</span>, dtype<span class="op">=</span>cupy.int32)</span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>output_cpu <span class="op">=</span> cupy.asnumpy(output_gpu)</span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="co"># CUDA code</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a>histogram_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="vs">extern "C"</span></span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a><span class="vs">__global__ void histogram(const int * input, int * output)</span></span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a><span class="vs">    int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
+<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a></span>
+<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a><span class="vs">    atomicAdd(&amp;(output[input[item]]), 1);</span></span>
+<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a><span class="vs">'''</span></span>
+<span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a></span>
+<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a><span class="co"># compile and setup CUDA code</span></span>
+<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a>histogram_gpu <span class="op">=</span> cupy.RawKernel(histogram_cuda_code, <span class="st">"histogram"</span>)</span>
+<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">256</span></span>
+<span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb13-34"><a href="#cb13-34" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb13-35"><a href="#cb13-35" tabindex="-1"></a></span>
+<span id="cb13-36"><a href="#cb13-36" tabindex="-1"></a><span class="co"># check correctness</span></span>
+<span id="cb13-37"><a href="#cb13-37" tabindex="-1"></a>histogram(input_cpu, output_cpu)</span>
+<span id="cb13-38"><a href="#cb13-38" tabindex="-1"></a>histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))</span>
+<span id="cb13-39"><a href="#cb13-39" tabindex="-1"></a><span class="cf">if</span> np.allclose(output_cpu, output_gpu):</span>
+<span id="cb13-40"><a href="#cb13-40" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
+<span id="cb13-41"><a href="#cb13-41" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb13-42"><a href="#cb13-42" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span>
+<span id="cb13-43"><a href="#cb13-43" tabindex="-1"></a></span>
+<span id="cb13-44"><a href="#cb13-44" tabindex="-1"></a><span class="co"># measure performance</span></span>
+<span id="cb13-45"><a href="#cb13-45" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> histogram(input_cpu, output_cpu)</span>
+<span id="cb13-46"><a href="#cb13-46" tabindex="-1"></a>execution_gpu <span class="op">=</span> benchmark(histogram_gpu, (grid_size, block_size, (input_gpu, output_gpu)), n_repeat<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb13-47"><a href="#cb13-47" tabindex="-1"></a>gpu_avg_time <span class="op">=</span> np.average(execution_gpu.gpu_times)</span>
+<span id="cb13-48"><a href="#cb13-48" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>gpu_avg_time<span class="sc">:.6f}</span><span class="ss"> s"</span>)</span></code></pre>
 </div>
 <p>The CUDA code is now correct, and computes the same result as the
 Python code; it is also faster than the Python code, as you can see from
@@ -717,18 +717,18 @@ following code and follow the suggestions in the comments.</p>
 <div class="codewrapper sourceCode" id="cb14">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Declare temporary histogram in shared memory</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> temp_histogram<span class="op">[</span><span class="dv">256</span><span class="op">];</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Update the temporary histogram in shared memory</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    atomicAdd<span class="op">();</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Update the global histogram in global memory, using the temporary histogram</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    atomicAdd<span class="op">();</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="co">// Declare temporary histogram in shared memory</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="dt">int</span> temp_histogram<span class="op">[</span><span class="dv">256</span><span class="op">];</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>    <span class="co">// Update the temporary histogram in shared memory</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    atomicAdd<span class="op">();</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>    <span class="co">// Update the global histogram in global memory, using the temporary histogram</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>    atomicAdd<span class="op">();</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <p>Hint: for this exercise, you can safely assume that the size of
 <code>output</code> is the same as the number of threads in a block.</p>
@@ -742,21 +742,21 @@ memory.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4">Show me the solution</h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
 <div class="accordion-body">
 <p>The following code shows one of the possible solutions.</p>
 <div class="codewrapper sourceCode" id="cb15">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    __shared__ <span class="dt">int</span> temp_histogram<span class="op">[</span><span class="dv">256</span><span class="op">];</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    atomicAdd<span class="op">(&amp;(</span>temp_histogram<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]),</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    atomicAdd<span class="op">(&amp;(</span>output<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]),</span> temp_histogram<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]);</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    __shared__ <span class="dt">int</span> temp_histogram<span class="op">[</span><span class="dv">256</span><span class="op">];</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>    atomicAdd<span class="op">(&amp;(</span>temp_histogram<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]),</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>    atomicAdd<span class="op">(&amp;(</span>output<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]),</span> temp_histogram<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]);</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <p>The idea behind this solution is to reduce the expensive conflicts in
 global memory by having a temporary histogram in shared memory. After a
@@ -781,8 +781,8 @@ lies in the following two lines of code:</p>
 <div class="codewrapper sourceCode" id="cb16">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>atomicAdd<span class="op">(&amp;(</span>temp_histogram<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]),</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>atomicAdd<span class="op">(&amp;(</span>output<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]),</span> temp_histogram<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]);</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>atomicAdd<span class="op">(&amp;(</span>temp_histogram<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]),</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>atomicAdd<span class="op">(&amp;(</span>output<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]),</span> temp_histogram<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]);</span></span></code></pre>
 </div>
 <p>In the first line each thread updates one arbitrary position in
 shared memory, depending on the value of the input, while in the second
@@ -802,86 +802,86 @@ array.</p>
 <div class="codewrapper sourceCode" id="cb17">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    __shared__ <span class="dt">int</span> temp_histogram<span class="op">[</span><span class="dv">256</span><span class="op">];</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Initialize shared memory and synchronize</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    temp_histogram<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    __syncthreads<span class="op">();</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Compute shared memory histogram and synchronize</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    atomicAdd<span class="op">(&amp;(</span>temp_histogram<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]),</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    __syncthreads<span class="op">();</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Update global histogram</span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    atomicAdd<span class="op">(&amp;(</span>output<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]),</span> temp_histogram<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]);</span></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram<span class="op">(</span><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> output<span class="op">)</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>    __shared__ <span class="dt">int</span> temp_histogram<span class="op">[</span><span class="dv">256</span><span class="op">];</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a> </span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>    <span class="co">// Initialize shared memory and synchronize</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>    temp_histogram<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>    __syncthreads<span class="op">();</span></span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>    <span class="co">// Compute shared memory histogram and synchronize</span></span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>    atomicAdd<span class="op">(&amp;(</span>temp_histogram<span class="op">[</span>input<span class="op">[</span>item<span class="op">]]),</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>    __syncthreads<span class="op">();</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>    <span class="co">// Update global histogram</span></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>    atomicAdd<span class="op">(&amp;(</span>output<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]),</span> temp_histogram<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]);</span></span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <p>And the full Python code snippet.</p>
 <div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cupy</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cupyx.profiler <span class="im">import</span> benchmark</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> histogram(input_array, output_array):</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> input_array:</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        output_array[item] <span class="op">=</span> output_array[item] <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># input size</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2</span><span class="op">**</span><span class="dv">25</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="co"># allocate memory on CPU and GPU</span></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>input_gpu <span class="op">=</span> cupy.random.randint(<span class="dv">256</span>, size<span class="op">=</span>size, dtype<span class="op">=</span>cupy.int32)</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>input_cpu <span class="op">=</span> cupy.asnumpy(input_gpu)</span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>output_gpu <span class="op">=</span> cupy.zeros(<span class="dv">256</span>, dtype<span class="op">=</span>cupy.int32)</span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>output_cpu <span class="op">=</span> cupy.asnumpy(output_gpu)</span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="co"># CUDA code</span></span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>histogram_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C"</span></span>
-<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void histogram(const int * input, int * output)</span></span>
-<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a><span class="vs">    int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
-<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a><span class="vs">    __shared__ int temp_histogram[256];</span></span>
-<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a><span class="vs"> </span></span>
-<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a><span class="vs">    // Initialize shared memory and synchronize</span></span>
-<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a><span class="vs">    temp_histogram[threadIdx.x] = 0;</span></span>
-<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a><span class="vs">    __syncthreads();</span></span>
-<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a><span class="vs">    // Compute shared memory histogram and synchronize</span></span>
-<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a><span class="vs">    atomicAdd(&amp;(temp_histogram[input[item]]), 1);</span></span>
-<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a><span class="vs">    __syncthreads();</span></span>
-<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a><span class="vs">    // Update global histogram</span></span>
-<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a><span class="vs">    atomicAdd(&amp;(output[threadIdx.x]), temp_histogram[threadIdx.x]);</span></span>
-<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span></span>
-<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a><span class="co"># compile and setup CUDA code</span></span>
-<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>histogram_gpu <span class="op">=</span> cupy.RawKernel(histogram_cuda_code, <span class="st">"histogram"</span>)</span>
-<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">256</span></span>
-<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a><span class="co"># check correctness</span></span>
-<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>histogram(input_cpu, output_cpu)</span>
-<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))</span>
-<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> np.allclose(output_cpu, output_gpu):</span>
-<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
-<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span>
-<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a><span class="co"># measure performance</span></span>
-<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> histogram(input_cpu, output_cpu)</span>
-<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>execution_gpu <span class="op">=</span> benchmark(histogram_gpu, (grid_size, block_size, (input_gpu, output_gpu)), n_repeat<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>gpu_avg_time <span class="op">=</span> np.average(execution_gpu.gpu_times)</span>
-<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>gpu_avg_time<span class="sc">:.6f}</span><span class="ss"> s"</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="im">import</span> cupy</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="im">from</span> cupyx.profiler <span class="im">import</span> benchmark</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="kw">def</span> histogram(input_array, output_array):</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> input_array:</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>        output_array[item] <span class="op">=</span> output_array[item] <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="co"># input size</span></span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2</span><span class="op">**</span><span class="dv">25</span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a><span class="co"># allocate memory on CPU and GPU</span></span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a>input_gpu <span class="op">=</span> cupy.random.randint(<span class="dv">256</span>, size<span class="op">=</span>size, dtype<span class="op">=</span>cupy.int32)</span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a>input_cpu <span class="op">=</span> cupy.asnumpy(input_gpu)</span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a>output_gpu <span class="op">=</span> cupy.zeros(<span class="dv">256</span>, dtype<span class="op">=</span>cupy.int32)</span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a>output_cpu <span class="op">=</span> cupy.asnumpy(output_gpu)</span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a><span class="co"># CUDA code</span></span>
+<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a>histogram_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb18-21"><a href="#cb18-21" tabindex="-1"></a><span class="vs">extern "C"</span></span>
+<span id="cb18-22"><a href="#cb18-22" tabindex="-1"></a><span class="vs">__global__ void histogram(const int * input, int * output)</span></span>
+<span id="cb18-23"><a href="#cb18-23" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb18-24"><a href="#cb18-24" tabindex="-1"></a><span class="vs">    int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
+<span id="cb18-25"><a href="#cb18-25" tabindex="-1"></a><span class="vs">    __shared__ int temp_histogram[256];</span></span>
+<span id="cb18-26"><a href="#cb18-26" tabindex="-1"></a><span class="vs"> </span></span>
+<span id="cb18-27"><a href="#cb18-27" tabindex="-1"></a><span class="vs">    // Initialize shared memory and synchronize</span></span>
+<span id="cb18-28"><a href="#cb18-28" tabindex="-1"></a><span class="vs">    temp_histogram[threadIdx.x] = 0;</span></span>
+<span id="cb18-29"><a href="#cb18-29" tabindex="-1"></a><span class="vs">    __syncthreads();</span></span>
+<span id="cb18-30"><a href="#cb18-30" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" tabindex="-1"></a><span class="vs">    // Compute shared memory histogram and synchronize</span></span>
+<span id="cb18-32"><a href="#cb18-32" tabindex="-1"></a><span class="vs">    atomicAdd(&amp;(temp_histogram[input[item]]), 1);</span></span>
+<span id="cb18-33"><a href="#cb18-33" tabindex="-1"></a><span class="vs">    __syncthreads();</span></span>
+<span id="cb18-34"><a href="#cb18-34" tabindex="-1"></a></span>
+<span id="cb18-35"><a href="#cb18-35" tabindex="-1"></a><span class="vs">    // Update global histogram</span></span>
+<span id="cb18-36"><a href="#cb18-36" tabindex="-1"></a><span class="vs">    atomicAdd(&amp;(output[threadIdx.x]), temp_histogram[threadIdx.x]);</span></span>
+<span id="cb18-37"><a href="#cb18-37" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb18-38"><a href="#cb18-38" tabindex="-1"></a><span class="vs">'''</span></span>
+<span id="cb18-39"><a href="#cb18-39" tabindex="-1"></a></span>
+<span id="cb18-40"><a href="#cb18-40" tabindex="-1"></a><span class="co"># compile and setup CUDA code</span></span>
+<span id="cb18-41"><a href="#cb18-41" tabindex="-1"></a>histogram_gpu <span class="op">=</span> cupy.RawKernel(histogram_cuda_code, <span class="st">"histogram"</span>)</span>
+<span id="cb18-42"><a href="#cb18-42" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">256</span></span>
+<span id="cb18-43"><a href="#cb18-43" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb18-44"><a href="#cb18-44" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb18-45"><a href="#cb18-45" tabindex="-1"></a></span>
+<span id="cb18-46"><a href="#cb18-46" tabindex="-1"></a><span class="co"># check correctness</span></span>
+<span id="cb18-47"><a href="#cb18-47" tabindex="-1"></a>histogram(input_cpu, output_cpu)</span>
+<span id="cb18-48"><a href="#cb18-48" tabindex="-1"></a>histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))</span>
+<span id="cb18-49"><a href="#cb18-49" tabindex="-1"></a><span class="cf">if</span> np.allclose(output_cpu, output_gpu):</span>
+<span id="cb18-50"><a href="#cb18-50" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
+<span id="cb18-51"><a href="#cb18-51" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb18-52"><a href="#cb18-52" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span>
+<span id="cb18-53"><a href="#cb18-53" tabindex="-1"></a></span>
+<span id="cb18-54"><a href="#cb18-54" tabindex="-1"></a><span class="co"># measure performance</span></span>
+<span id="cb18-55"><a href="#cb18-55" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> histogram(input_cpu, output_cpu)</span>
+<span id="cb18-56"><a href="#cb18-56" tabindex="-1"></a>execution_gpu <span class="op">=</span> benchmark(histogram_gpu, (grid_size, block_size, (input_gpu, output_gpu)), n_repeat<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb18-57"><a href="#cb18-57" tabindex="-1"></a>gpu_avg_time <span class="op">=</span> np.average(execution_gpu.gpu_times)</span>
+<span id="cb18-58"><a href="#cb18-58" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>gpu_avg_time<span class="sc">:.6f}</span><span class="ss"> s"</span>)</span></code></pre>
 </div>
 <p>While both versions of the GPU histogram are correct, the one using
 shared memory is faster; but how fast? On a NVIDIA Tesla T4 accessed via
@@ -976,7 +976,7 @@ any links that you are not going to use.
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/shared_memory_and_synchronization.html",
   "dateCreated": "2020-09-25",
   "dateModified": "2023-11-21",
-  "datePublished": "2024-02-27"
+  "datePublished": "2024-03-05"
 }
 
   </script><script>

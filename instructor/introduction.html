@@ -390,16 +390,16 @@ numbers.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">4096</span> <span class="op">*</span> <span class="dv">4096</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">input</span> <span class="op">=</span> np.random.random(size).astype(np.float32)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">4096</span> <span class="op">*</span> <span class="dv">4096</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="bu">input</span> <span class="op">=</span> np.random.random(size).astype(np.float32)</span></code></pre>
 </div>
 <p>We then time the execution of the NumPy <code>sort()</code> function,
 to see how long sorting this array takes on the CPU.</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> output <span class="op">=</span> np.sort(<span class="bu">input</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> output <span class="op">=</span> np.sort(<span class="bu">input</span>)</span></code></pre>
 </div>
 <p>While the timing of this operation will differ depending on the
 system on which you run the code, these are the results for one
@@ -416,12 +416,12 @@ Python.</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cupyx.profiler <span class="im">import</span> benchmark</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cupy <span class="im">as</span> cp</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>input_gpu <span class="op">=</span> cp.asarray(<span class="bu">input</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>execution_gpu <span class="op">=</span> benchmark(cp.sort, (input_gpu,), n_repeat<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>gpu_avg_time <span class="op">=</span> np.average(execution_gpu.gpu_times)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>gpu_avg_time<span class="sc">:.6f}</span><span class="ss"> s"</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="im">from</span> cupyx.profiler <span class="im">import</span> benchmark</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="im">import</span> cupy <span class="im">as</span> cp</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>input_gpu <span class="op">=</span> cp.asarray(<span class="bu">input</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>execution_gpu <span class="op">=</span> benchmark(cp.sort, (input_gpu,), n_repeat<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>gpu_avg_time <span class="op">=</span> np.average(execution_gpu.gpu_times)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>gpu_avg_time<span class="sc">:.6f}</span><span class="ss"> s"</span>)</span></code></pre>
 </div>
 <p>We also report the output, obtained on the same notebook on Google
 Colab; as always note that your result will vary based on the
@@ -435,13 +435,12 @@ environment and GPU you are using.</p>
 to the GPU. The distinction between data on the GPU and that on the
 <em>host</em> is a very important one that we will get back to
 later.</p>
-<div id="host-vs.-device" class="callout callout">
+<div id="callout1" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
-<div id="host-vs.-device" class="callout-inner">
-<h3 class="callout-title">Host vs. Device<a class="anchor" aria-label="anchor" href="#host-vs.-device"></a>
-</h3>
+<div class="section level3 callout-title callout-inner">
+<h3 class="callout-title" id="host-vs--device">Host vs. Device<a class="anchor" aria-label="anchor" href="#host-vs--device"></a></h3>
 <div class="callout-content">
 <p>From now on we may also call the GPU the <em>device</em>, while we
 refer to other computations as taking place on the <em>host</em>. We’ll
@@ -461,8 +460,8 @@ execution time from milliseconds to seconds.</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>speedup <span class="op">=</span> <span class="fl">1.83</span> <span class="op">/</span> <span class="fl">0.008949</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(speedup)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>speedup <span class="op">=</span> <span class="fl">1.83</span> <span class="op">/</span> <span class="fl">0.008949</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="bu">print</span>(speedup)</span></code></pre>
 </div>
 <p>With the result of the previous operation being the following.</p>
 <div class="codewrapper">
@@ -558,7 +557,7 @@ any links that you are not going to use.
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/introduction.html",
   "dateCreated": "2020-09-25",
   "dateModified": "2023-11-21",
-  "datePublished": "2024-02-27"
+  "datePublished": "2024-03-05"
 }
 
   </script><script>

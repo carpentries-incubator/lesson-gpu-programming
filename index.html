@@ -328,19 +328,18 @@ follow the steps below:</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /path/to/workshop/dir</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> virtualenv <span class="at">--prompt</span> gpu-workshop venv</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> pip  <span class="co"># it is good to update pip to the latest version</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install cupy-cuda11x numba jupyterlab matplotlib scipy astropy</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="bu">cd</span> /path/to/workshop/dir</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> virtualenv <span class="at">--prompt</span> gpu-workshop venv</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> pip  <span class="co"># it is good to update pip to the latest version</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="ex">pip</span> install cupy-cuda11x numba jupyterlab matplotlib scipy astropy</span></code></pre>
 </div>
-<div id="callout1" class="callout callout">
+<div id="callout1" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
-<div class="callout-inner">
-<h3 class="callout-title">Callout<a class="anchor" aria-label="anchor" href="#callout1"></a>
-</h3>
+<div class="section level3 callout-title callout-inner">
+<h3 class="callout-title">Callout</h3>
 <div class="callout-content">
 <p>We are installing the precompiled <code>cupy</code> libraries
 compiled against the latest version of CUDA. This is always faster to
@@ -362,9 +361,9 @@ environments built-in. You can create a new virtual environment with</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mamba</span> create <span class="at">-n</span> gpu-workshop</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mamba</span> activate gpu-workshop</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">mamba</span> install cupy numba jupyterlab matplotlib scipy astropy</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">mamba</span> create <span class="at">-n</span> gpu-workshop</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="ex">mamba</span> activate gpu-workshop</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="ex">mamba</span> install cupy numba jupyterlab matplotlib scipy astropy</span></code></pre>
 </div>
 <p>If you are using <code>conda</code>, you can simply replace
 <code>mamba</code> with <code>conda</code> in the commands above.</p>
@@ -376,14 +375,14 @@ a tab with Jupyter in your default browser:</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter-lab</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">jupyter-lab</span></span></code></pre>
 </div>
 <p>If you do not want Jupyter to open a tab in your browser
 automatically, you can use the alternative below:</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter-lab</span> <span class="at">--no-browser</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">jupyter-lab</span> <span class="at">--no-browser</span></span></code></pre>
 </div>
 <p>This will print out a url in your terminal, which you can then open
 in the browser of your choice.</p>
@@ -444,8 +443,8 @@ any links that you are not going to use.
   "url": "https://carpentries-incubator.github.io/lesson-gpu-programming/index.html",
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/index.html",
   "dateCreated": "2020-09-25",
-  "dateModified": "2024-02-27",
-  "datePublished": "2024-02-27"
+  "dateModified": "2024-03-05",
+  "datePublished": "2024-03-05"
 }
 
   </script><script>

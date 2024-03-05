@@ -332,7 +332,8 @@ only thing we mentioned in previous episodes about the GPU is that it is
 a device specialized in running parallel workloads, and that it is its
 own system, connected to our main memory and CPU by some kind of
 bus.</p>
-<figure><img src=".././fig/CPU_and_GPU_separated.png" alt="The connection between CPU and GPU" class="figure mx-auto d-block"><figcaption>The connection between CPU and GPU</figcaption></figure><p>However, before moving to a programming language designed especially
+<figure><img src=".././fig/CPU_and_GPU_separated.png" alt="The connection between CPU and GPU" class="figure mx-auto d-block"><div class="figcaption">The connection between CPU and GPU</div>
+</figure><p>However, before moving to a programming language designed especially
 for GPUs, we need to introduce some concepts that will be useful to
 understand the next episodes.</p>
 <div class="section level1">
@@ -356,14 +357,14 @@ Numba, like the following snippet.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numba <span class="im">as</span> nb</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">@nb.vectorize</span>([<span class="st">'int32(int32)'</span>], target<span class="op">=</span><span class="st">'cuda'</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_prime_gpu(num):</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>       <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>           <span class="cf">return</span> <span class="dv">0</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> num</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numba <span class="im">as</span> nb</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="at">@nb.vectorize</span>([<span class="st">'int32(int32)'</span>], target<span class="op">=</span><span class="st">'cuda'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="kw">def</span> check_prime_gpu(num):</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>       <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>           <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="cf">return</span> num</span></code></pre>
 </div>
 <p>We did not need to write a different <code>check_prime_gpu</code>
 function for each processor, or core, on the GPU; actually, we have no
@@ -377,7 +378,7 @@ numbers between 0 and 100000.</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>check_prime_gpu(np.arange(<span class="dv">0</span>, <span class="dv">10_000</span>, dtype<span class="op">=</span>np.int32))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>check_prime_gpu(np.arange(<span class="dv">0</span>, <span class="dv">10_000</span>, dtype<span class="op">=</span>np.int32))</span></code></pre>
 </div>
 <p>So each processor will get a copy of the code, and one subset of the
 numbers between 0 and 10000. If we assume that our GPU has 4 processors,
@@ -489,7 +490,7 @@ any links that you are not going to use.
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/gpu_introduction.html",
   "dateCreated": "2020-09-25",
   "dateModified": "2023-11-21",
-  "datePublished": "2024-02-27"
+  "datePublished": "2024-03-05"
 }
 
   </script><script>

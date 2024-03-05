@@ -343,24 +343,24 @@ this:</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> find_all_primes_cpu(upper):</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    all_prime_numbers <span class="op">=</span> []</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> num <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, upper):</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        prime <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                prime <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> prime:</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>            all_prime_numbers.append(num)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> all_prime_numbers</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">def</span> find_all_primes_cpu(upper):</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    all_prime_numbers <span class="op">=</span> []</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    <span class="cf">for</span> num <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, upper):</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>        prime <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>            <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>                prime <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>        <span class="cf">if</span> prime:</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>            all_prime_numbers.append(num)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>    <span class="cf">return</span> all_prime_numbers</span></code></pre>
 </div>
 <p>Calling <code>find_all_primes_cpu(10_000)</code> will return all
 prime numbers between 1 and 10000 as a list. Let us time it:</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">10</span> <span class="op">-</span>r <span class="dv">1</span> find_all_primes_cpu(<span class="dv">10_000</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">10</span> <span class="op">-</span>r <span class="dv">1</span> find_all_primes_cpu(<span class="dv">10_000</span>)</span></code></pre>
 </div>
 <p>You will probably find that <code>find_all_primes_cpu</code> takes
 several hundreds of milliseconds to complete:</p>
@@ -376,31 +376,31 @@ this way:</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numba <span class="im">import</span> jit</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">@jit</span>(nopython<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> find_all_primes_cpu(upper):</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    all_prime_numbers <span class="op">=</span> []</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> num <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, upper):</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        prime <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                prime <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> prime:</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            all_prime_numbers.append(num)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> all_prime_numbers</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">10</span> <span class="op">-</span>r <span class="dv">1</span> find_all_primes_cpu(<span class="dv">10_000</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="im">from</span> numba <span class="im">import</span> jit</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="at">@jit</span>(nopython<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="kw">def</span> find_all_primes_cpu(upper):</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    all_prime_numbers <span class="op">=</span> []</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    <span class="cf">for</span> num <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, upper):</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>        prime <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>            <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>                prime <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>        <span class="cf">if</span> prime:</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>            all_prime_numbers.append(num)</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    <span class="cf">return</span> all_prime_numbers</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">10</span> <span class="op">-</span>r <span class="dv">1</span> find_all_primes_cpu(<span class="dv">10_000</span>)</span></code></pre>
 </div>
 <p>or in this way:</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numba <span class="im">import</span> jit</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>upper <span class="op">=</span> <span class="dv">10_000</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">10</span> <span class="op">-</span>r <span class="dv">1</span> jit(nopython<span class="op">=</span><span class="va">True</span>)(find_all_primes_cpu)(upper)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="im">from</span> numba <span class="im">import</span> jit</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>upper <span class="op">=</span> <span class="dv">10_000</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">10</span> <span class="op">-</span>r <span class="dv">1</span> jit(nopython<span class="op">=</span><span class="va">True</span>)(find_all_primes_cpu)(upper)</span></code></pre>
 </div>
 <p>which can give you a timing result similar to this:</p>
 <div class="codewrapper">
@@ -423,15 +423,15 @@ computations. It is essentially the inner loop of
 <div class="codewrapper sourceCode" id="cb7">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numba <span class="im">import</span> cuda</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">@cuda.jit</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_prime_gpu_kernel(num, result):</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>   result[<span class="dv">0</span>] <span class="op">=</span>  num</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>   <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>       <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>           result[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>           <span class="cf">break</span></span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="im">from</span> numba <span class="im">import</span> cuda</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="at">@cuda.jit</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="kw">def</span> check_prime_gpu_kernel(num, result):</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>   result[<span class="dv">0</span>] <span class="op">=</span>  num</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>   <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>       <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>           result[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>           <span class="cf">break</span></span></code></pre>
 </div>
 <p>A number of things are worth noting. CUDA kernels do not return
 anything, so you have to supply for an array to be modified. All
@@ -441,13 +441,13 @@ number is a prime or not. Let us see if this works:</p>
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> np.zeros((<span class="dv">1</span>), np.int32)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>check_prime_gpu_kernel[<span class="dv">1</span>, <span class="dv">1</span>](<span class="dv">11</span>, result)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result[<span class="dv">0</span>])</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>check_prime_gpu_kernel[<span class="dv">1</span>, <span class="dv">1</span>](<span class="dv">12</span>, result)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result[<span class="dv">0</span>])</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>result <span class="op">=</span> np.zeros((<span class="dv">1</span>), np.int32)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>check_prime_gpu_kernel[<span class="dv">1</span>, <span class="dv">1</span>](<span class="dv">11</span>, result)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="bu">print</span>(result[<span class="dv">0</span>])</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>check_prime_gpu_kernel[<span class="dv">1</span>, <span class="dv">1</span>](<span class="dv">12</span>, result)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="bu">print</span>(result[<span class="dv">0</span>])</span></code></pre>
 </div>
 <p>If we have not made any mistake, the first call should return “11”,
 because 11 is a prime number, while the second call should return “0”
@@ -483,23 +483,23 @@ to find all primes up to 10000?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1">Show me the solution</h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>One possible implementation of this function is the following
 one.</p>
 <div class="codewrapper sourceCode" id="cb10">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> find_all_primes_cpu_and_gpu(upper):</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    all_prime_numbers <span class="op">=</span> []</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> num <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, upper):</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> np.zeros((<span class="dv">1</span>), np.int32)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        check_prime_gpu_kernel[<span class="dv">1</span>,<span class="dv">1</span>](num, result)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> result[<span class="dv">0</span>] <span class="op">!=</span> <span class="dv">0</span>:</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>            all_prime_numbers.append(num)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> all_prime_numbers</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">10</span> <span class="op">-</span>r <span class="dv">1</span> find_all_primes_cpu_and_gpu(<span class="dv">10_000</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="kw">def</span> find_all_primes_cpu_and_gpu(upper):</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>    all_prime_numbers <span class="op">=</span> []</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>    <span class="cf">for</span> num <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, upper):</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>        result <span class="op">=</span> np.zeros((<span class="dv">1</span>), np.int32)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>        check_prime_gpu_kernel[<span class="dv">1</span>,<span class="dv">1</span>](num, result)</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>        <span class="cf">if</span> result[<span class="dv">0</span>] <span class="op">!=</span> <span class="dv">0</span>:</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>            all_prime_numbers.append(num)</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>    <span class="cf">return</span> all_prime_numbers</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>   </span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">10</span> <span class="op">-</span>r <span class="dv">1</span> find_all_primes_cpu_and_gpu(<span class="dv">10_000</span>)</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -526,7 +526,7 @@ integer:</p>
 <div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>numbers <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">10_000</span>, dtype<span class="op">=</span>np.int32)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>numbers <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">10_000</span>, dtype<span class="op">=</span>np.int32)</span></code></pre>
 </div>
 <p>So that input to the new <code>check_prime_gpu</code> function is
 simply the array of numbers we need to check for primes.
@@ -536,14 +536,14 @@ return values:</p>
 <div class="codewrapper sourceCode" id="cb13">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numba <span class="im">as</span> nb</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="at">@nb.vectorize</span>([<span class="st">'int32(int32)'</span>], target<span class="op">=</span><span class="st">'cuda'</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_prime_gpu(num):</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>       <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>           <span class="cf">return</span> <span class="dv">0</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> num</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="im">import</span> numba <span class="im">as</span> nb</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="at">@nb.vectorize</span>([<span class="st">'int32(int32)'</span>], target<span class="op">=</span><span class="st">'cuda'</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="kw">def</span> check_prime_gpu(num):</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>       <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>           <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>    <span class="cf">return</span> num</span></code></pre>
 </div>
 <p>where we have added the <code>vectorize</code> decorator from Numba.
 The argument of <code>check_prime_gpu</code> seems to be defined as a
@@ -557,7 +557,7 @@ primes.</p>
 <div class="codewrapper sourceCode" id="cb14">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">10</span> <span class="op">-</span>r <span class="dv">1</span> check_prime_gpu(numbers)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">10</span> <span class="op">-</span>r <span class="dv">1</span> check_prime_gpu(numbers)</span></code></pre>
 </div>
 <p>which should show you a significant speedup:</p>
 <div class="codewrapper">
@@ -648,7 +648,7 @@ any links that you are not going to use.
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/numba.html",
   "dateCreated": "2020-09-25",
   "dateModified": "2023-11-21",
-  "datePublished": "2024-02-27"
+  "datePublished": "2024-03-05"
 }
 
   </script><script>

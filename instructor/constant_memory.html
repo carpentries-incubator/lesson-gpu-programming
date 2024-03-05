@@ -334,17 +334,17 @@ are going to see how this works with an example.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span> <span class="op">{</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define BLOCKS 2</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>__constant__ <span class="dt">float</span> factors<span class="op">[</span>BLOCKS<span class="op">];</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> sum_and_multiply<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> <span class="op">(</span>A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">])</span> <span class="op">*</span> factors<span class="op">[</span>blockIdx<span class="op">.</span>x<span class="op">];</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="pp">#define BLOCKS </span><span class="dv">2</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>__constant__ <span class="dt">float</span> factors<span class="op">[</span>BLOCKS<span class="op">];</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>__global__ <span class="dt">void</span> sum_and_multiply<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> <span class="op">(</span>A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">])</span> <span class="op">*</span> factors<span class="op">[</span>blockIdx<span class="op">.</span>x<span class="op">];</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <p>In the previous code snippet we implemented a kernel that, given two
 vectors <code>A</code> and <code>B</code>, stores their element-wise sum
@@ -367,12 +367,12 @@ we show how this is done in the next code snippet.</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compile the code</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>module <span class="op">=</span> cupy.RawModule(code<span class="op">=</span>cuda_code)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># allocate and copy constant memory</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>factors_ptr <span class="op">=</span> module.get_global(<span class="st">"factors"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>factors_gpu <span class="op">=</span> cupy.ndarray(<span class="dv">2</span>, cupy.float32, factors_ptr)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>factors_gpu[...] <span class="op">=</span> cupy.random.random(<span class="dv">2</span>, dtype<span class="op">=</span>cupy.float32)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># compile the code</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>module <span class="op">=</span> cupy.RawModule(code<span class="op">=</span>cuda_code)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># allocate and copy constant memory</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>factors_ptr <span class="op">=</span> module.get_global(<span class="st">"factors"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>factors_gpu <span class="op">=</span> cupy.ndarray(<span class="dv">2</span>, cupy.float32, factors_ptr)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>factors_gpu[...] <span class="op">=</span> cupy.random.random(<span class="dv">2</span>, dtype<span class="op">=</span>cupy.float32)</span></code></pre>
 </div>
 <p>From the previous code it is clear that dealing with constant memory
 is a slightly more verbose affair than usual. First, we need to compile
@@ -402,7 +402,7 @@ memory<a class="anchor" aria-label="anchor" href="#challenge-print-the-content-o
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(factors_gpu)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="bu">print</span>(factors_gpu)</span></code></pre>
 </div>
 </div>
 </div>
@@ -427,40 +427,40 @@ CuPy.</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2048</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># prepare arguments</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>args <span class="op">=</span> (a_gpu, b_gpu, c_gpu, size)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># CUDA code</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C" {</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="vs">#define BLOCKS 2</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="vs">__constant__ float factors[BLOCKS];</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void sum_and_multiply(const float * A, const float * B, float * C, const int size)</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="vs">    int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="vs">    C[item] = (A[item] + B[item]) * factors[blockIdx.x];</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co"># compile and access the code</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>module <span class="op">=</span> cupy.RawModule(code<span class="op">=</span>cuda_code)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>sum_and_multiply <span class="op">=</span> module.get_function(<span class="st">"sum_and_multiply"</span>)</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># allocate and copy constant memory</span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>factors_ptr <span class="op">=</span> module.get_global(<span class="st">"factors"</span>)</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>factors_gpu <span class="op">=</span> cupy.ndarray(<span class="dv">2</span>, cupy.float32, factors_ptr)</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>factors_gpu[...] <span class="op">=</span> cupy.random.random(<span class="dv">2</span>, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>sum_and_multiply((<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size <span class="op">//</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), args)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2048</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co"># prepare arguments</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>args <span class="op">=</span> (a_gpu, b_gpu, c_gpu, size)</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co"># CUDA code</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="vs">extern "C" {</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="vs">#define BLOCKS 2</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="vs">__constant__ float factors[BLOCKS];</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="vs">__global__ void sum_and_multiply(const float * A, const float * B, float * C, const int size)</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="vs">    int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="vs">    C[item] = (A[item] + B[item]) * factors[blockIdx.x];</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="vs">'''</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co"># compile and access the code</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>module <span class="op">=</span> cupy.RawModule(code<span class="op">=</span>cuda_code)</span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>sum_and_multiply <span class="op">=</span> module.get_function(<span class="st">"sum_and_multiply"</span>)</span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co"># allocate and copy constant memory</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a>factors_ptr <span class="op">=</span> module.get_global(<span class="st">"factors"</span>)</span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a>factors_gpu <span class="op">=</span> cupy.ndarray(<span class="dv">2</span>, cupy.float32, factors_ptr)</span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>factors_gpu[...] <span class="op">=</span> cupy.random.random(<span class="dv">2</span>, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>sum_and_multiply((<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size <span class="op">//</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), args)</span></code></pre>
 </div>
 <p>As you can see the code is not very general, it uses constants and
 works only with two blocks, but it is a working example of how to use
@@ -490,46 +490,46 @@ with some different input sizes.</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">10</span><span class="op">**</span><span class="dv">6</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># prepare arguments</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>args <span class="op">=</span> (a_gpu, b_gpu, c_gpu, size)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># CUDA code</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C" {</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="vs">__constant__ float factors[BLOCKS];</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void sum_and_multiply(const float * A, const float * B, float * C, const int size)</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="vs">    int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="vs">    if ( item &lt; size )</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="vs">    {</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="vs">        C[item] = (A[item] + B[item]) * factors[blockIdx.x];</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="vs">    }</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co"># compute the number of blocks and replace "BLOCKS" in the CUDA code</span></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>num_blocks <span class="op">=</span> <span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block))</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>cuda_code <span class="op">=</span> cuda_code.replace(<span class="st">"BLOCKS"</span>, <span class="ss">f"</span><span class="sc">{</span>num_blocks<span class="sc">}</span><span class="ss">"</span>) </span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co"># compile and access the code</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>module <span class="op">=</span> cupy.RawModule(code<span class="op">=</span>cuda_code)</span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>sum_and_multiply <span class="op">=</span> module.get_function(<span class="st">"sum_and_multiply"</span>)</span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="co"># allocate and copy constant memory</span></span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>factors_ptr <span class="op">=</span> module.get_global(<span class="st">"factors"</span>)</span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>factors_gpu <span class="op">=</span> cupy.ndarray(num_blocks, cupy.float32, factors_ptr)</span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>factors_gpu[...] <span class="op">=</span> cupy.random.random(num_blocks, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>sum_and_multiply((num_blocks, <span class="dv">1</span>, <span class="dv">1</span>), (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>), args)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">10</span><span class="op">**</span><span class="dv">6</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co"># prepare arguments</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>args <span class="op">=</span> (a_gpu, b_gpu, c_gpu, size)</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co"># CUDA code</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="vs">extern "C" {</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="vs">__constant__ float factors[BLOCKS];</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="vs">__global__ void sum_and_multiply(const float * A, const float * B, float * C, const int size)</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="vs">    int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="vs">    if ( item &lt; size )</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="vs">    {</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="vs">        C[item] = (A[item] + B[item]) * factors[blockIdx.x];</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="vs">    }</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="vs">'''</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="co"># compute the number of blocks and replace "BLOCKS" in the CUDA code</span></span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>num_blocks <span class="op">=</span> <span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block))</span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a>cuda_code <span class="op">=</span> cuda_code.replace(<span class="st">"BLOCKS"</span>, <span class="ss">f"</span><span class="sc">{</span>num_blocks<span class="sc">}</span><span class="ss">"</span>) </span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co"># compile and access the code</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a>module <span class="op">=</span> cupy.RawModule(code<span class="op">=</span>cuda_code)</span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a>sum_and_multiply <span class="op">=</span> module.get_function(<span class="st">"sum_and_multiply"</span>)</span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co"># allocate and copy constant memory</span></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a>factors_ptr <span class="op">=</span> module.get_global(<span class="st">"factors"</span>)</span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a>factors_gpu <span class="op">=</span> cupy.ndarray(num_blocks, cupy.float32, factors_ptr)</span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a>factors_gpu[...] <span class="op">=</span> cupy.random.random(num_blocks, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" tabindex="-1"></a>sum_and_multiply((num_blocks, <span class="dv">1</span>, <span class="dv">1</span>), (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>), args)</span></code></pre>
 </div>
 </div>
 </div>
@@ -616,7 +616,7 @@ any links that you are not going to use.
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/constant_memory.html",
   "dateCreated": "2020-09-25",
   "dateModified": "2023-11-21",
-  "datePublished": "2024-02-27"
+  "datePublished": "2024-03-05"
 }
 
   </script><script>

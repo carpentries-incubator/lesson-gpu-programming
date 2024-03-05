@@ -335,9 +335,9 @@ input vectors into a third one.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vector_add(A, B, C, size):</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, size):</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        C[item] <span class="op">=</span> A[item] <span class="op">+</span> B[item]</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">def</span> vector_add(A, B, C, size):</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, size):</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>        C[item] <span class="op">=</span> A[item] <span class="op">+</span> B[item]</span></code></pre>
 </div>
 <p>One of the characteristics of this program is that each iteration of
 the <code>for</code> loop is independent from the other iterations. In
@@ -361,20 +361,19 @@ Python.</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="dt">int</span> item <span class="op">=</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
-<div id="callout1" class="callout callout">
+<div id="callout1" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
-<div class="callout-inner">
-<h3 class="callout-title">Callout<a class="anchor" aria-label="anchor" href="#callout1"></a>
-</h3>
+<div class="section level3 callout-title callout-inner">
+<h3 class="callout-title">Callout</h3>
 <div class="callout-content">
 <p>We are aware that CUDA is a proprietary solution, and that there are
 open-source alternatives such as OpenCL. However, CUDA is the most used
@@ -394,45 +393,45 @@ CuPy.</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cupy</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">1024</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># CUDA vector_add</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>vector_add_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C"</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="vs">    int item = threadIdx.x;</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="vs">    C[item] = A[item] + B[item];</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(vector_add_cuda_code, <span class="st">"vector_add"</span>)</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>vector_add_gpu((<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="im">import</span> cupy</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">1024</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co"># CUDA vector_add</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>vector_add_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="vs">extern "C"</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="vs">    int item = threadIdx.x;</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="vs">    C[item] = A[item] + B[item];</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="vs">'''</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(vector_add_cuda_code, <span class="st">"vector_add"</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>vector_add_gpu((<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
 </div>
 <p>And to be sure that the CUDA code does exactly what we want, we can
 execute our sequential Python code and compare the results.</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>a_cpu <span class="op">=</span> cupy.asnumpy(a_gpu)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>b_cpu <span class="op">=</span> cupy.asnumpy(b_gpu)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>c_cpu <span class="op">=</span> np.zeros(size, dtype<span class="op">=</span>np.float32)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>vector_add(a_cpu, b_cpu, c_cpu, size)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># test</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> np.allclose(c_cpu, c_gpu):</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>a_cpu <span class="op">=</span> cupy.asnumpy(a_gpu)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>b_cpu <span class="op">=</span> cupy.asnumpy(b_gpu)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>c_cpu <span class="op">=</span> np.zeros(size, dtype<span class="op">=</span>np.float32)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>vector_add(a_cpu, b_cpu, c_cpu, size)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># test</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="cf">if</span> np.allclose(c_cpu, c_gpu):</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -447,7 +446,7 @@ highlight the differences between CUDA-C and standard C.</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span></code></pre>
 </div>
 <p>This is the definition of our CUDA <code>vector_add</code> function.
 The <code>__global__</code> keyword is an execution space identifier,
@@ -478,8 +477,8 @@ work.</p>
 <div class="codewrapper sourceCode" id="cb7">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> item <span class="op">=</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="dt">int</span> item <span class="op">=</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span></code></pre>
 </div>
 <p>As you may see, it looks similar to the innermost loop of our
 <code>vector_add</code> Python function, with the main difference being
@@ -505,13 +504,13 @@ following line:</p>
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> item <span class="op">=</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="dt">int</span> item <span class="op">=</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span></code></pre>
 </div>
 <p>With this other line of code:</p>
 <div class="codewrapper sourceCode" id="cb9">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> item <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="dt">int</span> item <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span></code></pre>
 </div>
 <p>What will the result of this change be?</p>
 <ol style="list-style-type: decimal"><li>Nothing changes</li>
@@ -526,7 +525,7 @@ following line:</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1">Show me the solution</h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>The correct answer is number 3, only the element <code>C[1]</code> is
 written, and we do not even know by which thread!</p>
@@ -545,25 +544,25 @@ again.</p>
 <div class="codewrapper sourceCode" id="cb10">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2048</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># CUDA vector_add</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(<span class="vs">r'''</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C"</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="vs">    int item = threadIdx.x;</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="vs">    C[item] = A[item] + B[item];</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span>, <span class="st">"vector_add"</span>)</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>vector_add_gpu((<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2048</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co"># CUDA vector_add</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(<span class="vs">r'''</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="vs">extern "C"</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="vs">    int item = threadIdx.x;</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="vs">    C[item] = A[item] + B[item];</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="vs">'''</span>, <span class="st">"vector_add"</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>vector_add_gpu((<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
 </div>
 <p>This is how the output should look like when running the code in a
 Jupyter Notebook:</p>
@@ -600,7 +599,7 @@ triplets.</p>
 <div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>vector_add_gpu((<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>vector_add_gpu((<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
 </div>
 <p>The first triplet specifies the size of the CUDA
 <strong>grid</strong>, while the second triplet specifies the size of
@@ -660,8 +659,8 @@ introduced.</p>
 <div class="codewrapper sourceCode" id="cb13">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">512</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>vector_add_gpu((<span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">512</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>vector_add_gpu((<span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
 </div>
 <p>What is the content of the <code>blockDim</code> and
 <code>gridDim</code> variables inside the CUDA <code>vector_add</code>
@@ -674,7 +673,7 @@ kernel?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2">Show me the solution</h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>The content of <code>blockDim</code> is <code>(512, 1, 1)</code> and
 the content of <code>gridDim</code> is <code>(4, 1, 1)</code>, for all
@@ -689,41 +688,41 @@ version?</p>
 <div class="codewrapper sourceCode" id="cb14">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2048</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>a_cpu <span class="op">=</span> cupy.asnumpy(a_gpu)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>b_cpu <span class="op">=</span> cupy.asnumpy(b_gpu)</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>c_cpu <span class="op">=</span> np.zeros(size, dtype<span class="op">=</span>np.float32)</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># CPU code</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vector_add(A, B, C, size):</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, size):</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        C[item] <span class="op">=</span> A[item] <span class="op">+</span> B[item]</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co"># CUDA vector_add</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(<span class="vs">r'''</span></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C"</span></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="vs">    int item = threadIdx.x;</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="vs">    C[item] = A[item] + B[item];</span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span>, <span class="st">"vector_add"</span>)</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co"># execute the code</span></span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>vector_add_gpu((<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size <span class="op">//</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size))</span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>vector_add(a_cpu, b_cpu, c_cpu, size)</span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co"># test</span></span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> np.allclose(c_cpu, c_gpu):</span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2048</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>a_cpu <span class="op">=</span> cupy.asnumpy(a_gpu)</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>b_cpu <span class="op">=</span> cupy.asnumpy(b_gpu)</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>c_cpu <span class="op">=</span> np.zeros(size, dtype<span class="op">=</span>np.float32)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co"># CPU code</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="kw">def</span> vector_add(A, B, C, size):</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, size):</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>        C[item] <span class="op">=</span> A[item] <span class="op">+</span> B[item]</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co"># CUDA vector_add</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(<span class="vs">r'''</span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="vs">extern "C"</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="vs">    int item = threadIdx.x;</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="vs">    C[item] = A[item] + B[item];</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a><span class="vs">'''</span>, <span class="st">"vector_add"</span>)</span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a></span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a><span class="co"># execute the code</span></span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a>vector_add_gpu((<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size <span class="op">//</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (a_gpu, b_gpu, c_gpu, size))</span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a>vector_add(a_cpu, b_cpu, c_cpu, size)</span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a></span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a><span class="co"># test</span></span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a><span class="cf">if</span> np.allclose(c_cpu, c_gpu):</span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -746,12 +745,12 @@ are larger than the largest CUDA block (i.e. 1024).</p>
 <div class="codewrapper sourceCode" id="cb16">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> ______________<span class="op">;</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>   C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> ______________<span class="op">;</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>   C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -761,7 +760,7 @@ are larger than the largest CUDA block (i.e. 1024).</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3">Show me the solution</h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>The correct answer is
 <code>(blockIdx.x * blockDim.x) + threadIdx.x</code>. The following code
@@ -770,12 +769,12 @@ larger than 1024 elements.</p>
 <div class="codewrapper sourceCode" id="cb17">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>   C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>   C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -803,15 +802,15 @@ now. Can you rewrite the code to make it work?</p>
 <div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>   <span class="op">{</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>   <span class="op">}</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>   C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>   <span class="op">{</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>      <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>   <span class="op">}</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>   C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -821,7 +820,7 @@ now. Can you rewrite the code to make it work?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4">Show me the solution</h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
 <div class="accordion-body">
 <p>The correct way to modify the <code>vector_add</code> to work on
 vectors of arbitrary size is to first compute the coordinates of each
@@ -830,15 +829,15 @@ vector boundaries, as shown in the following snippet of code.</p>
 <div class="codewrapper sourceCode" id="cb19">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>   <span class="op">{</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>   <span class="op">}</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>__global__ <span class="dt">void</span> vector_add<span class="op">(</span><span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> A<span class="op">,</span> <span class="dt">const</span> <span class="dt">float</span> <span class="op">*</span> B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span> C<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> size<span class="op">)</span></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>   <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>   <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>   <span class="op">{</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>      C<span class="op">[</span>item<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>item<span class="op">];</span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>   <span class="op">}</span></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -882,12 +881,12 @@ code.</p>
 <div class="codewrapper sourceCode" id="cb21">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> <span class="dv">1024</span>)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>block_size <span class="op">=</span> (<span class="dv">1024</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> <span class="dv">1024</span>)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>block_size <span class="op">=</span> (<span class="dv">1024</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
 </div>
 <p>With these changes we always have blocks composed of 1024 threads,
 but we adapt the number of blocks so that we always have enough to
@@ -897,40 +896,40 @@ code like the following:</p>
 <div class="codewrapper sourceCode" id="cb22">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))</span></code></pre>
 </div>
 <p>So putting this all together in a full snippet we can execute the
 code again.</p>
 <div class="codewrapper sourceCode" id="cb23">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>vector_add_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C"</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="vs">   int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="vs">   if ( item &lt; size )</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="vs">   {</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="vs">      C[item] = A[item] + B[item];</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="vs">   }</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(vector_add_cuda_code, <span class="st">"vector_add"</span>)</span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))</span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> np.allclose(c_cpu, c_gpu):</span>
-<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
-<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>vector_add_cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="vs">extern "C"</span></span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="vs">__global__ void vector_add(const float * A, const float * B, float * C, const int size)</span></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="vs">   int item = (blockIdx.x * blockDim.x) + threadIdx.x;</span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a><span class="vs">   if ( item &lt; size )</span></span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a><span class="vs">   {</span></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="vs">      C[item] = A[item] + B[item];</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="vs">   }</span></span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a><span class="vs">'''</span></span>
+<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> cupy.RawKernel(vector_add_cuda_code, <span class="st">"vector_add"</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
+<span id="cb23-15"><a href="#cb23-15" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb23-16"><a href="#cb23-16" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb23-17"><a href="#cb23-17" tabindex="-1"></a></span>
+<span id="cb23-18"><a href="#cb23-18" tabindex="-1"></a>vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))</span>
+<span id="cb23-19"><a href="#cb23-19" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" tabindex="-1"></a><span class="cf">if</span> np.allclose(c_cpu, c_gpu):</span>
+<span id="cb23-21"><a href="#cb23-21" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
+<span id="cb23-22"><a href="#cb23-22" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb23-23"><a href="#cb23-23" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -952,64 +951,64 @@ computes all the prime numbers up to a certain upper bound.</p>
 <div class="codewrapper sourceCode" id="cb25">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cupy</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cupyx.profiler <span class="im">import</span> benchmark</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co"># CPU version</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> all_primes_to(upper : <span class="bu">int</span>, prime_list : <span class="bu">list</span>):</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> num <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, upper):</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>        prime <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>                prime <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> prime:</span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>            prime_list[num] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>upper_bound <span class="op">=</span> <span class="dv">100_000</span></span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>all_primes_cpu <span class="op">=</span> np.zeros(upper_bound, dtype<span class="op">=</span>np.int32)</span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a><span class="co"># GPU version</span></span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>check_prime_gpu_code <span class="op">=</span> <span class="vs">r'''</span></span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a><span class="vs">extern "C"</span></span>
-<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a><span class="vs">__global__ void all_primes_to(int size, int * const all_prime_numbers)</span></span>
-<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a><span class="vs">   for ( int number = 0; number &lt; size; number++ )</span></span>
-<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a><span class="vs">   {</span></span>
-<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a><span class="vs">       int result = 1;</span></span>
-<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a><span class="vs">       for ( int factor = 2; factor &lt;= number / 2; factor++ )</span></span>
-<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a><span class="vs">       {</span></span>
-<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a><span class="vs">           if ( number </span><span class="sc">% f</span><span class="vs">actor == 0 )</span></span>
-<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a><span class="vs">           {</span></span>
-<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a><span class="vs">               result = 0;</span></span>
-<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a><span class="vs">               break;</span></span>
-<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a><span class="vs">           }</span></span>
-<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a><span class="vs">       }</span></span>
-<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a><span class="vs">&gt;</span></span>
-<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a><span class="vs">       all_prime_numbers[number] = result;</span></span>
-<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a><span class="vs">   }</span></span>
-<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a><span class="vs">'''</span></span>
-<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Allocate memory</span></span>
-<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a>all_primes_gpu <span class="op">=</span> cupy.zeros(upper_bound, dtype<span class="op">=</span>cupy.int32)</span>
-<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup the grid</span></span>
-<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>all_primes_to_gpu <span class="op">=</span> cupy.RawKernel(check_prime_gpu_code, <span class="st">"all_primes_to"</span>)</span>
-<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(upper_bound <span class="op">/</span> <span class="dv">1024</span>)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb25-47"><a href="#cb25-47" aria-hidden="true" tabindex="-1"></a>block_size <span class="op">=</span> (<span class="dv">1024</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb25-48"><a href="#cb25-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-49"><a href="#cb25-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Benchmark and test</span></span>
-<span id="cb25-50"><a href="#cb25-50" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> all_primes_to(upper_bound, all_primes_cpu)</span>
-<span id="cb25-51"><a href="#cb25-51" aria-hidden="true" tabindex="-1"></a>execution_gpu <span class="op">=</span> benchmark(all_primes_to_gpu, (grid_size, block_size, (upper_bound, all_primes_gpu)), n_repeat<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb25-52"><a href="#cb25-52" aria-hidden="true" tabindex="-1"></a>gpu_avg_time <span class="op">=</span> np.average(execution_gpu.gpu_times)</span>
-<span id="cb25-53"><a href="#cb25-53" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>gpu_avg_time<span class="sc">:.6f}</span><span class="ss"> s"</span>)</span>
-<span id="cb25-54"><a href="#cb25-54" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span></span>
-<span id="cb25-55"><a href="#cb25-55" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> np.allclose(all_primes_cpu, all_primes_gpu):</span>
-<span id="cb25-56"><a href="#cb25-56" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
-<span id="cb25-57"><a href="#cb25-57" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb25-58"><a href="#cb25-58" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="im">import</span> cupy</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a><span class="im">from</span> cupyx.profiler <span class="im">import</span> benchmark</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a><span class="co"># CPU version</span></span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a><span class="kw">def</span> all_primes_to(upper : <span class="bu">int</span>, prime_list : <span class="bu">list</span>):</span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a>    <span class="cf">for</span> num <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, upper):</span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a>        prime <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, (num <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a>            <span class="cf">if</span> (num <span class="op">%</span> i) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a>                prime <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a>        <span class="cf">if</span> prime:</span>
+<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a>            prime_list[num] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a></span>
+<span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a>upper_bound <span class="op">=</span> <span class="dv">100_000</span></span>
+<span id="cb25-18"><a href="#cb25-18" tabindex="-1"></a>all_primes_cpu <span class="op">=</span> np.zeros(upper_bound, dtype<span class="op">=</span>np.int32)</span>
+<span id="cb25-19"><a href="#cb25-19" tabindex="-1"></a></span>
+<span id="cb25-20"><a href="#cb25-20" tabindex="-1"></a><span class="co"># GPU version</span></span>
+<span id="cb25-21"><a href="#cb25-21" tabindex="-1"></a>check_prime_gpu_code <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb25-22"><a href="#cb25-22" tabindex="-1"></a><span class="vs">extern "C"</span></span>
+<span id="cb25-23"><a href="#cb25-23" tabindex="-1"></a><span class="vs">__global__ void all_primes_to(int size, int * const all_prime_numbers)</span></span>
+<span id="cb25-24"><a href="#cb25-24" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb25-25"><a href="#cb25-25" tabindex="-1"></a><span class="vs">   for ( int number = 0; number &lt; size; number++ )</span></span>
+<span id="cb25-26"><a href="#cb25-26" tabindex="-1"></a><span class="vs">   {</span></span>
+<span id="cb25-27"><a href="#cb25-27" tabindex="-1"></a><span class="vs">       int result = 1;</span></span>
+<span id="cb25-28"><a href="#cb25-28" tabindex="-1"></a><span class="vs">       for ( int factor = 2; factor &lt;= number / 2; factor++ )</span></span>
+<span id="cb25-29"><a href="#cb25-29" tabindex="-1"></a><span class="vs">       {</span></span>
+<span id="cb25-30"><a href="#cb25-30" tabindex="-1"></a><span class="vs">           if ( number </span><span class="sc">% f</span><span class="vs">actor == 0 )</span></span>
+<span id="cb25-31"><a href="#cb25-31" tabindex="-1"></a><span class="vs">           {</span></span>
+<span id="cb25-32"><a href="#cb25-32" tabindex="-1"></a><span class="vs">               result = 0;</span></span>
+<span id="cb25-33"><a href="#cb25-33" tabindex="-1"></a><span class="vs">               break;</span></span>
+<span id="cb25-34"><a href="#cb25-34" tabindex="-1"></a><span class="vs">           }</span></span>
+<span id="cb25-35"><a href="#cb25-35" tabindex="-1"></a><span class="vs">       }</span></span>
+<span id="cb25-36"><a href="#cb25-36" tabindex="-1"></a><span class="vs">&gt;</span></span>
+<span id="cb25-37"><a href="#cb25-37" tabindex="-1"></a><span class="vs">       all_prime_numbers[number] = result;</span></span>
+<span id="cb25-38"><a href="#cb25-38" tabindex="-1"></a><span class="vs">   }</span></span>
+<span id="cb25-39"><a href="#cb25-39" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb25-40"><a href="#cb25-40" tabindex="-1"></a><span class="vs">'''</span></span>
+<span id="cb25-41"><a href="#cb25-41" tabindex="-1"></a><span class="co"># Allocate memory</span></span>
+<span id="cb25-42"><a href="#cb25-42" tabindex="-1"></a>all_primes_gpu <span class="op">=</span> cupy.zeros(upper_bound, dtype<span class="op">=</span>cupy.int32)</span>
+<span id="cb25-43"><a href="#cb25-43" tabindex="-1"></a></span>
+<span id="cb25-44"><a href="#cb25-44" tabindex="-1"></a><span class="co"># Setup the grid</span></span>
+<span id="cb25-45"><a href="#cb25-45" tabindex="-1"></a>all_primes_to_gpu <span class="op">=</span> cupy.RawKernel(check_prime_gpu_code, <span class="st">"all_primes_to"</span>)</span>
+<span id="cb25-46"><a href="#cb25-46" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(upper_bound <span class="op">/</span> <span class="dv">1024</span>)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb25-47"><a href="#cb25-47" tabindex="-1"></a>block_size <span class="op">=</span> (<span class="dv">1024</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb25-48"><a href="#cb25-48" tabindex="-1"></a></span>
+<span id="cb25-49"><a href="#cb25-49" tabindex="-1"></a><span class="co"># Benchmark and test</span></span>
+<span id="cb25-50"><a href="#cb25-50" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> all_primes_to(upper_bound, all_primes_cpu)</span>
+<span id="cb25-51"><a href="#cb25-51" tabindex="-1"></a>execution_gpu <span class="op">=</span> benchmark(all_primes_to_gpu, (grid_size, block_size, (upper_bound, all_primes_gpu)), n_repeat<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb25-52"><a href="#cb25-52" tabindex="-1"></a>gpu_avg_time <span class="op">=</span> np.average(execution_gpu.gpu_times)</span>
+<span id="cb25-53"><a href="#cb25-53" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>gpu_avg_time<span class="sc">:.6f}</span><span class="ss"> s"</span>)</span>
+<span id="cb25-54"><a href="#cb25-54" tabindex="-1"></a><span class="op">&gt;</span></span>
+<span id="cb25-55"><a href="#cb25-55" tabindex="-1"></a><span class="cf">if</span> np.allclose(all_primes_cpu, all_primes_gpu):</span>
+<span id="cb25-56"><a href="#cb25-56" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
+<span id="cb25-57"><a href="#cb25-57" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb25-58"><a href="#cb25-58" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Wrong results!"</span>)</span></code></pre>
 </div>
 <p>There is no need to modify anything in the code, except the body of
 the CUDA <code>all_primes_to</code> inside the
@@ -1026,34 +1025,34 @@ value for <code>upper_bound</code>.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution5" aria-expanded="false" aria-controls="collapseSolution5">
   <h4 class="accordion-header" id="headingSolution5">Show me the solution</h4>
 </button>
-<div id="collapseSolution5" class="accordion-collapse collapse" aria-labelledby="headingSolution5" data-bs-parent="#accordionSolution5">
+<div id="collapseSolution5" class="accordion-collapse collapse" data-bs-parent="#accordionSolution5" aria-labelledby="headingSolution5">
 <div class="accordion-body">
 <p>One possible solution for the CUDA kernel is provided in the
 following code.</p>
 <div class="codewrapper sourceCode" id="cb26">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> all_primes_to<span class="op">(</span><span class="dt">int</span> size<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> <span class="dt">const</span> all_prime_numbers<span class="op">)</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> number <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> result <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span> number <span class="op">&lt;</span> size <span class="op">)</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span> <span class="dt">int</span> factor <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> factor <span class="op">&lt;=</span> number <span class="op">/</span> <span class="dv">2</span><span class="op">;</span> factor<span class="op">++</span> <span class="op">)</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span> number <span class="op">%</span> factor <span class="op">==</span> <span class="dv">0</span> <span class="op">)</span></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>                result <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>        all_prime_numbers<span class="op">[</span>number<span class="op">]</span> <span class="op">=</span> result<span class="op">;</span></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+<pre class="sourceCode c" tabindex="0"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="kw">extern</span> <span class="st">"C"</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>__global__ <span class="dt">void</span> all_primes_to<span class="op">(</span><span class="dt">int</span> size<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span> <span class="dt">const</span> all_prime_numbers<span class="op">)</span></span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>    <span class="dt">int</span> number <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>    <span class="dt">int</span> result <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span> number <span class="op">&lt;</span> size <span class="op">)</span></span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span> <span class="dt">int</span> factor <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> factor <span class="op">&lt;=</span> number <span class="op">/</span> <span class="dv">2</span><span class="op">;</span> factor<span class="op">++</span> <span class="op">)</span></span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span> number <span class="op">%</span> factor <span class="op">==</span> <span class="dv">0</span> <span class="op">)</span></span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>            <span class="op">{</span></span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>                result <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a></span>
+<span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a>        all_prime_numbers<span class="op">[</span>number<span class="op">]</span> <span class="op">=</span> result<span class="op">;</span></span>
+<span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a><span class="op">}</span></span></code></pre>
 </div>
 <p>The outermost loop in Python is replaced by having each thread
 testing for primeness a different number of the sequence. Having one
@@ -1146,7 +1145,7 @@ any links that you are not going to use.
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/first_program.html",
   "dateCreated": "2020-09-25",
   "dateModified": "2023-11-21",
-  "datePublished": "2024-02-27"
+  "datePublished": "2024-03-05"
 }
 
   </script><script>
