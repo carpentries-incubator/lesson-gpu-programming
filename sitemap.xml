@@ -91,6 +91,9 @@
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/streams.html</loc>
   </url>
   <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/workshops.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor-notes.html</loc>
   </url>
   <url>
@@ -113,5 +116,8 @@
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/streams.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/workshops.html</loc>
   </url>
 </urlset>
