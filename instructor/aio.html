@@ -406,7 +406,7 @@
         
 <section id="aio-introduction"><p>Content from <a href="introduction.html">Introduction</a></p>
 <hr>
-<p>Last updated on 2024-11-04 |
+<p>Last updated on 2024-11-19 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/introduction.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 15 minutes</p>
@@ -616,7 +616,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-cupy"><p>Content from <a href="cupy.html">Using your GPU with CuPy</a></p>
 <hr>
-<p>Last updated on 2024-11-04 |
+<p>Last updated on 2024-11-19 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/cupy.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 270 minutes</p>
@@ -1604,7 +1604,7 @@ any links that you are not going to use.
 </div>
 </div></section><section id="aio-numba"><p>Content from <a href="numba.html">Accelerate your Python code with Numba</a></p>
 <hr>
-<p>Last updated on 2024-11-04 |
+<p>Last updated on 2024-11-19 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/numba.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 60 minutes</p>
@@ -1797,7 +1797,7 @@ to find all primes up to 10000?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>One possible implementation of this function is the following
 one.</p>
@@ -1902,7 +1902,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-gpu_introduction"><p>Content from <a href="gpu_introduction.html">A Better Look at the GPU</a></p>
 <hr>
-<p>Last updated on 2024-11-04 |
+<p>Last updated on 2024-11-19 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/gpu_introduction.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 20 minutes</p>
@@ -2045,7 +2045,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-first_program"><p>Content from <a href="first_program.html">Your First GPU Kernel</a></p>
 <hr>
-<p>Last updated on 2024-11-04 |
+<p>Last updated on 2024-11-19 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/first_program.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 70 minutes</p>
@@ -2301,7 +2301,7 @@ following line:</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>The correct answer is number 3, only the element <code>C[1]</code> is
 written, and we do not even know by which thread!</p>
@@ -2467,7 +2467,7 @@ kernel?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>The content of <code>blockDim</code> is <code>(512, 1, 1)</code> and
 the content of <code>gridDim</code> is <code>(4, 1, 1)</code>, for all
@@ -2553,7 +2553,7 @@ are larger than the largest CUDA block (i.e. 1024).</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>The correct answer is
 <code>(blockIdx.x * blockDim.x) + threadIdx.x</code>. The following code
@@ -2613,7 +2613,7 @@ now. Can you rewrite the code to make it work?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
 <div class="accordion-body">
 <p>The correct way to modify the <code>vector_add</code> to work on
 vectors of arbitrary size is to first compute the coordinates of each
@@ -2816,7 +2816,7 @@ value for <code>upper_bound</code>.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution5" aria-expanded="false" aria-controls="collapseSolution5">
   <h4 class="accordion-header" id="headingSolution5"> Show me the solution </h4>
 </button>
-<div id="collapseSolution5" class="accordion-collapse collapse" data-bs-parent="#accordionSolution5" aria-labelledby="headingSolution5">
+<div id="collapseSolution5" class="accordion-collapse collapse" aria-labelledby="headingSolution5" data-bs-parent="#accordionSolution5">
 <div class="accordion-body">
 <p>One possible solution for the CUDA kernel is provided in the
 following code.</p>
@@ -2876,7 +2876,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-global_local_memory"><p>Content from <a href="global_local_memory.html">Registers, Global, and Local Memory</a></p>
 <hr>
-<p>Last updated on 2024-11-04 |
+<p>Last updated on 2024-11-19 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/global_local_memory.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 45 minutes</p>
@@ -2962,7 +2962,7 @@ only available during the execution of a thread.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>In general, it is not possible to exactly know how many registers the
 compiler will use without examining the output generated by the compiler
@@ -3088,7 +3088,7 @@ identify where global memory is used.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>The vectors <code>A</code>, <code>B</code>, and <code>C</code> are
 stored in global memory.</p>
@@ -3158,7 +3158,7 @@ find a way to use a variable and not a constant for the size.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>We need to pass the size of the local array as a new parameter to the
 kernel, because if we just specified <code>3</code> in the code, the
@@ -3225,7 +3225,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-shared_memory_and_synchronization"><p>Content from <a href="shared_memory_and_synchronization.html">Shared Memory and Synchronization</a></p>
 <hr>
-<p>Last updated on 2024-11-04 |
+<p>Last updated on 2024-11-19 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/shared_memory_and_synchronization.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 55 minutes</p>
@@ -3847,7 +3847,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-constant_memory"><p>Content from <a href="constant_memory.html">Constant Memory</a></p>
 <hr>
-<p>Last updated on 2024-11-04 |
+<p>Last updated on 2024-11-19 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/constant_memory.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 40 minutes</p>
@@ -3968,7 +3968,7 @@ we initialize the array with some random floating point numbers.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>In our case the output of this line of code is two floating point
 numbers, e.g. <code>[0.11390183 0.2585096 ]</code>. However, we are not
@@ -4039,7 +4039,7 @@ with some different input sizes.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>One of the possible solutions is the following one.</p>
 <div class="codewrapper sourceCode" id="cb5">
@@ -4111,7 +4111,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-streams"><p>Content from <a href="streams.html">Concurrent access to the GPU</a></p>
 <hr>
-<p>Last updated on 2024-11-04 |
+<p>Last updated on 2024-11-19 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/streams.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 40 minutes</p>
@@ -4461,8 +4461,8 @@ any links that you are not going to use.
   "url": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/aio.html",
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/aio.html",
   "dateCreated": "2020-09-25",
-  "dateModified": "2024-11-12",
-  "datePublished": "2024-11-12"
+  "dateModified": "2024-11-19",
+  "datePublished": "2024-11-19"
 }
 
   </script><script>
