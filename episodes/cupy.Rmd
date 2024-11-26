@@ -28,8 +28,8 @@ From now on we can also use the word *host* to refer to the CPU on the laptop, d
 We start by generating an image using Python and NumPy code.
 We want to compute a convolution on this input image once on the host and once on the device, and then compare both the execution times and the results.
 
-In an iPython shell or a Jupyter notebook, we can write and execute the following code on the host.
-The pixel values will be zero everywhere except for a regular grid of single pixels having value one, very much like a Dirac's delta function; hence the input image is named `deltas`.
+We can write and execute the following code on the host in an iPython shell or a Jupyter notebook.
+The pixel values will be zero everywhere except for a regular grid of single pixels having value one, very much like a Dirac delta function; hence the input image is named `diracs`.
 
 ~~~python
 import numpy as np
@@ -39,7 +39,7 @@ diracs = np.zeros((2048, 2048))
 diracs[8::16,8::16] = 1
 ~~~
 
-We can display the top-left corner of the input image to get a feeling of how it looks like, as follows:
+We can display the top-left corner of the input image to get a feel for how it looks like, as follows:
 
 ~~~python
 import pylab as pyl
@@ -54,13 +54,13 @@ pyl.show()
 
 and you should obtain the following image:
 
-![Grid of delta functions](./fig/diracs.png){alt='Grid of delta functions.'}
+![Grid of Dirac delta functions](./fig/diracs.png){alt='Grid of Dirac delta functions.'}
 
 ## Gaussian convolutions
 
 The illustration below shows an example of convolution (courtesy of Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
-Looking at the terminology in the illustration, be forewarned that the word *kernel* happens to have different meanings that, inconveniently, apply to both mathematical convolution and coding on a GPU device.
-To know more about convolutions, we encourage you to check out [this GitHub repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin with some great animations.
+Looking at the terminology in the illustration, be forewarned that, inconveniently, the meaning of the word *kernel* is different when talking of mathematical convolutions and of codes for programming  a GPU device.
+To know more about convolutions, we encourage you to check out [this GitHub repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin, who show great animations.
 
 ![Example of animated convolution.](./fig/2D_Convolution_Animation.gif){alt="Example of animated convolution"}
 
@@ -68,7 +68,7 @@ In this course section, we will convolve our image with a 2D Gaussian function, 
 
 $$G(x,y) = \frac{1}{2\pi \sigma^2} \exp\left(-\frac{x^2 + y^2}{2 \sigma^2}\right)$$
 
-where $x$ and $y$ are distances from the origin, and $\sigma$ controls the width of the Gaussian curve.
+where $x$ and $y$ are distances from the origin, and $\sigma$ controls the width of the curve.
 Since we can think of an image as a matrix of color values, the convolution of that image with a kernel generates a new matrix with different color values.
 In particular, convolving images with a 2D Gaussian kernel changes the value of each pixel into a weighted average of the neighboring pixels, thereby smoothing out the features in the input image.
 
@@ -105,7 +105,7 @@ pyl.imshow(gauss)
 pyl.show()
 ~~~
 
-The code above produces this image of a symmetrical two-dimensional Gaussian:
+The code above produces this image of a symmetrical two-dimensional Gaussian surface:
 
 ![Two-dimensional Gaussian.](./fig/gauss.png){alt="Two-dimensional Gaussian"}
 
@@ -129,9 +129,9 @@ We expect that to be in the region of a couple of seconds, as shown in the timin
 2.4 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)
 ~~~
 
-Displaying just a corner of the image shows that the Gaussian has so much blurred the original pattern of ones surrounded by zeros that we end up with a regular pattern of Gaussians.
+Displaying just a corner of the image shows that the Gaussian filter has so much blurred the original pattern of ones surrounded by zeros that we end up with a regular pattern of Gaussians.
 
-![Grid of Gaussians in the convoluted image.](./fig/convolved_image.png){alt="Grid of Gaussians in the convoluted image"}
+![Grid of Gaussian surfaces in the convoluted image.](./fig/convolved_image.png){alt="Grid of Gaussians in the convoluted image"}
 
 ## Convolution on the GPU Using CuPy
 
@@ -142,7 +142,7 @@ This picture depicts the different components of CPU and GPU and how they are co
 ![CPU and GPU are separate entities with an own memory.](./fig/CPU_and_GPU_separated.png){alt="CPU and GPU are separate entities with an own memory"}
 
 This means that the array created with NumPy is physically stored in a memory of the host's and, therefore, is only available to the CPU.
-Since our input image and convolution filter are not yet present in the device memory, we need to copy both data to the GPU before executing any code on it.
+Since our input image and convolution filter are not present in the device memory yet, we need to copy them to the GPU before executing any code on it.
 In practice, we use CuPy to copy the arrays `diracs` and `gauss` from the host's Random Access Memory (RAM) to the GPU memory as follows:
 
 ~~~python
@@ -154,10 +154,11 @@ gauss_gpu = cp.asarray(gauss)
 
 Now it is time to compute the convolution on our GPU.
 Inconveniently, SciPy does not offer methods running on GPUs.
-Hence, we import the convolution function from a CuPy package aliased as `cupyx`, whose sub-package [`cupyx.scipy`](https://docs.cupy.dev/en/stable/reference/scipy.html) performs a selection of the SciPy operations.
-We will soon verify that the GPU convolution function of `cupyx` works out the same calculations as the CPU convolution function of SciPy.
-In general, CuPy proper and NumPy are so similar as are the `cupyx` methods and SciPy; this is intended to invite programmers already familiar with NumPy and SciPy to use the GPU for computing.
-For now, let's again record the execution time on the device for the same convolution as the host, and can compare the respective performances.
+Hence, we import the convolution function from a CuPy package aliased as `cupyx`.
+Its sub-package [`cupyx.scipy`](https://docs.cupy.dev/en/stable/reference/scipy.html) performs a selection of the SciPy operations.
+We will soon verify that the convolution function of `cupyx` works out the same calculations on the GPU as the convolution function of SciPy on the CPU.
+In general, CuPy proper and NumPy are so similar one to another as are the `cupyx` methods and SciPy; this is intended to invite programmers already familiar with NumPy and SciPy to use the GPU for computing.
+For now, let's again record the execution time on the device for the same convolution as the host, and compare the respective performances.
 
 ~~~python
 from cupyx.scipy.signal import convolve2d as convolve2d_gpu
@@ -166,8 +167,8 @@ convolved_image_gpu = convolve2d_gpu(diracs_gpu, gauss_gpu)
 %timeit -n 7 -r 1 convolved_image_gpu = convolve2d_gpu(diracs_gpu, gauss_gpu)
 ~~~
 
-Also the execution time of the GPU convolution will depend very much on the hardware used, as seen for the host.
-The timing using a NVIDIA Tesla T4 on Google Colab was:
+The execution time of the GPU convolution will depend very much on the hardware used, just as seen for the host.
+The timing using a NVIDIA Tesla T4 at Google Colab was:
 
 ~~~output
 98.2 µs ± 0 ns per loop (mean ± std. dev. of 1 run, 7 loops each)
@@ -178,12 +179,12 @@ Impressive, but is that true?
 
 ## Measuring performance
 
-So far we used `timeit` to measure the performance of our Python code, no matter whether it was running on the CPU or was GPU-accelerated.
-However, the execution on the GPU is *asynchronous*: the Python interpreter takes back control of the program execution immediately, while the GPU is still executing the task.
+So far we used `timeit` to measure the performance of our Python code, regardless of whether it was running on the CPU or was GPU-accelerated.
+However, the execution on the GPU is *asynchronous*: the Python interpreter immediately takes back control of the program execution, while the GPU is still executing the task.
 Therefore, the timing of `timeit` is not reliable.
 
 Conveniently, `cupyx` provides the function `benchmark()` that measures the actual execution time in the GPU.
-The following code executes `convolve2d_gpu()` with the appropriate arguments ten times, and stores inside the `.gpu_times` attribute of the variable `execution_gpu` the execution time of each run in seconds.
+The following code executes `convolve2d_gpu()` with the appropriate arguments ten times, and stores inside the `.gpu_times` attribute of the variable `benchmark_gpu` the execution time of each run in seconds.
 
 ~~~python
 from cupyx.profiler import benchmark
@@ -191,7 +192,7 @@ from cupyx.profiler import benchmark
 benchmark_gpu = benchmark(convolve2d_gpu, (diracs_gpu, gauss_gpu), n_repeat=10)
 ~~~
 
-These measurements are also more stable and representative, because `benchmark()` disregards the compile time and the repetitions warm up the GPU.
+These measurements are also more stable and representative, because `benchmark()` disregards the compile time and because the repetitions warm up the GPU.
 We can then average the execution times, as follows:
 
 ~~~python
@@ -215,7 +216,7 @@ If this works, it will save us the time and effort of transferring the arrays `d
 
 ::::::::::::::::::::::::::::::::::::: solution
 
-We can call the GPU convolution function `convolve2d_gpu()` directly with `deltas` and `gauss` as argument:
+We can call the GPU convolution function `convolve2d_gpu()` directly with `diracs` and `gauss` as argument:
 
 ~~~python
 convolve2d_gpu(diracs, gauss)
@@ -254,7 +255,7 @@ Hint: use the `cp.asnumpy()` method to copy a CuPy array back to the host.
 
 :::::::::::::::::::::::::::::::::::::: solution
 
-A convenient strategy is to time the execution of a single Python function that groups the transfers to and from the GPU and the convolution, as follows:
+An effective strategy is to time the execution of a single Python function that groups the transfers to and from the GPU and the convolution, as follows:
 
 ~~~python
 def push_compute_pull():
@@ -331,7 +332,7 @@ print(f"{gpu_execution_avg:.6f} s")
 
 You may be surprised that these commands do not throw any error.
 Contrary to SciPy, NumPy routines accept CuPy arrays as input, even though the latter exist only in GPU memory.
-Indeed, can you recall when we validated our codes using a NumPy and a CuPy array as input of `np.allclose()`?
+Indeed, can you recall that we validated our codes using a NumPy and a CuPy array as input of `np.allclose()`?
 That worked for the same reason.
 [The CuPy documentation](https://docs.cupy.dev/en/stable/user_guide/interoperability.html#numpy) explains why NumPy routines can handle CuPy arrays.
 
@@ -568,7 +569,7 @@ The number of sources in the image at the 5σ level is 185.
 Fastest CPU CCL time = 2.546e+01 ms.
 ~~~
 
-Let's not just accept the answer, but also do a sanity check.
+Let's not just accept the answer, and let's do a sanity check.
 What are the values in the labeled image?
 
 ~~~python
@@ -633,7 +634,7 @@ all_integrated_fluxes = sl_cpu(data, labeled_image,
                                range(1, number_of_sources_in_image+1))
 ~~~
 
-Which yields, on my machine:
+which yields, on my machine:
 
 ~~~output
 797 ms ± 9.32 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
@@ -649,7 +650,7 @@ fastest_source_measurements_CPU = timing_source_measurements_CPU.best
 print(f"Fastest CPU set of source measurements = {1000 * fastest_source_measurements_CPU:.3e} ms.")
 ~~~
 
-Which yields
+which yields
 
 ~~~output
 Fastest CPU set of source measurements = 7.838e+02 ms.
