@@ -346,7 +346,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Using your GPU with CuPy</h1>
-        <p>Last updated on 2024-11-19 |
+        <p>Last updated on 2024-11-27 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/cupy.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -404,11 +404,11 @@ CPU on the laptop, desktop, or cluster node you are using as usual, and
 to compute a convolution on this input image once on the host and once
 on the device, and then compare both the execution times and the
 results.</p>
-<p>In an iPython shell or a Jupyter notebook, we can write and execute
-the following code on the host. The pixel values will be zero everywhere
+<p>We can write and execute the following code on the host in an iPython
+shell or a Jupyter notebook. The pixel values will be zero everywhere
 except for a regular grid of single pixels having value one, very much
-like a Dirac’s delta function; hence the input image is named
-<code>deltas</code>.</p>
+like a Dirac delta function; hence the input image is named
+<code>diracs</code>.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -418,8 +418,8 @@ like a Dirac’s delta function; hence the input image is named
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>diracs <span class="op">=</span> np.zeros((<span class="dv">2048</span>, <span class="dv">2048</span>))</span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>diracs[<span class="dv">8</span>::<span class="dv">16</span>,<span class="dv">8</span>::<span class="dv">16</span>] <span class="op">=</span> <span class="dv">1</span></span></code></pre>
 </div>
-<p>We can display the top-left corner of the input image to get a
-feeling of how it looks like, as follows:</p>
+<p>We can display the top-left corner of the input image to get a feel
+for how it looks like, as follows:</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -433,16 +433,16 @@ feeling of how it looks like, as follows:</p>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>pyl.show()</span></code></pre>
 </div>
 <p>and you should obtain the following image:</p>
-<figure><img src="./fig/diracs.png" alt="Grid of delta functions." class="figure mx-auto d-block"><div class="figcaption">Grid of delta functions</div>
+<figure><img src="./fig/diracs.png" alt="Grid of Dirac delta functions." class="figure mx-auto d-block"><div class="figcaption">Grid of Dirac delta functions</div>
 </figure><div class="section level2">
 <h2 id="gaussian-convolutions">Gaussian convolutions<a class="anchor" aria-label="anchor" href="#gaussian-convolutions"></a></h2>
 <p>The illustration below shows an example of convolution (courtesy of
 Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons). Looking at the
-terminology in the illustration, be forewarned that the word
-<em>kernel</em> happens to have different meanings that, inconveniently,
-apply to both mathematical convolution and coding on a GPU device. To
+terminology in the illustration, be forewarned that, inconveniently, the
+meaning of the word <em>kernel</em> is different when talking of
+mathematical convolutions and of codes for programming a GPU device. To
 know more about convolutions, we encourage you to check out <a href="https://github.com/vdumoulin/conv_arithmetic" class="external-link">this GitHub
-repository</a> by Vincent Dumoulin and Francesco Visin with some great
+repository</a> by Vincent Dumoulin and Francesco Visin, who show great
 animations.</p>
 <figure><img src="./fig/2D_Convolution_Animation.gif" alt="Example of animated convolution" class="figure mx-auto d-block"><div class="figcaption">Example of animated convolution.</div>
 </figure><p>In this course section, we will convolve our image with a 2D Gaussian
@@ -451,12 +451,12 @@ function, having the general form:</p>
 \exp\left(-\frac{x^2 + y^2}{2 \sigma^2}\right)\]</span></p>
 <p>where <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are distances from the origin, and
 <span class="math inline">\(\sigma\)</span> controls the width of the
-Gaussian curve. Since we can think of an image as a matrix of color
-values, the convolution of that image with a kernel generates a new
-matrix with different color values. In particular, convolving images
-with a 2D Gaussian kernel changes the value of each pixel into a
-weighted average of the neighboring pixels, thereby smoothing out the
-features in the input image.</p>
+curve. Since we can think of an image as a matrix of color values, the
+convolution of that image with a kernel generates a new matrix with
+different color values. In particular, convolving images with a 2D
+Gaussian kernel changes the value of each pixel into a weighted average
+of the neighboring pixels, thereby smoothing out the features in the
+input image.</p>
 <p>Convolutions are frequently used in computer vision to filter images.
 For example, Gaussian convolution can be required before applying
 algorithms for <a href="https://en.wikipedia.org/wiki/Gaussian_blur#Edge_detection" class="external-link">edge
@@ -501,7 +501,7 @@ the GPU.</p>
 <span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>pyl.show()</span></code></pre>
 </div>
 <p>The code above produces this image of a symmetrical two-dimensional
-Gaussian:</p>
+Gaussian surface:</p>
 <figure><img src="./fig/gauss.png" alt="Two-dimensional Gaussian" class="figure mx-auto d-block"><div class="figcaption">Two-dimensional Gaussian.</div>
 </figure><p>Now we are ready to compute the convolution on the host. Very
 conveniently, SciPy provides a method for convolutions. Let’s also
@@ -525,10 +525,11 @@ of seconds, as shown in the timing report below:</p>
 </h3>
 <pre class="output" tabindex="0"><code>2.4 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)</code></pre>
 </div>
-<p>Displaying just a corner of the image shows that the Gaussian has so
-much blurred the original pattern of ones surrounded by zeros that we
-end up with a regular pattern of Gaussians.</p>
-<figure><img src="./fig/convolved_image.png" alt="Grid of Gaussians in the convoluted image" class="figure mx-auto d-block"><div class="figcaption">Grid of Gaussians in the convoluted image.</div>
+<p>Displaying just a corner of the image shows that the Gaussian filter
+has so much blurred the original pattern of ones surrounded by zeros
+that we end up with a regular pattern of Gaussians.</p>
+<figure><img src="./fig/convolved_image.png" alt="Grid of Gaussians in the convoluted image" class="figure mx-auto d-block"><div class="figcaption">Grid of Gaussian surfaces in the convoluted
+image.</div>
 </figure></div>
 <div class="section level2">
 <h2 id="convolution-on-the-gpu-using-cupy">Convolution on the GPU Using CuPy<a class="anchor" aria-label="anchor" href="#convolution-on-the-gpu-using-cupy"></a></h2>
@@ -541,8 +542,8 @@ connected:</p>
 memory.</div>
 </figure><p>This means that the array created with NumPy is physically stored in
 a memory of the host’s and, therefore, is only available to the CPU.
-Since our input image and convolution filter are not yet present in the
-device memory, we need to copy both data to the GPU before executing any
+Since our input image and convolution filter are not present in the
+device memory yet, we need to copy them to the GPU before executing any
 code on it. In practice, we use CuPy to copy the arrays
 <code>diracs</code> and <code>gauss</code> from the host’s Random Access
 Memory (RAM) to the GPU memory as follows:</p>
@@ -556,16 +557,17 @@ Memory (RAM) to the GPU memory as follows:</p>
 </div>
 <p>Now it is time to compute the convolution on our GPU. Inconveniently,
 SciPy does not offer methods running on GPUs. Hence, we import the
-convolution function from a CuPy package aliased as <code>cupyx</code>,
-whose sub-package <a href="https://docs.cupy.dev/en/stable/reference/scipy.html" class="external-link"><code>cupyx.scipy</code></a>
+convolution function from a CuPy package aliased as <code>cupyx</code>.
+Its sub-package <a href="https://docs.cupy.dev/en/stable/reference/scipy.html" class="external-link"><code>cupyx.scipy</code></a>
 performs a selection of the SciPy operations. We will soon verify that
-the GPU convolution function of <code>cupyx</code> works out the same
-calculations as the CPU convolution function of SciPy. In general, CuPy
-proper and NumPy are so similar as are the <code>cupyx</code> methods
-and SciPy; this is intended to invite programmers already familiar with
-NumPy and SciPy to use the GPU for computing. For now, let’s again
-record the execution time on the device for the same convolution as the
-host, and can compare the respective performances.</p>
+the convolution function of <code>cupyx</code> works out the same
+calculations on the GPU as the convolution function of SciPy on the CPU.
+In general, CuPy proper and NumPy are so similar one to another as are
+the <code>cupyx</code> methods and SciPy; this is intended to invite
+programmers already familiar with NumPy and SciPy to use the GPU for
+computing. For now, let’s again record the execution time on the device
+for the same convolution as the host, and compare the respective
+performances.</p>
 <div class="codewrapper sourceCode" id="cb7">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -574,9 +576,9 @@ host, and can compare the respective performances.</p>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>convolved_image_gpu <span class="op">=</span> convolve2d_gpu(diracs_gpu, gauss_gpu)</span>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">7</span> <span class="op">-</span>r <span class="dv">1</span> convolved_image_gpu <span class="op">=</span> convolve2d_gpu(diracs_gpu, gauss_gpu)</span></code></pre>
 </div>
-<p>Also the execution time of the GPU convolution will depend very much
-on the hardware used, as seen for the host. The timing using a NVIDIA
-Tesla T4 on Google Colab was:</p>
+<p>The execution time of the GPU convolution will depend very much on
+the hardware used, just as seen for the host. The timing using a NVIDIA
+Tesla T4 at Google Colab was:</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -588,17 +590,17 @@ improvement, or speedup. Impressive, but is that true?</p>
 <div class="section level2">
 <h2 id="measuring-performance">Measuring performance<a class="anchor" aria-label="anchor" href="#measuring-performance"></a></h2>
 <p>So far we used <code>timeit</code> to measure the performance of our
-Python code, no matter whether it was running on the CPU or was
+Python code, regardless of whether it was running on the CPU or was
 GPU-accelerated. However, the execution on the GPU is
-<em>asynchronous</em>: the Python interpreter takes back control of the
-program execution immediately, while the GPU is still executing the
+<em>asynchronous</em>: the Python interpreter immediately takes back
+control of the program execution, while the GPU is still executing the
 task. Therefore, the timing of <code>timeit</code> is not reliable.</p>
 <p>Conveniently, <code>cupyx</code> provides the function
 <code>benchmark()</code> that measures the actual execution time in the
 GPU. The following code executes <code>convolve2d_gpu()</code> with the
 appropriate arguments ten times, and stores inside the
 <code>.gpu_times</code> attribute of the variable
-<code>execution_gpu</code> the execution time of each run in
+<code>benchmark_gpu</code> the execution time of each run in
 seconds.</p>
 <div class="codewrapper sourceCode" id="cb9">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -608,8 +610,8 @@ seconds.</p>
 <span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>benchmark_gpu <span class="op">=</span> benchmark(convolve2d_gpu, (diracs_gpu, gauss_gpu), n_repeat<span class="op">=</span><span class="dv">10</span>)</span></code></pre>
 </div>
 <p>These measurements are also more stable and representative, because
-<code>benchmark()</code> disregards the compile time and the repetitions
-warm up the GPU. We can then average the execution times, as
+<code>benchmark()</code> disregards the compile time and because the
+repetitions warm up the GPU. We can then average the execution times, as
 follows:</p>
 <div class="codewrapper sourceCode" id="cb10">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -648,7 +650,7 @@ the GPU.</p>
 <div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>We can call the GPU convolution function
-<code>convolve2d_gpu()</code> directly with <code>deltas</code> and
+<code>convolve2d_gpu()</code> directly with <code>diracs</code> and
 <code>gauss</code> as argument:</p>
 <div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -708,7 +710,7 @@ back to the host.</p>
 </button>
 <div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
-<p>A convenient strategy is to time the execution of a single Python
+<p>An effective strategy is to time the execution of a single Python
 function that groups the transfers to and from the GPU and the
 convolution, as follows:</p>
 <div class="codewrapper sourceCode" id="cb16">
@@ -800,7 +802,7 @@ follows:</p>
 </div>
 <p>You may be surprised that these commands do not throw any error.
 Contrary to SciPy, NumPy routines accept CuPy arrays as input, even
-though the latter exist only in GPU memory. Indeed, can you recall when
+though the latter exist only in GPU memory. Indeed, can you recall that
 we validated our codes using a NumPy and a CuPy array as input of
 <code>np.allclose()</code>? That worked for the same reason. <a href="https://docs.cupy.dev/en/stable/user_guide/interoperability.html#numpy" class="external-link">The
 CuPy documentation</a> explains why NumPy routines can handle CuPy
@@ -1094,7 +1096,7 @@ pixels will all have the value 3 etc.</p>
 26.3 ms ± 965 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 Fastest CPU CCL time = 2.546e+01 ms.</code></pre>
 </div>
-<p>Let’s not just accept the answer, but also do a sanity check. What
+<p>Let’s not just accept the answer, and let’s do a sanity check. What
 are the values in the labeled image?</p>
 <div class="codewrapper sourceCode" id="cb42">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1164,7 +1166,7 @@ like this:</p>
 <span id="cb46-4"><a href="#cb46-4" tabindex="-1"></a>all_integrated_fluxes <span class="op">=</span> sl_cpu(data, labeled_image,</span>
 <span id="cb46-5"><a href="#cb46-5" tabindex="-1"></a>                               <span class="bu">range</span>(<span class="dv">1</span>, number_of_sources_in_image<span class="op">+</span><span class="dv">1</span>))</span></code></pre>
 </div>
-<p>Which yields, on my machine:</p>
+<p>which yields, on my machine:</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -1181,7 +1183,7 @@ need a trick that uses the <code>_</code> variable.</p>
 <span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a>fastest_source_measurements_CPU <span class="op">=</span> timing_source_measurements_CPU.best</span>
 <span id="cb48-3"><a href="#cb48-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Fastest CPU set of source measurements = </span><span class="sc">{</span><span class="dv">1000</span> <span class="op">*</span> fastest_source_measurements_CPU<span class="sc">:.3e}</span><span class="ss"> ms."</span>)</span></code></pre>
 </div>
-<p>Which yields</p>
+<p>which yields</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -1377,8 +1379,8 @@ any links that you are not going to use.
   "url": "https://carpentries-incubator.github.io/lesson-gpu-programming/cupy.html",
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/cupy.html",
   "dateCreated": "2020-09-25",
-  "dateModified": "2024-11-19",
-  "datePublished": "2024-11-26"
+  "dateModified": "2024-11-27",
+  "datePublished": "2024-11-27"
 }
 
   </script><script>
