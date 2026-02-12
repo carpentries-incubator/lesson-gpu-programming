@@ -50,27 +50,34 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 ~~~
 
 ::: callout
-We are aware that CUDA is a proprietary solution, and that there are open-source alternatives such as OpenCL.
-However, CUDA is the most used platform for GPU programming and therefore we decided to use it for our teaching material.
+We are aware that CUDA is a proprietary solution, and that there are more open and portable solutions, however CUDA is also the most used platform for GPU programming and therefore we decided to use it for our teaching material.
+Nevertheless, almost everything we cover in this lesson does also apply to HIP, a portable language that can run on both NVIDIA and AMD GPUs.
 :::
 
-# Running Code on the GPU with CuPy
+# Running Code on the GPU
 
 Before delving deeper into the meaning of all lines of code, and before starting to understand how CUDA works, let us execute the code on a GPU and check if it is correct or not.
-To compile the code and manage the GPU in Python we are going to use the interface provided by CuPy.
+To compile the code and manage the GPU in Python we are going to use the interface provided by NVIDIA.
 
 ~~~python
-import cupy
+import cupy as cp
+from cuda.core import Device, LaunchConfig, Program, ProgramOptions, launch
+
+# initialize the GPU
+gpu = Device()
+gpu.set_current()
+stream = gpu.create_stream()
+program_options = ProgramOptions(std="c++17", arch=f"sm_{gpu.arch}")
 
 # size of the vectors
 size = 1024
 
-# allocating and populating the vectors
-a_gpu = cupy.random.rand(size, dtype=cupy.float32)
-b_gpu = cupy.random.rand(size, dtype=cupy.float32)
-c_gpu = cupy.zeros(size, dtype=cupy.float32)
+# allocating and populating the vectors on the GPU
+a_gpu = cp.random.rand(size, dtype=cp.float32)
+b_gpu = cp.random.rand(size, dtype=cp.float32)
+c_gpu = cp.zeros(size, dtype=cp.float32)
 
-# CUDA vector_add
+# CUDA vector_add source code
 vector_add_cuda_code = r'''
 extern "C"
 __global__ void vector_add(const float * A, const float * B, float * C, const int size)
@@ -79,9 +86,15 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
     C[item] = A[item] + B[item];
 }
 '''
-vector_add_gpu = cupy.RawKernel(vector_add_cuda_code, "vector_add")
 
-vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+# compiling the CUDA code
+prog = Program(vector_add_cuda_code, code_type="c++", options=program_options)
+mod = prog.compile("cubin", name_expressions=("vector_add",))
+vector_add_gpu = mod.get_kernel("vector_add")
+
+# execute the code on the GPU
+config = LaunchConfig(grid=(1, 1, 1), block=(size, 1, 1))
+launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 ~~~
 
 And to be sure that the CUDA code does exactly what we want, we can execute our sequential Python code and compare the results.
@@ -89,8 +102,8 @@ And to be sure that the CUDA code does exactly what we want, we can execute our 
 ~~~python
 import numpy as np
 
-a_cpu = cupy.asnumpy(a_gpu)
-b_cpu = cupy.asnumpy(b_gpu)
+a_cpu = cp.asnumpy(a_gpu)
+b_cpu = cp.asnumpy(b_gpu)
 c_cpu = np.zeros(size, dtype=np.float32)
 
 vector_add(a_cpu, b_cpu, c_cpu, size)
@@ -182,21 +195,12 @@ We modify the value of the variable size and try again.
 size = 2048
 
 # allocating and populating the vectors
-a_gpu = cupy.random.rand(size, dtype=cupy.float32)
-b_gpu = cupy.random.rand(size, dtype=cupy.float32)
-c_gpu = cupy.zeros(size, dtype=cupy.float32)
+a_gpu = cp.random.rand(size, dtype=cp.float32)
+b_gpu = cp.random.rand(size, dtype=cp.float32)
+c_gpu = cp.zeros(size, dtype=cp.float32)
 
-# CUDA vector_add
-vector_add_gpu = cupy.RawKernel(r'''
-extern "C"
-__global__ void vector_add(const float * A, const float * B, float * C, const int size)
-{
-    int item = threadIdx.x;
-    C[item] = A[item] + B[item];
-}
-''', "vector_add")
-
-vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+config = LaunchConfig(grid=(1, 1, 1), block=(size, 1, 1))
+launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 ~~~
 
 This is how the output should look like when running the code in a Jupyter Notebook:
@@ -204,33 +208,27 @@ This is how the output should look like when running the code in a Jupyter Noteb
 ~~~output
 ---------------------------------------------------------------------------
 
-CUDADriverError                           Traceback (most recent call last)
+CUDAError                                 Traceback (most recent call last)
 
-<ipython-input-4-a26bc8acad2fin <module>()
-     19 ''', "vector_add")
-     20 
----21 vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
-     22 
-     23 print(c_gpu)
+/tmp/ipython-input-2754325452.py in <cell line: 0>()
+      8 
+      9 config = LaunchConfig(grid=(1, 1, 1), block=(size, 1, 1))
+---> 10 launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 
-cupy/core/raw.pyx in cupy.core.raw.RawKernel.__call__()
+cuda/core/_launcher.pyx in cuda.core._launcher.launch()
 
-cupy/cuda/function.pyx in cupy.cuda.function.Function.__call__()
+cuda/core/_utils/cuda_utils.pyx in cuda.core._utils.cuda_utils.HANDLE_RETURN()
 
-cupy/cuda/function.pyx in cupy.cuda.function._launch()
+cuda/core/_utils/cuda_utils.pyx in cuda.core._utils.cuda_utils._check_driver_error()
 
-cupy_backends/cuda/api/driver.pyx in cupy_backends.cuda.api.driver.launchKernel()
-
-cupy_backends/cuda/api/driver.pyx in cupy_backends.cuda.api.driver.check_status()
-
-CUDADriverError: CUDA_ERROR_INVALID_VALUE: invalid argument
+CUDAError: CUDA_ERROR_INVALID_VALUE: This indicates that one or more of the parameters passed to the API call is not within an acceptable range of values.
 ~~~
 
 The reason for this error is that most GPUs will not allow us to execute a block composed of more than 1024 threads.
-If we look at the parameters of our functions we see that the first two parameters are two triplets.
+If we look at the launch config of our function we see that the `block` and `grid` parameters are two triplets.
 
 ~~~python
-vector_add_gpu((1, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+config = LaunchConfig(grid=(1, 1, 1), block=(size, 1, 1))
 ~~~
 
 The first triplet specifies the size of the CUDA **grid**, while the second triplet specifies the size of the CUDA **block**.
@@ -240,7 +238,12 @@ The size of this block is specified by the second triplet, in our case `(size, 1
 While blocks are independent of each other, the thread composing a block are not completely independent, they share resources and can also communicate with each other.
 
 To go back to our example, we can modify che grid specification from `(1, 1, 1)` to `(2, 1, 1)`, and the block specification from `(size, 1, 1)` to `(size // 2, 1, 1)`.
-If we run the code again, we should now get the expected output.
+
+~~~python
+config = LaunchConfig(grid=(2, 1, 1), block=(size // 2, 1, 1))
+~~~
+
+If we run the code again, the error should be now gone.
 
 We already introduced the special variable `threadIdx` when introducing the `vector_add` CUDA code, and we said it contains a triplet specifying the coordinates of a thread in a thread block.
 CUDA has other variables that are important to understand the coordinates of each thread and block in the overall structure of the computation.
@@ -266,7 +269,8 @@ Given the following snippet of code:
 
 ~~~python
 size = 512
-vector_add_gpu((4, 1, 1), (size, 1, 1), (a_gpu, b_gpu, c_gpu, size))
+config = LaunchConfig(grid=(4, 1, 1), block=(size, 1, 1))
+launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 ~~~
 
 What is the content of the `blockDim` and `gridDim` variables inside the CUDA `vector_add` kernel?
@@ -277,38 +281,19 @@ The content of `blockDim` is `(512, 1, 1)` and the content of `gridDim` is `(4, 
 :::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::
 
-What happens if we run the code that we just modified to work on an vector of 2048 elements, and compare the results with our CPU version?
+What happens if we then run the code that we just modified to work on an vector of 2048 elements, and compare the results with our CPU version?
 
 ~~~python
-# size of the vectors
-size = 2048
-
-# allocating and populating the vectors
-a_gpu = cupy.random.rand(size, dtype=cupy.float32)
-b_gpu = cupy.random.rand(size, dtype=cupy.float32)
-c_gpu = cupy.zeros(size, dtype=cupy.float32)
-a_cpu = cupy.asnumpy(a_gpu)
-b_cpu = cupy.asnumpy(b_gpu)
+# reallocate the CPU arrays
+a_cpu = cp.asnumpy(a_gpu)
+b_cpu = cp.asnumpy(b_gpu)
 c_cpu = np.zeros(size, dtype=np.float32)
 
 # CPU code
-def vector_add(A, B, C, size):
-    for item in range(0, size):
-        C[item] = A[item] + B[item]
-
-# CUDA vector_add
-vector_add_gpu = cupy.RawKernel(r'''
-extern "C"
-__global__ void vector_add(const float * A, const float * B, float * C, const int size)
-{
-    int item = threadIdx.x;
-    C[item] = A[item] + B[item];
-}
-''', "vector_add")
-
-# execute the code
-vector_add_gpu((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size))
 vector_add(a_cpu, b_cpu, c_cpu, size)
+
+# GPU code
+launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 
 # test
 if np.allclose(c_cpu, c_gpu):
@@ -397,29 +382,38 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 
 To test our changes we can modify the `size` of the vectors from 2048 to 10000, and execute the code again.
 
+~~~python
+size = 10_000
+
+# reallocating and populating the vectors
+a_gpu = cp.random.rand(size, dtype=cp.float32)
+b_gpu = cp.random.rand(size, dtype=cp.float32)
+c_gpu = cp.zeros(size, dtype=cp.float32)
+
+# recompiling the CUDA code
+prog = Program(vector_add_cuda_code, code_type="c++", options=program_options)
+mod = prog.compile("cubin", name_expressions=("vector_add",))
+vector_add_gpu = mod.get_kernel("vector_add")
+
+~~~
+
 ~~~output
 ---------------------------------------------------------------------------
 
-CUDADriverError                           Traceback (most recent call last)
+CUDAError                                 Traceback (most recent call last)
 
-<ipython-input-20-00d938215d28in <module>()
-     31 
-     32 # Execute the code
----33 vector_add_gpu((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size))
-     34 vector_add(a_cpu, b_cpu, c_cpu, size)
-     35 
+/tmp/ipython-input-2155189089.py in <cell line: 0>()
+     11 vector_add_gpu = mod.get_kernel("vector_add")
+     12 
+---> 13 launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 
-cupy/core/raw.pyx in cupy.core.raw.RawKernel.__call__()
+cuda/core/_launcher.pyx in cuda.core._launcher.launch()
 
-cupy/cuda/function.pyx in cupy.cuda.function.Function.__call__()
+cuda/core/_utils/cuda_utils.pyx in cuda.core._utils.cuda_utils.HANDLE_RETURN()
 
-cupy/cuda/function.pyx in cupy.cuda.function._launch()
+cuda/core/_utils/cuda_utils.pyx in cuda.core._utils.cuda_utils._check_driver_error()
 
-cupy/cuda/driver.pyx in cupy.cuda.driver.launchKernel()
-
-cupy/cuda/driver.pyx in cupy.cuda.driver.check_status()
-
-CUDADriverError: CUDA_ERROR_INVALID_VALUE: invalid argument
+CUDAError: CUDA_ERROR_INVALID_VALUE: This indicates that one or more of the parameters passed to the API call is not within an acceptable range of values.
 ~~~
 
 This error is telling us that CUDA cannot launch a block with `size // 2` threads, because the maximum amount of threads in a kernel is 1024 and we are requesting 5000 threads.
@@ -432,8 +426,9 @@ import math
 
 grid_size = (int(math.ceil(size / 1024)), 1, 1)
 block_size = (1024, 1, 1)
+config = LaunchConfig(grid=grid_size, block=block_size)
 
-vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))
+launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 ~~~
 
 With these changes we always have blocks composed of 1024 threads, but we adapt the number of blocks so that we always have enough to threads to compute all elements in the vector.
@@ -443,32 +438,71 @@ If we want to be able to easily modify the number of threads per block, we can e
 threads_per_block = 1024
 grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
+config = LaunchConfig(grid=grid_size, block=block_size)
 
-vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))
+launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 ~~~
 
-So putting this all together in a full snippet we can execute the code again.
+So putting this all together in a full snippet, we can execute the working code and get the correct output.
 
 ~~~python
+import math
+import numpy as np
+import cupy as cp
+from cuda.core import Device, LaunchConfig, Program, ProgramOptions, launch
+
+# size of the vectors
+size = 100_000
+
+# Python vector add
+def vector_add(A, B, C, size):
+    for item in range(0, size):
+        C[item] = A[item] + B[item]
+
+# initialize the GPU
+gpu = Device()
+gpu.set_current()
+stream = gpu.create_stream()
+program_options = ProgramOptions(std="c++17", arch=f"sm_{gpu.arch}")
+
+# allocate and populate the vectors on the GPU
+a_gpu = cp.random.rand(size, dtype=cp.float32)
+b_gpu = cp.random.rand(size, dtype=cp.float32)
+c_gpu = cp.zeros(size, dtype=cp.float32)
+
+# allocate the CPU arrays
+a_cpu = cp.asnumpy(a_gpu)
+b_cpu = cp.asnumpy(b_gpu)
+c_cpu = np.zeros(size, dtype=np.float32)
+
+# CUDA vector_add source code
 vector_add_cuda_code = r'''
 extern "C"
 __global__ void vector_add(const float * A, const float * B, float * C, const int size)
 {
-   int item = (blockIdx.x * blockDim.x) + threadIdx.x;
-   if ( item < size )
-   {
-      C[item] = A[item] + B[item];
-   }
+    int item = (blockIdx.x * blockDim.x) + threadIdx.x;
+    if (item < size) {
+        C[item] = A[item] + B[item];
+    }
 }
 '''
-vector_add_gpu = cupy.RawKernel(vector_add_cuda_code, "vector_add")
 
+# execute the CPU code
+vector_add(a_cpu, b_cpu, c_cpu, size)
+
+# compile the CUDA code
+prog = Program(vector_add_cuda_code, code_type="c++", options=program_options)
+mod = prog.compile("cubin", name_expressions=("vector_add",))
+vector_add_gpu = mod.get_kernel("vector_add")
+
+# execute the code on the GPU
 threads_per_block = 1024
 grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
+config = LaunchConfig(grid=grid_size, block=block_size)
+launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 
-vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))
-
+# test
 if np.allclose(c_cpu, c_gpu):
     print("Correct results!")
 else:
