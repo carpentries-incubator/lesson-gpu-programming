@@ -519,10 +519,16 @@ Correct results!
 Given the following Python code, similar to what we have seen in the previous episode about Numba, write the missing CUDA kernel that computes all the prime numbers up to a certain upper bound.
 
 ~~~python
-import numpy as np
-import cupy
 import math
-from cupyx.profiler import benchmark
+import numpy as np
+import cupy as cp
+from cuda.core import Device, LaunchConfig, Program, ProgramOptions, launch
+
+# Initialize the GPU
+gpu = Device()
+gpu.set_current()
+stream = gpu.create_stream()
+program_options = ProgramOptions(std="c++17", arch=f"sm_{gpu.arch}")
 
 # CPU version
 def all_primes_to(upper : int, prime_list : list):
@@ -554,25 +560,28 @@ __global__ void all_primes_to(int size, int * const all_prime_numbers)
                break;
            }
        }
->
        all_prime_numbers[number] = result;
    }
 }
 '''
+
 # Allocate memory
-all_primes_gpu = cupy.zeros(upper_bound, dtype=cupy.int32)
+all_primes_gpu = cp.zeros(upper_bound, dtype=cp.int32)
+
+# Compile the CUDA code
+prog = Program(check_prime_gpu_code, code_type="c++", options=program_options)
+mod = prog.compile("cubin", name_expressions=("all_primes_to",))
+all_primes_to_gpu = mod.get_kernel("all_primes_to")
 
 # Setup the grid
-all_primes_to_gpu = cupy.RawKernel(check_prime_gpu_code, "all_primes_to")
 grid_size = (int(math.ceil(upper_bound / 1024)), 1, 1)
 block_size = (1024, 1, 1)
+config = LaunchConfig(grid=grid_size, block=block_size)
 
 # Benchmark and test
 %timeit -n 1 -r 1 all_primes_to(upper_bound, all_primes_cpu)
-execution_gpu = benchmark(all_primes_to_gpu, (grid_size, block_size, (upper_bound, all_primes_gpu)), n_repeat=10)
-gpu_avg_time = np.average(execution_gpu.gpu_times)
-print(f"{gpu_avg_time:.6f} s")
->
+%timeit -n 10 -r 1 launch(stream, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr); stream.sync()
+
 if np.allclose(all_primes_cpu, all_primes_gpu):
     print("Correct results!")
 else:
