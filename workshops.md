@@ -7,3 +7,5 @@
 | 2023-03-09        | N8 computational intensive research | Newcastle, UK              | 2nd part of the workshop was online April 18th 2023 |
 | 2023-04-18        | Netherlands eScience Center         | Amsterdam, The Netherlands |                                                     |
 | 2023-11-06        | Netherlands eScience Center         | Amsterdam, The Netherlands |                                                     |
+| 2024-12-02        | Netherlands eScience Center         | Amsterdam, The Netherlands |                                                     |
+
