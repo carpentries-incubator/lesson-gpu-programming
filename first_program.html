@@ -968,26 +968,26 @@ working code and get the correct output.</p>
 <span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a><span class="im">import</span> cupy <span class="im">as</span> cp</span>
 <span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a><span class="im">from</span> cuda.core <span class="im">import</span> Device, LaunchConfig, Program, ProgramOptions, launch</span>
 <span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a></span>
-<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
-<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">100_000</span></span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a><span class="co"># Size of the vectors</span></span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">10_000_000</span></span>
 <span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a></span>
 <span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a><span class="co"># Python vector add</span></span>
 <span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a><span class="kw">def</span> vector_add(A, B, C, size):</span>
 <span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, size):</span>
 <span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a>        C[item] <span class="op">=</span> A[item] <span class="op">+</span> B[item]</span>
 <span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a></span>
-<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a><span class="co"># initialize the GPU</span></span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a><span class="co"># Initialize the GPU</span></span>
 <span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a>gpu <span class="op">=</span> Device()</span>
 <span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a>gpu.set_current()</span>
 <span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a>stream <span class="op">=</span> gpu.create_stream()</span>
 <span id="cb25-18"><a href="#cb25-18" tabindex="-1"></a>program_options <span class="op">=</span> ProgramOptions(std<span class="op">=</span><span class="st">"c++17"</span>, arch<span class="op">=</span><span class="ss">f"sm_</span><span class="sc">{</span>gpu<span class="sc">.</span>arch<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb25-19"><a href="#cb25-19" tabindex="-1"></a></span>
-<span id="cb25-20"><a href="#cb25-20" tabindex="-1"></a><span class="co"># allocate and populate the vectors on the GPU</span></span>
+<span id="cb25-20"><a href="#cb25-20" tabindex="-1"></a><span class="co"># Allocate and populate the vectors on the GPU</span></span>
 <span id="cb25-21"><a href="#cb25-21" tabindex="-1"></a>a_gpu <span class="op">=</span> cp.random.rand(size, dtype<span class="op">=</span>cp.float32)</span>
 <span id="cb25-22"><a href="#cb25-22" tabindex="-1"></a>b_gpu <span class="op">=</span> cp.random.rand(size, dtype<span class="op">=</span>cp.float32)</span>
 <span id="cb25-23"><a href="#cb25-23" tabindex="-1"></a>c_gpu <span class="op">=</span> cp.zeros(size, dtype<span class="op">=</span>cp.float32)</span>
 <span id="cb25-24"><a href="#cb25-24" tabindex="-1"></a></span>
-<span id="cb25-25"><a href="#cb25-25" tabindex="-1"></a><span class="co"># allocate the CPU arrays</span></span>
+<span id="cb25-25"><a href="#cb25-25" tabindex="-1"></a><span class="co"># Allocate the CPU arrays</span></span>
 <span id="cb25-26"><a href="#cb25-26" tabindex="-1"></a>a_cpu <span class="op">=</span> cp.asnumpy(a_gpu)</span>
 <span id="cb25-27"><a href="#cb25-27" tabindex="-1"></a>b_cpu <span class="op">=</span> cp.asnumpy(b_gpu)</span>
 <span id="cb25-28"><a href="#cb25-28" tabindex="-1"></a>c_cpu <span class="op">=</span> np.zeros(size, dtype<span class="op">=</span>np.float32)</span>
@@ -1004,22 +1004,22 @@ working code and get the correct output.</p>
 <span id="cb25-39"><a href="#cb25-39" tabindex="-1"></a><span class="vs">}</span></span>
 <span id="cb25-40"><a href="#cb25-40" tabindex="-1"></a><span class="vs">'''</span></span>
 <span id="cb25-41"><a href="#cb25-41" tabindex="-1"></a></span>
-<span id="cb25-42"><a href="#cb25-42" tabindex="-1"></a><span class="co"># execute the CPU code</span></span>
-<span id="cb25-43"><a href="#cb25-43" tabindex="-1"></a>vector_add(a_cpu, b_cpu, c_cpu, size)</span>
+<span id="cb25-42"><a href="#cb25-42" tabindex="-1"></a><span class="co"># Execute the CPU code</span></span>
+<span id="cb25-43"><a href="#cb25-43" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> vector_add(a_cpu, b_cpu, c_cpu, size)</span>
 <span id="cb25-44"><a href="#cb25-44" tabindex="-1"></a></span>
-<span id="cb25-45"><a href="#cb25-45" tabindex="-1"></a><span class="co"># compile the CUDA code</span></span>
+<span id="cb25-45"><a href="#cb25-45" tabindex="-1"></a><span class="co"># Compile the CUDA code</span></span>
 <span id="cb25-46"><a href="#cb25-46" tabindex="-1"></a>prog <span class="op">=</span> Program(vector_add_cuda_code, code_type<span class="op">=</span><span class="st">"c++"</span>, options<span class="op">=</span>program_options)</span>
 <span id="cb25-47"><a href="#cb25-47" tabindex="-1"></a>mod <span class="op">=</span> prog.<span class="bu">compile</span>(<span class="st">"cubin"</span>, name_expressions<span class="op">=</span>(<span class="st">"vector_add"</span>,))</span>
 <span id="cb25-48"><a href="#cb25-48" tabindex="-1"></a>vector_add_gpu <span class="op">=</span> mod.get_kernel(<span class="st">"vector_add"</span>)</span>
 <span id="cb25-49"><a href="#cb25-49" tabindex="-1"></a></span>
-<span id="cb25-50"><a href="#cb25-50" tabindex="-1"></a><span class="co"># execute the code on the GPU</span></span>
+<span id="cb25-50"><a href="#cb25-50" tabindex="-1"></a><span class="co"># Execute the code on the GPU</span></span>
 <span id="cb25-51"><a href="#cb25-51" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
 <span id="cb25-52"><a href="#cb25-52" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb25-53"><a href="#cb25-53" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb25-54"><a href="#cb25-54" tabindex="-1"></a>config <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>grid_size, block<span class="op">=</span>block_size)</span>
-<span id="cb25-55"><a href="#cb25-55" tabindex="-1"></a>launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)</span>
+<span id="cb25-55"><a href="#cb25-55" tabindex="-1"></a><span class="op">%</span>timeit launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)<span class="op">;</span> stream.sync()</span>
 <span id="cb25-56"><a href="#cb25-56" tabindex="-1"></a></span>
-<span id="cb25-57"><a href="#cb25-57" tabindex="-1"></a><span class="co"># test</span></span>
+<span id="cb25-57"><a href="#cb25-57" tabindex="-1"></a><span class="co"># Test</span></span>
 <span id="cb25-58"><a href="#cb25-58" tabindex="-1"></a><span class="cf">if</span> np.allclose(c_cpu, c_gpu):</span>
 <span id="cb25-59"><a href="#cb25-59" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
 <span id="cb25-60"><a href="#cb25-60" tabindex="-1"></a><span class="cf">else</span>:</span>
@@ -1106,7 +1106,7 @@ computes all the prime numbers up to a certain upper bound.</p>
 <span id="cb27-59"><a href="#cb27-59" tabindex="-1"></a></span>
 <span id="cb27-60"><a href="#cb27-60" tabindex="-1"></a><span class="co"># Benchmark and test</span></span>
 <span id="cb27-61"><a href="#cb27-61" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> all_primes_to(upper_bound, all_primes_cpu)</span>
-<span id="cb27-62"><a href="#cb27-62" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">10</span> <span class="op">-</span>r <span class="dv">1</span> launch(stream, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)<span class="op">;</span> stream.sync()</span>
+<span id="cb27-62"><a href="#cb27-62" tabindex="-1"></a><span class="op">%</span>timeit launch(stream, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)<span class="op">;</span> stream.sync()</span>
 <span id="cb27-63"><a href="#cb27-63" tabindex="-1"></a></span>
 <span id="cb27-64"><a href="#cb27-64" tabindex="-1"></a><span class="cf">if</span> np.allclose(all_primes_cpu, all_primes_gpu):</span>
 <span id="cb27-65"><a href="#cb27-65" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Correct results!"</span>)</span>
