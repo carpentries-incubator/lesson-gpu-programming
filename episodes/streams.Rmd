@@ -22,12 +22,18 @@ We could write both kernels in CUDA, and then execute them on the GPU, as shown 
 
 ~~~python
 import numpy as np
-import cupy
+import cupy as cp
 import math
-from cupyx.profiler import benchmark
+from cuda.core import Device, LaunchConfig, Program, ProgramOptions, launch
 
 upper_bound = 100_000
 histogram_size = 2**25
+
+# Initialize the GPU
+gpu = Device()
+gpu.set_current()
+stream = gpu.create_stream()
+program_options = ProgramOptions(std="c++17", arch=f"sm_{gpu.arch}")
 
 # GPU code
 check_prime_gpu_code = r'''
@@ -73,24 +79,32 @@ __global__ void histogram(const int * input, int * output)
 '''
 
 # Allocate memory
-all_primes_gpu = cupy.zeros(upper_bound, dtype=cupy.int32)
-input_gpu = cupy.random.randint(256, size=histogram_size, dtype=cupy.int32)
-output_gpu = cupy.zeros(256, dtype=cupy.int32)
+all_primes_gpu = cp.zeros(upper_bound, dtype=cp.int32)
+input_gpu = cp.random.randint(256, size=histogram_size, dtype=cp.int32)
+output_gpu = cp.zeros(256, dtype=cp.int32)
 
-# Compile and setup the grid
-all_primes_to_gpu = cupy.RawKernel(check_prime_gpu_code, "all_primes_to")
-grid_size_primes = (int(math.ceil(upper_bound / 1024)), 1, 1)
-block_size_primes = (1024, 1, 1)
-histogram_gpu = cupy.RawKernel(histogram_cuda_code, "histogram")
-threads_per_block_hist = 256
-grid_size_hist = (int(math.ceil(histogram_size / threads_per_block_hist)), 1, 1)
-block_size_hist = (threads_per_block_hist, 1, 1)
+# Compile and setup the grid for all_primes_to
+prog = Program(check_prime_gpu_code, code_type="c++", options=program_options)
+mod = prog.compile("cubin", name_expressions=("all_primes_to",))
+all_primes_to_gpu = mod.get_kernel("all_primes_to")
+grid_size = (int(math.ceil(upper_bound / 1024)), 1, 1)
+block_size = (1024, 1, 1)
+config = LaunchConfig(grid=grid_size, block=block_size)
+
+# Compile and setup the grid for histogram
+prog = Program(histogram_cuda_code, code_type="c++", options=program_options)
+mod = prog.compile("cubin", name_expressions=("histogram",))
+histogram_gpu = mod.get_kernel("histogram")
+grid_size = (int(math.ceil(histogram_size / 256)), 1, 1)
+block_size = (256, 1, 1)
+config = LaunchConfig(grid=grid_size, block=block_size)
 
 # Execute the kernels
-all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))
-histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))
+launch(stream, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
+launch(stream, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)
+stream.sync()
 
-# Save results
+# Save results to do something else later
 output_one = all_primes_gpu
 output_two = output_gpu
 ~~~
@@ -108,84 +122,85 @@ This is the reason why all the operations we issued, such as data transfers and 
 Have you wondered why after requesting data transfers to and from the GPU, we do not stop to check if they are complete before performing operations on such data?
 The reason is that within a stream all operations are carried out in order, so the kernel calls in our code are always performed after the data transfer from host to device is complete, and so on.
 
-If we want to create new CUDA streams, we can do it this way using CuPy.
+If we want to create new CUDA streams, we can do it in the following way.
 
 ~~~python
-stream_one = cupy.cuda.Stream()
-stream_two = cupy.cuda.Stream()
+stream_one = gpu.create_stream()
+stream_two = gpu.create_stream()
 ~~~
 
-We can then execute the kernels in different streams by using the Python `with` statement.
+We can then execute the kernels in different streams by passing the stream object to the `launch` function.
 
 ~~~python
-with stream_one:
-    all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))
-with stream_two:
-    histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))
+launch(stream_one, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
+launch(stream_two, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)
 ~~~
 
-Using the `with` statement we implicitly execute the CUDA operations in the code block using that stream.
 The result of doing this is that the second kernel, i.e. `histogram_gpu`, does not need to wait for `all_primes_to_gpu` to finish before being executed.
 
 # Stream synchronization
 
-If we need to wait for all operations on a certain stream to finish, we can call the `synchronize` method.
+If we need to wait for all operations on a certain stream to finish, we can call the `sync` method.
 Continuing with the previous example, in the following Python snippet we wait for the execution of `all_primes_to_gpu` on `stream_one` to finish.
 
 ~~~python
-stream_one.synchronize()
+stream_one.sync()
 ~~~
 
 This synchronization primitive is useful when we need to be sure that all operations on a stream are finished, before continuing.
 It is, however, a bit coarse grained.
 Imagine to have a stream with a whole sequence of operations enqueued, and another stream with one data dependency on one of these operations.
-If we use `synchronize`, we wait until all operations of said stream are completed before executing the other stream, thus negating the whole reason of using streams in the first place.
+If we use `sync`, we wait until all operations of said stream are completed before executing the other stream, thus negating the whole reason of using streams in the first place.
 
 A possible solution is to insert a CUDA *event* at a certain position in the stream, and then wait specifically for that event.
 Events are created in Python in the following way.
 
 ~~~python
-interesting_event = cupy.cuda.Event()
+interesting_event = gpu.create_event()
 ~~~
 
 And can then be added to a stream by using the `record` method.
 In the following example we will create two streams: in the first we will execute `histogram_gpu` twice, while in the second one we will execute `all_primes_to_gpu` with the condition that the kernel in the second stream is executed only after the first histogram is computed.
 
 ~~~python
-stream_one = cupy.cuda.Stream()
-stream_two = cupy.cuda.Stream()
-sync_point = cupy.cuda.Event()
+stream_one = gpu.create_stream()
+stream_two = gpu.create_stream()
+sync_point = gpu.create_event()
 
-with stream_one:
-    all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))
-    sync_point.record(stream=stream_one)
-    all_primes_to_gpu(grid_size_primes, block_size_primes, (upper_bound, all_primes_gpu))
-with stream_two:
-    stream_two.wait_event(sync_point)
-    histogram_gpu(grid_size_hist, block_size_hist, (input_gpu, output_gpu))
+launch(stream_one, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
+stream_one.record(sync_point)
+launch(stream_one, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
+stream_two.wait(sync_point)
+launch(stream_two, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)
 ~~~
 
 With streams and events, it is possible to build up arbitrary execution graphs for complex operations on the GPU.
 
 # Measure execution time using streams and events
 
-We can also use streams and events to measure the execution time of kernels, without having to use the CuPy `benchmark` function.
 In the following example, we go back to the `vector_add` code and add code that uses events on the default stream to measure the execution time.
 
 ~~~python
-import math
-import cupy
 import numpy as np
+import cupy as cp
+import math
+from cuda.core import Device, LaunchConfig, Program, ProgramOptions, launch
 
-# size of the vectors
+# Size of the vectors
 size = 100_000_000
 
+# Initialize the GPU
+gpu = Device()
+gpu.set_current()
+stream = gpu.create_stream()
+program_options = ProgramOptions(std="c++17", arch=f"sm_{gpu.arch}")
+
 # allocating and populating the vectors
-a_gpu = cupy.random.rand(size, dtype=cupy.float32)
-b_gpu = cupy.random.rand(size, dtype=cupy.float32)
-c_gpu = cupy.zeros(size, dtype=cupy.float32)
-a_cpu = cupy.asnumpy(a_gpu)
-b_cpu = cupy.asnumpy(b_gpu)
+a_gpu = cp.random.rand(size, dtype=cp.float32)
+b_gpu = cp.random.rand(size, dtype=cp.float32)
+c_gpu = cp.zeros(size, dtype=cp.float32)
+a_cpu = cp.asnumpy(a_gpu)
+b_cpu = cp.asnumpy(b_gpu)
 c_cpu = np.zeros(size, dtype=np.float32)
 
 # CPU code
@@ -193,8 +208,8 @@ def vector_add(A, B, C, size):
     for item in range(0, size):
         C[item] = A[item] + B[item]
 
-# CUDA vector_add
-vector_add_gpu = cupy.RawKernel(r'''
+# CUDA code
+vector_add_cuda_code = r'''
 extern "C"
 __global__ void vector_add(const float * A, const float * B, float * C, const int size)
 {
@@ -204,26 +219,32 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
       C[item] = A[item] + B[item];
    }
 }
-''', "vector_add")
+'''
 
-# execute the code and measure time
+# Execute the code and measure time
+prog = Program(vector_add_cuda_code, code_type="c++", options=program_options)
+mod = prog.compile("cubin", name_expressions=("vector_add",))
+vector_add_gpu = mod.get_kernel("vector_add")
 threads_per_block = 1024
 grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
-%timeit -n 1 -r 1 vector_add(a_cpu, b_cpu, c_cpu, size)
+config = LaunchConfig(grid=grid_size, block=block_size)
 gpu_times = []
 for _ in range(0, 10):
-    start_gpu = cupy.cuda.Event()
-    end_gpu = cupy.cuda.Event()
-    start_gpu.record()
-    vector_add_gpu(grid_size, block_size, (a_gpu, b_gpu, c_gpu, size))
-    end_gpu.record()
-    end_gpu.synchronize()
-    gpu_times.append(cupy.cuda.get_elapsed_time(start_gpu, end_gpu))
+    start_gpu = gpu.create_event({"enable_timing": True})
+    end_gpu = gpu.create_event({"enable_timing": True})
+    stream.record(start_gpu)
+    launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
+    stream.record(end_gpu)
+    end_gpu.sync()
+    gpu_times.append(end_gpu - start_gpu)
 gpu_avg_time = np.average(gpu_times)
-print(f"{gpu_avg_time:.6f} s")
+print(f"GPU average time: {gpu_avg_time:.3f} ms")
 
-# test
+# Execute CPU code
+%timeit -n 1 -r 1 vector_add(a_cpu, b_cpu, c_cpu, size)
+
+# Test
 if np.allclose(c_cpu, c_gpu):
     print("Correct results!")
 else:
