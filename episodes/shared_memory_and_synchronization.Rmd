@@ -104,14 +104,14 @@ A solution to this problem is to not specify the size of the array, and allocate
 extern __shared__ float temp[];
 ~~~
 
-And then use CuPy to instruct CUDA about how much shared memory, in bytes, each thread block needs.
-This can be done by adding the named parameter `shared_mem` to the kernel call.
+And then instruct CUDA about how much shared memory, in bytes, each thread block needs.
+This can be done by setting a value for the parameter `shmem_size` to the kernel configuration.
 
 ~~~python
-vector_add_gpu((2, 1, 1), (size // 2, 1, 1), (a_gpu, b_gpu, c_gpu, size), shared_mem=((size // 2) * 3 * cupy.dtype(cupy.float32).itemsize))
+config = LaunchConfig(grid=grid_size, block=block_size, shmem_size=((size // 2) * 3 * cp.dtype(cp.float32).itemsize))
 ~~~
 
-As you may have noticed, we had to retrieve the size in bytes of the data type `cupy.float32`, and this is done with `cupy.dtype(cupy.float32).itemsize`.
+As you may have noticed, we had to retrieve the size in bytes of the data type `cp.float32`, and this is done with `cp.dtype(cp.float32).itemsize`.
 
 After these changes, the body of the kernel needs to be modified to use the right indices:
 
@@ -138,20 +138,31 @@ And for completeness, we present the full Python code.
 ~~~python
 import math
 import numpy as np
-import cupy
+import cupy as cp
+from cuda.core import Device, LaunchConfig, Program, ProgramOptions, launch
 
-# vector size
+def vector_add(A, B, C, size):
+    for item in range(0, size):
+        C[item] = A[item] + B[item]
+
+# Vector size
 size = 2048
 
+# Initialize the GPU
+gpu = Device()
+gpu.set_current()
+stream = gpu.create_stream()
+program_options = ProgramOptions(std="c++17", arch=f"sm_{gpu.arch}")
+
 # GPU memory allocation
-a_gpu = cupy.random.rand(size, dtype=cupy.float32)
-b_gpu = cupy.random.rand(size, dtype=cupy.float32)
-c_gpu = cupy.zeros(size, dtype=cupy.float32)
+a_gpu = cp.random.rand(size, dtype=cp.float32)
+b_gpu = cp.random.rand(size, dtype=cp.float32)
+c_gpu = cp.zeros(size, dtype=cp.float32)
 gpu_args = (a_gpu, b_gpu, c_gpu, size)
 
 # CPU memory allocation
-a_cpu = cupy.asnumpy(a_gpu)
-b_cpu = cupy.asnumpy(b_gpu)
+a_cpu = cp.asnumpy(a_gpu)
+b_cpu = cp.asnumpy(b_gpu)
 c_cpu = np.zeros(size, dtype=np.float32)
 
 # CUDA code
@@ -173,14 +184,17 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 }
 '''
 
-# compile and execute code
-vector_add_gpu = cupy.RawKernel(vector_add_cuda_code, "vector_add")
-threads_per_block = 32
+# Compile and execute GPU code
+prog = Program(vector_add_cuda_code, code_type="c++", options=program_options)
+mod = prog.compile("cubin", name_expressions=("vector_add",))
+vector_add_gpu = mod.get_kernel("vector_add")
+threads_per_block = 1024
 grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
-vector_add_gpu(grid_size, block_size, gpu_args, shared_mem=(threads_per_block * 3 * cupy.dtype(cupy.float32).itemsize))
+config = LaunchConfig(grid=grid_size, block=block_size, shmem_size=((size // 2) * 3 * cp.dtype(cp.float32).itemsize))
+launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 
-# execute Python code and compare results
+# Execute Python code and compare results
 vector_add(a_cpu, b_cpu, c_cpu, size)
 np.allclose(c_cpu, c_gpu)
 ~~~
@@ -261,21 +275,27 @@ And the full Python code snippet.
 ~~~python
 import math
 import numpy as np
-import cupy
-from cupyx.profiler import benchmark
+import cupy as cp
+from cuda.core import Device, LaunchConfig, Program, ProgramOptions, launch
 
 def histogram(input_array, output_array):
     for item in input_array:
         output_array[item] = output_array[item] + 1
 
-# input size
+# Input size
 size = 2**25
 
-# allocate memory on CPU and GPU
-input_gpu = cupy.random.randint(256, size=size, dtype=cupy.int32)
-input_cpu = cupy.asnumpy(input_gpu)
-output_gpu = cupy.zeros(256, dtype=cupy.int32)
-output_cpu = cupy.asnumpy(output_gpu)
+# Initialize the GPU
+gpu = Device()
+gpu.set_current()
+stream = gpu.create_stream()
+program_options = ProgramOptions(std="c++17", arch=f"sm_{gpu.arch}")
+
+# Allocate memory on CPU and GPU
+input_gpu = cp.random.randint(256, size=size, dtype=cp.int32)
+input_cpu = cp.asnumpy(input_gpu)
+output_gpu = cp.zeros(256, dtype=cp.int32)
+output_cpu = cp.asnumpy(output_gpu)
 
 # CUDA code
 histogram_cuda_code = r'''
@@ -288,25 +308,26 @@ __global__ void histogram(const int * input, int * output)
 }
 '''
 
-# compile and setup CUDA code
-histogram_gpu = cupy.RawKernel(histogram_cuda_code, "histogram")
+# Compile and setup CUDA code
+prog = Program(histogram_cuda_code, code_type="c++", options=program_options)
+mod = prog.compile("cubin", name_expressions=("histogram",))
+histogram_gpu = mod.get_kernel("histogram")
 threads_per_block = 256
 grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
+config = LaunchConfig(grid=grid_size, block=block_size)
 
-# check correctness
+# Check correctness
 histogram(input_cpu, output_cpu)
-histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
+launch(stream, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)
 if np.allclose(output_cpu, output_gpu):
     print("Correct results!")
 else:
     print("Wrong results!")
 
-# measure performance
+# Measure performance
 %timeit -n 1 -r 1 histogram(input_cpu, output_cpu)
-execution_gpu = benchmark(histogram_gpu, (grid_size, block_size, (input_gpu, output_gpu)), n_repeat=10)
-gpu_avg_time = np.average(execution_gpu.gpu_times)
-print(f"{gpu_avg_time:.6f} s")
+%timeit launch(stream, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr); stream.sync()
 ~~~
 
 The CUDA code is now correct, and computes the same result as the Python code; it is also faster than the Python code, as you can see from measuring the execution time.
@@ -406,21 +427,27 @@ And the full Python code snippet.
 ~~~python
 import math
 import numpy as np
-import cupy
-from cupyx.profiler import benchmark
+import cupy as cp
+from cuda.core import Device, LaunchConfig, Program, ProgramOptions, launch
 
 def histogram(input_array, output_array):
     for item in input_array:
         output_array[item] = output_array[item] + 1
 
-# input size
+# Input size
 size = 2**25
 
-# allocate memory on CPU and GPU
-input_gpu = cupy.random.randint(256, size=size, dtype=cupy.int32)
-input_cpu = cupy.asnumpy(input_gpu)
-output_gpu = cupy.zeros(256, dtype=cupy.int32)
-output_cpu = cupy.asnumpy(output_gpu)
+# Initialize the GPU
+gpu = Device()
+gpu.set_current()
+stream = gpu.create_stream()
+program_options = ProgramOptions(std="c++17", arch=f"sm_{gpu.arch}")
+
+# Allocate memory on CPU and GPU
+input_gpu = cp.random.randint(256, size=size, dtype=cp.int32)
+input_cpu = cp.asnumpy(input_gpu)
+output_gpu = cp.zeros(256, dtype=cp.int32)
+output_cpu = cp.asnumpy(output_gpu)
 
 # CUDA code
 histogram_cuda_code = r'''
@@ -443,25 +470,26 @@ __global__ void histogram(const int * input, int * output)
 }
 '''
 
-# compile and setup CUDA code
-histogram_gpu = cupy.RawKernel(histogram_cuda_code, "histogram")
+# Compile and setup CUDA code
+prog = Program(histogram_cuda_code, code_type="c++", options=program_options)
+mod = prog.compile("cubin", name_expressions=("histogram",))
+histogram_gpu = mod.get_kernel("histogram")
 threads_per_block = 256
 grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
+config = LaunchConfig(grid=grid_size, block=block_size)
 
-# check correctness
+# Check correctness
 histogram(input_cpu, output_cpu)
-histogram_gpu(grid_size, block_size, (input_gpu, output_gpu))
+launch(stream, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)
 if np.allclose(output_cpu, output_gpu):
     print("Correct results!")
 else:
     print("Wrong results!")
 
-# measure performance
+# Measure performance
 %timeit -n 1 -r 1 histogram(input_cpu, output_cpu)
-execution_gpu = benchmark(histogram_gpu, (grid_size, block_size, (input_gpu, output_gpu)), n_repeat=10)
-gpu_avg_time = np.average(execution_gpu.gpu_times)
-print(f"{gpu_avg_time:.6f} s")
+%timeit launch(stream, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr); stream.sync()
 ~~~
 
 While both versions of the GPU histogram are correct, the one using shared memory is faster; but how fast?
