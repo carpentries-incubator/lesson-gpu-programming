@@ -41,12 +41,14 @@ On the kernel side there is no need to do more, the `factors` vector can be norm
 The initialization of constant memory happens on the host side, and we show how this is done in the next code snippet.
 
 ~~~python
-# compile the code
-module = cupy.RawModule(code=cuda_code)
-# allocate and copy constant memory
-factors_ptr = module.get_global("factors")
-factors_gpu = cupy.ndarray(2, cupy.float32, factors_ptr)
-factors_gpu[...] = cupy.random.random(2, dtype=cupy.float32)
+# TODO: the code does not work with cuda.core
+# Compile the code
+mod = prog.compile("cubin", name_expressions=("sum_and_multiply",))
+
+# Allocate and copy constant memory
+factors_ptr = mod.get_global("factors")
+factors_gpu = cp.ndarray(2, cp.float32, factors_ptr)
+factors_gpu[...] = cp.random.random(2, dtype=cp.float32)
 ~~~
 
 From the previous code it is clear that dealing with constant memory is a slightly more verbose affair than usual.
@@ -76,15 +78,24 @@ However, we are not really accessing the content of the GPU's constant memory fr
 We can now combine all the code together and execute it.
 
 ~~~python
-# size of the vectors
+import math
+import numpy as np
+import cupy as cp
+from cuda.core import Device, LaunchConfig, Program, ProgramOptions, launch
+
+# Initialize the GPU
+gpu = Device()
+gpu.set_current()
+stream = gpu.create_stream()
+program_options = ProgramOptions(std="c++17", arch=f"sm_{gpu.arch}")
+
+# Size of the vectors
 size = 2048
 
-# allocating and populating the vectors
-a_gpu = cupy.random.rand(size, dtype=cupy.float32)
-b_gpu = cupy.random.rand(size, dtype=cupy.float32)
-c_gpu = cupy.zeros(size, dtype=cupy.float32)
-# prepare arguments
-args = (a_gpu, b_gpu, c_gpu, size)
+# Allocating and populating the vectors
+a_gpu = cp.random.rand(size, dtype=cp.float32)
+b_gpu = cp.random.rand(size, dtype=cp.float32)
+c_gpu = cp.zeros(size, dtype=cp.float32)
 
 # CUDA code
 cuda_code = r'''
@@ -101,15 +112,23 @@ __global__ void sum_and_multiply(const float * A, const float * B, float * C, co
 }
 '''
 
-# compile and access the code
-module = cupy.RawModule(code=cuda_code)
-sum_and_multiply = module.get_function("sum_and_multiply")
-# allocate and copy constant memory
-factors_ptr = module.get_global("factors")
-factors_gpu = cupy.ndarray(2, cupy.float32, factors_ptr)
-factors_gpu[...] = cupy.random.random(2, dtype=cupy.float32)
+# Compile and access the code
+prog = Program(cuda_code, code_type="c++", options=program_options)
+mod = prog.compile("cubin", name_expressions=("sum_and_multiply",))
+sum_and_multiply = mod.get_kernel("sum_and_multiply")
+threads_per_block = 1024
+grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
+block_size = (threads_per_block, 1, 1)
+config = LaunchConfig(grid=grid_size, block=block_size)
 
-sum_and_multiply((2, 1, 1), (size // 2, 1, 1), args)
+# Allocate and copy constant memory
+# TODO: cuda.code does not expose constant memory, cuda.bindings should be used instead
+# The episode will be updated in the future
+factors_ptr = mod.get_global("factors")
+factors_gpu = cp.ndarray(2, cp.float32, factors_ptr)
+factors_gpu[...] = cp.random.random(2, dtype=cp.float32)
+
+launch(stream, config, sum_and_multiply, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 ~~~
 
 As you can see the code is not very general, it uses constants and works only with two blocks, but it is a working example of how to use constant memory.
