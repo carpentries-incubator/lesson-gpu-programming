@@ -451,26 +451,26 @@ import numpy as np
 import cupy as cp
 from cuda.core import Device, LaunchConfig, Program, ProgramOptions, launch
 
-# size of the vectors
-size = 100_000
+# Size of the vectors
+size = 10_000_000
 
 # Python vector add
 def vector_add(A, B, C, size):
     for item in range(0, size):
         C[item] = A[item] + B[item]
 
-# initialize the GPU
+# Initialize the GPU
 gpu = Device()
 gpu.set_current()
 stream = gpu.create_stream()
 program_options = ProgramOptions(std="c++17", arch=f"sm_{gpu.arch}")
 
-# allocate and populate the vectors on the GPU
+# Allocate and populate the vectors on the GPU
 a_gpu = cp.random.rand(size, dtype=cp.float32)
 b_gpu = cp.random.rand(size, dtype=cp.float32)
 c_gpu = cp.zeros(size, dtype=cp.float32)
 
-# allocate the CPU arrays
+# Allocate the CPU arrays
 a_cpu = cp.asnumpy(a_gpu)
 b_cpu = cp.asnumpy(b_gpu)
 c_cpu = np.zeros(size, dtype=np.float32)
@@ -487,22 +487,22 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 }
 '''
 
-# execute the CPU code
-vector_add(a_cpu, b_cpu, c_cpu, size)
+# Execute the CPU code
+%timeit -n 1 -r 1 vector_add(a_cpu, b_cpu, c_cpu, size)
 
-# compile the CUDA code
+# Compile the CUDA code
 prog = Program(vector_add_cuda_code, code_type="c++", options=program_options)
 mod = prog.compile("cubin", name_expressions=("vector_add",))
 vector_add_gpu = mod.get_kernel("vector_add")
 
-# execute the code on the GPU
+# Execute the code on the GPU
 threads_per_block = 1024
 grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
 config = LaunchConfig(grid=grid_size, block=block_size)
-launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
+%timeit launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size); stream.sync()
 
-# test
+# Test
 if np.allclose(c_cpu, c_gpu):
     print("Correct results!")
 else:
@@ -580,7 +580,7 @@ config = LaunchConfig(grid=grid_size, block=block_size)
 
 # Benchmark and test
 %timeit -n 1 -r 1 all_primes_to(upper_bound, all_primes_cpu)
-%timeit -n 10 -r 1 launch(stream, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr); stream.sync()
+%timeit launch(stream, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr); stream.sync()
 
 if np.allclose(all_primes_cpu, all_primes_gpu):
     print("Correct results!")
