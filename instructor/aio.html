@@ -927,7 +927,7 @@ the GPU.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>We can call the GPU convolution function
 <code>convolve2d_gpu()</code> directly with <code>diracs</code> and
@@ -991,7 +991,7 @@ back to the host.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>An effective strategy is to time the execution of a single Python
 function that groups the transfers to and from the GPU and the
@@ -1280,7 +1280,7 @@ transfer to and from the GPU.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb32">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1505,7 +1505,7 @@ CPU.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb50">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1808,7 +1808,7 @@ to find all primes up to 10000?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>One possible implementation of this function is the following
 one.</p>
@@ -2328,7 +2328,7 @@ following line:</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>The correct answer is number 3, only the element <code>C[1]</code> is
 written, and we do not even know by which thread!</p>
@@ -2486,7 +2486,7 @@ kernel?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>The content of <code>blockDim</code> is <code>(512, 1, 1)</code> and
 the content of <code>gridDim</code> is <code>(4, 1, 1)</code>, for all
@@ -2554,7 +2554,7 @@ are larger than the largest CUDA block (i.e. 1024).</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>The correct answer is
 <code>(blockIdx.x * blockDim.x) + threadIdx.x</code>. The following code
@@ -2615,7 +2615,7 @@ now. Can you rewrite the code to make it work?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
 <div class="accordion-body">
 <p>The correct way to modify the <code>vector_add</code> to work on
 vectors of arbitrary size is to first compute the coordinates of each
@@ -2878,7 +2878,7 @@ value for <code>upper_bound</code>.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution5" aria-expanded="false" aria-controls="collapseSolution5">
   <h4 class="accordion-header" id="headingSolution5"> Show me the solution </h4>
 </button>
-<div id="collapseSolution5" class="accordion-collapse collapse" aria-labelledby="headingSolution5" data-bs-parent="#accordionSolution5">
+<div id="collapseSolution5" class="accordion-collapse collapse" data-bs-parent="#accordionSolution5" aria-labelledby="headingSolution5">
 <div class="accordion-body">
 <p>One possible solution for the CUDA kernel is provided in the
 following code.</p>
@@ -3026,7 +3026,7 @@ using?</h3>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>In general, it is not possible to exactly know how many registers the
 compiler will use without examining the output generated by the compiler
@@ -3154,7 +3154,7 @@ identify where global memory is used.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>The vectors <code>A</code>, <code>B</code>, and <code>C</code> are
 stored in global memory.</p>
@@ -3225,7 +3225,7 @@ find a way to use a variable and not a constant for the size.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>We need to pass the size of the local array as a new parameter to the
 kernel, because if we just specified <code>3</code> in the code, the
@@ -3380,7 +3380,7 @@ shared memory.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>To use shared memory for the <code>temp</code> array add the
 identifier <code>__shared__</code> to its definition, like in the
@@ -3430,7 +3430,7 @@ the result of its execution will be?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>The result is non deterministic, and definitely not the same as the
 previous versions of <code>vector_add</code>. Threads will overwrite
@@ -3630,7 +3630,7 @@ find it?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>The GPU is a highly parallel device, executing multiple threads at
 the same time. In the previous code different threads could be updating
@@ -3766,7 +3766,7 @@ memory.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
 <div class="accordion-body">
 <p>The following code shows one of the possible solutions.</p>
 <div class="codewrapper sourceCode" id="cb15">
@@ -4026,12 +4026,14 @@ we show how this is done in the next code snippet.</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># compile the code</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>module <span class="op">=</span> cupy.RawModule(code<span class="op">=</span>cuda_code)</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># allocate and copy constant memory</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>factors_ptr <span class="op">=</span> module.get_global(<span class="st">"factors"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>factors_gpu <span class="op">=</span> cupy.ndarray(<span class="dv">2</span>, cupy.float32, factors_ptr)</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>factors_gpu[...] <span class="op">=</span> cupy.random.random(<span class="dv">2</span>, dtype<span class="op">=</span>cupy.float32)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: the code does not work with cuda.core</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># Compile the code</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>mod <span class="op">=</span> prog.<span class="bu">compile</span>(<span class="st">"cubin"</span>, name_expressions<span class="op">=</span>(<span class="st">"sum_and_multiply"</span>,))</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># Allocate and copy constant memory</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>factors_ptr <span class="op">=</span> mod.get_global(<span class="st">"factors"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>factors_gpu <span class="op">=</span> cp.ndarray(<span class="dv">2</span>, cp.float32, factors_ptr)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>factors_gpu[...] <span class="op">=</span> cp.random.random(<span class="dv">2</span>, dtype<span class="op">=</span>cp.float32)</span></code></pre>
 </div>
 <p>From the previous code it is clear that dealing with constant memory
 is a slightly more verbose affair than usual. First, we need to compile
@@ -4086,40 +4088,57 @@ CuPy.</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># size of the vectors</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2048</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># allocating and populating the vectors</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co"># prepare arguments</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>args <span class="op">=</span> (a_gpu, b_gpu, c_gpu, size)</span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co"># CUDA code</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="vs">extern "C" {</span></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#define BLOCKS 2</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="vs">__constant__ float factors</span><span class="pp">[BLOCKS]</span><span class="vs">;</span></span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a></span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="vs">__global__ void sum_and_multiply</span><span class="kw">(</span><span class="vs">const float </span><span class="op">*</span><span class="vs"> A, const float </span><span class="op">*</span><span class="vs"> B, float </span><span class="op">*</span><span class="vs"> C, const int size</span><span class="kw">)</span></span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="vs">{</span></span>
-<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="vs">    int item = </span><span class="kw">(</span><span class="vs">blockIdx</span><span class="dv">.</span><span class="vs">x </span><span class="op">*</span><span class="vs"> blockDim</span><span class="dv">.</span><span class="vs">x</span><span class="kw">)</span><span class="vs"> </span><span class="op">+</span><span class="vs"> threadIdx</span><span class="dv">.</span><span class="vs">x;</span></span>
-<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="vs">    C</span><span class="pp">[item]</span><span class="vs"> = </span><span class="kw">(</span><span class="vs">A</span><span class="pp">[item]</span><span class="vs"> </span><span class="op">+</span><span class="vs"> B</span><span class="pp">[item]</span><span class="kw">)</span><span class="vs"> </span><span class="op">*</span><span class="vs"> factors</span><span class="pp">[blockIdx.x]</span><span class="vs">;</span></span>
-<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="vs">}</span></span>
-<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="vs">'''</span></span>
-<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a></span>
-<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co"># compile and access the code</span></span>
-<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>module <span class="op">=</span> cupy.RawModule(code<span class="op">=</span>cuda_code)</span>
-<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>sum_and_multiply <span class="op">=</span> module.get_function(<span class="st">"sum_and_multiply"</span>)</span>
-<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co"># allocate and copy constant memory</span></span>
-<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a>factors_ptr <span class="op">=</span> module.get_global(<span class="st">"factors"</span>)</span>
-<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a>factors_gpu <span class="op">=</span> cupy.ndarray(<span class="dv">2</span>, cupy.float32, factors_ptr)</span>
-<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>factors_gpu[...] <span class="op">=</span> cupy.random.random(<span class="dv">2</span>, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a></span>
-<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>sum_and_multiply((<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), (size <span class="op">//</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), args)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="im">import</span> cupy <span class="im">as</span> cp</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="im">from</span> cuda.core <span class="im">import</span> Device, LaunchConfig, Program, ProgramOptions, launch</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># Initialize the GPU</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>gpu <span class="op">=</span> Device()</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>gpu.set_current()</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>stream <span class="op">=</span> gpu.create_stream()</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>program_options <span class="op">=</span> ProgramOptions(std<span class="op">=</span><span class="st">"c++17"</span>, arch<span class="op">=</span><span class="ss">f"sm_</span><span class="sc">{</span>gpu<span class="sc">.</span>arch<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co"># Size of the vectors</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2048</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co"># Allocating and populating the vectors</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>a_gpu <span class="op">=</span> cp.random.rand(size, dtype<span class="op">=</span>cp.float32)</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>b_gpu <span class="op">=</span> cp.random.rand(size, dtype<span class="op">=</span>cp.float32)</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>c_gpu <span class="op">=</span> cp.zeros(size, dtype<span class="op">=</span>cp.float32)</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co"># CUDA code</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>cuda_code <span class="op">=</span> <span class="vs">r'''</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="vs">extern "C" {</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#define BLOCKS 2</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="vs">__constant__ float factors</span><span class="pp">[BLOCKS]</span><span class="vs">;</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="vs">__global__ void sum_and_multiply</span><span class="kw">(</span><span class="vs">const float </span><span class="op">*</span><span class="vs"> A, const float </span><span class="op">*</span><span class="vs"> B, float </span><span class="op">*</span><span class="vs"> C, const int size</span><span class="kw">)</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="vs">{</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="vs">    int item = </span><span class="kw">(</span><span class="vs">blockIdx</span><span class="dv">.</span><span class="vs">x </span><span class="op">*</span><span class="vs"> blockDim</span><span class="dv">.</span><span class="vs">x</span><span class="kw">)</span><span class="vs"> </span><span class="op">+</span><span class="vs"> threadIdx</span><span class="dv">.</span><span class="vs">x;</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="vs">    C</span><span class="pp">[item]</span><span class="vs"> = </span><span class="kw">(</span><span class="vs">A</span><span class="pp">[item]</span><span class="vs"> </span><span class="op">+</span><span class="vs"> B</span><span class="pp">[item]</span><span class="kw">)</span><span class="vs"> </span><span class="op">*</span><span class="vs"> factors</span><span class="pp">[blockIdx.x]</span><span class="vs">;</span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="vs">'''</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co"># Compile and access the code</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a>prog <span class="op">=</span> Program(cuda_code, code_type<span class="op">=</span><span class="st">"c++"</span>, options<span class="op">=</span>program_options)</span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a>mod <span class="op">=</span> prog.<span class="bu">compile</span>(<span class="st">"cubin"</span>, name_expressions<span class="op">=</span>(<span class="st">"sum_and_multiply"</span>,))</span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a>sum_and_multiply <span class="op">=</span> mod.get_kernel(<span class="st">"sum_and_multiply"</span>)</span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a>config <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>grid_size, block<span class="op">=</span>block_size)</span>
+<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a></span>
+<span id="cb4-44"><a href="#cb4-44" tabindex="-1"></a><span class="co"># Allocate and copy constant memory</span></span>
+<span id="cb4-45"><a href="#cb4-45" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: cuda.code does not expose constant memory, cuda.bindings should be used instead</span></span>
+<span id="cb4-46"><a href="#cb4-46" tabindex="-1"></a><span class="co"># The episode will be updated in the future</span></span>
+<span id="cb4-47"><a href="#cb4-47" tabindex="-1"></a>factors_ptr <span class="op">=</span> mod.get_global(<span class="st">"factors"</span>)</span>
+<span id="cb4-48"><a href="#cb4-48" tabindex="-1"></a>factors_gpu <span class="op">=</span> cp.ndarray(<span class="dv">2</span>, cp.float32, factors_ptr)</span>
+<span id="cb4-49"><a href="#cb4-49" tabindex="-1"></a>factors_gpu[...] <span class="op">=</span> cp.random.random(<span class="dv">2</span>, dtype<span class="op">=</span>cp.float32)</span>
+<span id="cb4-50"><a href="#cb4-50" tabindex="-1"></a></span>
+<span id="cb4-51"><a href="#cb4-51" tabindex="-1"></a>launch(stream, config, sum_and_multiply, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)</span></code></pre>
 </div>
 <p>As you can see the code is not very general, it uses constants and
 works only with two blocks, but it is a working example of how to use
