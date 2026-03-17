@@ -42,14 +42,14 @@ diracs[8::16,8::16] = 1
 We can display the top-left corner of the input image to get a feel for how it looks like, as follows:
 
 ~~~python
-import pylab as pyl
+import matplotlib.pyplot as plt
 # Jupyter 'magic' command to render a Matplotlib image in the notebook
 %matplotlib inline
 
 # Display the image
 # You can zoom in/out using the menu in the window that will appear
-pyl.imshow(diracs[0:32, 0:32])
-pyl.show()
+plt.imshow(diracs[0:32, 0:32])
+plt.show()
 ~~~
 
 and you should obtain the following image:
@@ -101,8 +101,8 @@ dist = np.sqrt(x*x + y*y)
 sigma = 1
 origin = 0.000
 gauss = np.exp(-(dist - origin)**2 / (2.0 * sigma**2))
-pyl.imshow(gauss)
-pyl.show()
+plt.imshow(gauss)
+plt.show()
 ~~~
 
 The code above produces this image of a symmetrical two-dimensional Gaussian surface:
@@ -117,8 +117,8 @@ Let's also record the time to perform this convolution and inspect the top-left 
 from scipy.signal import convolve2d as convolve2d_cpu
 
 convolved_image_cpu = convolve2d_cpu(diracs, gauss)
-pyl.imshow(convolved_image_cpu[0:32, 0:32])
-pyl.show()
+plt.imshow(convolved_image_cpu[0:32, 0:32])
+plt.show()
 %timeit -n 1 -r 1 convolve2d_cpu(diracs, gauss)
 ~~~
 
@@ -359,7 +359,7 @@ The `astropy` Python package enables us to read in this file and, for compatibil
 from astropy.io import fits
 
 with fits.open("GMRT_image_of_Galactic_Center.fits") as hdul:
-    data = hdul[0].data.byteswap().newbyteorder()
+    data = hdul[0].data
 ~~~
 
 ## Inspect the image
@@ -372,10 +372,10 @@ from matplotlib.colors import LogNorm
 
 maxim = data.max()
 
-fig = pyl.figure(figsize=(50, 12.5))
+fig = plt.figure(figsize=(50, 12.5))
 ax = fig.add_subplot(1, 1, 1)
-im_plot = ax.imshow(np.fliplr(data), cmap=pyl.cm.gray_r, norm=LogNorm(vmin = maxim/10, vmax=maxim/100))
-pyl.colorbar(im_plot, ax=ax)
+im_plot = ax.imshow(np.fliplr(data), cmap=plt.cm.gray_r, norm=LogNorm(vmin = maxim/10, vmax=maxim/100))
+plt.colorbar(im_plot, ax=ax)
 ~~~
 
 ![Image of the Galactic Center at the radio frequency of 150 MHz](./fig/improved_image_of_GC.png){alt="Image of the Galactic Center"}
@@ -453,14 +453,12 @@ Fastest ks clipping time on CPU = 7.777e+02 ms.
 Finally, let's see how the $\kappa$-$\sigma$ clipping has influenced the summary statistics:
 
 ~~~python
-clipped_mean_ = data_clipped.mean()
+clipped_mean_ = data_clipped_cpu.mean()
 clipped_median_ = np.median(data_clipped_cpu)
 clipped_stddev_ = np.std(data_clipped_cpu)
 clipped_max_ = np.amax(data_clipped_cpu)
-print(f"mean of clipped = {clipped_mean_:.3e},
-      median of clipped = {clipped_median_:.3e} \n
-      standard deviation of clipped = {clipped_stddev_:.3e},
-      maximum of clipped = {clipped_max_:.3e}")
+print(f"mean of clipped = {clipped_mean_:.3e}, median of clipped = {clipped_median_:.3e}")
+print(f"standard deviation of clipped = {clipped_stddev_:.3e}, maximum of clipped = {clipped_max_:.3e}")
 ~~~
 
 The first-order statistics have become smaller, which reassures us that `data_clipped` contains background pixels:
