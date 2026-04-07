@@ -1,0 +1,115 @@
+<?xml version="1.0" standalone="no" ?>
+<svg viewBox="0 0 485 210" xmlns="http://www.w3.org/2000/svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700');
+
+:root {
+   --nlesc-blue:   #009DDD;
+   --nlesc-purple: #380339;
+   --nlesc-yellow: #FFB213;
+
+   --some-gray:    #aaaaaa;
+}
+
+.paper {
+    fill: #ffffdd;
+}
+
+.box {
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0, 0.3));
+    stroke: white;
+    stroke-width: 0.15;
+}
+
+.yellow {
+    fill: var(--nlesc-yellow);
+}
+
+.blue {
+    fill: var(--nlesc-blue);
+}
+
+/* .arrow {
+    stroke: black;
+    stroke-width: 2;
+}
+
+.arrow-head {
+    fill: black;
+} */
+
+.gray {
+    stroke: var(--some-gray);
+    fill: var(--some-gray);
+    stroke-width: 2;
+}
+
+.black {
+    stroke: black;
+    fill: black;
+    stroke-width: 2;
+}
+
+.arrow-head {
+    stroke: none;
+}
+
+</style>
+<rect class="paper" x="0" y="0" width="500" height="400" />
+<g transform="translate(5 5)">
+<g class="black">
+<line class="arrow" x1="25" y1="50" x2="25" y2="145" />
+<path class="arrow-head" d="M 20 135 Q 25 150 30 135 L 25 150 z" />
+</g>
+<rect class="box blue" x="0" y="0" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="0" y="150" width="50" height="50" rx="5" ry="5" />
+</g>
+<g transform="translate(75 5)">
+<g class="black">
+<line class="arrow" x1="25" y1="50" x2="25" y2="145" />
+<path class="arrow-head" d="M 20 135 Q 25 150 30 135 L 25 150 z" />
+</g>
+<rect class="box blue" x="0" y="0" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="0" y="150" width="50" height="50" rx="5" ry="5" />
+</g>
+<g transform="translate(145 5)">
+<g class="black">
+<line class="arrow" x1="25" y1="50" x2="25" y2="145" />
+<path class="arrow-head" d="M 20 135 Q 25 150 30 135 L 25 150 z" />
+</g>
+<rect class="box blue" x="0" y="0" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="0" y="150" width="50" height="50" rx="5" ry="5" />
+</g>
+<g transform="translate(215 5)">
+<g class="black">
+<line class="arrow" x1="25" y1="50" x2="25" y2="145" />
+<path class="arrow-head" d="M 20 135 Q 25 150 30 135 L 25 150 z" />
+</g>
+<rect class="box blue" x="0" y="0" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="0" y="150" width="50" height="50" rx="5" ry="5" />
+</g>
+<g transform="translate(285 5)">
+<g class="black">
+<line class="arrow" x1="25" y1="50" x2="25" y2="145" />
+<path class="arrow-head" d="M 20 135 Q 25 150 30 135 L 25 150 z" />
+</g>
+<rect class="box blue" x="0" y="0" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="0" y="150" width="50" height="50" rx="5" ry="5" />
+</g>
+<g transform="translate(355 5)">
+<g class="black">
+<line class="arrow" x1="25" y1="50" x2="25" y2="145" />
+<path class="arrow-head" d="M 20 135 Q 25 150 30 135 L 25 150 z" />
+</g>
+<rect class="box blue" x="0" y="0" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="0" y="150" width="50" height="50" rx="5" ry="5" />
+</g>
+<g transform="translate(425 5)">
+<g class="black">
+<line class="arrow" x1="25" y1="50" x2="25" y2="145" />
+<path class="arrow-head" d="M 20 135 Q 25 150 30 135 L 25 150 z" />
+</g>
+<rect class="box blue" x="0" y="0" width="50" height="50" rx="5" ry="5" />
+<rect class="box yellow" x="0" y="150" width="50" height="50" rx="5" ry="5" />
+</g>
+</svg>
