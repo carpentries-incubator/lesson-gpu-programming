@@ -2058,7 +2058,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-first_program"><p>Content from <a href="first_program.html">Your First GPU Kernel</a></p>
 <hr>
-<p>Last updated on 2026-04-22 |
+<p>Last updated on 2026-05-06 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/first_program.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 70 minutes</p>
@@ -2073,9 +2073,10 @@ any links that you are not going to use.
 <div class="inner">
 <h3 class="card-title">Questions</h3>
 <ul>
-<li>“How can I parallelize a Python application on a GPU?”</li>
-<li>“How to write a GPU program?”</li>
+<li>“How do I identify data parallelism in my code?”</li>
+<li>“How do I write a GPU program?”</li>
 <li>“What is CUDA?”</li>
+<li>“How are CUDA threads organised into blocks and grids?”</li>
 </ul>
 </div>
 </div>
@@ -2086,9 +2087,15 @@ any links that you are not going to use.
 <h3 class="card-title">Objectives</h3>
 <ul>
 <li>“Recognize possible data parallelism in Python code”</li>
-<li>“Understand the structure of a CUDA program”</li>
-<li>“Execute a CUDA program in Python using CuPy”</li>
-<li>“Measure the execution time of a CUDA kernel with CuPy”</li>
+<li>“Describe the role of the <code>__global__</code>,
+<code>__host__</code>, and <code>__device__</code> keywords in a CUDA
+program”</li>
+<li>“Use <code>threadIdx</code>, <code>blockIdx</code>, and
+<code>blockDim</code> to compute the global index of a thread”</li>
+<li>“Write a CUDA kernel that handles input arrays of arbitrary
+size”</li>
+<li>“Execute a CUDA program in Python and measure its execution
+time”</li>
 </ul>
 </div>
 </div>
@@ -2109,7 +2116,7 @@ input vectors into a third one.</p>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1" aria-label="code-block-1-3"></a>        C[item] <span class="op">=</span> A[item] <span class="op">+</span> B[item]</span></code></pre>
 </div>
 <p>One of the characteristics of this program is that each iteration of
-the <code>for</code> loop is independent from the other iterations. In
+the <code>for</code> loop is independent of the other iterations. In
 other words, we could reorder the iterations and still produce the same
 output, or even compute each iteration in parallel or on a different
 device, and still come up with the same output. These are the kind of
@@ -2343,7 +2350,7 @@ written, and we do not even know by which thread!</p>
 <h1 id="computing-hierarchy-in-cuda">Computing Hierarchy in CUDA<a class="anchor" aria-label="anchor" href="#computing-hierarchy-in-cuda"></a>
 </h1>
 <p>In the previous example we had a small vector of size 1024, and each
-of the 1024 threads we generated was working on one of the element.</p>
+of the 1024 threads we generated was working on one of the elements.</p>
 <p>What would happen if we changed the size of the vector to a larger
 number, such as 2048? We modify the value of the variable size and try
 again.</p>
@@ -2361,8 +2368,8 @@ again.</p>
 <span id="cb10-9"><a href="#cb10-9" tabindex="-1" aria-label="code-block-10-9"></a>config <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), block<span class="op">=</span>(size, <span class="dv">1</span>, <span class="dv">1</span>))</span>
 <span id="cb10-10"><a href="#cb10-10" tabindex="-1" aria-label="code-block-10-10"></a>launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)</span></code></pre>
 </div>
-<p>This is how the output should look like when running the code in a
-Jupyter Notebook:</p>
+<p>This is how the output should look when running the code in a Jupyter
+Notebook:</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -2395,15 +2402,15 @@ launch config of our function we see that the <code>block</code> and
 <p>The first triplet specifies the size of the CUDA
 <strong>grid</strong>, while the second triplet specifies the size of
 the CUDA <strong>block</strong>. The grid is a three-dimensional
-structure in the CUDA programming model and it represent the
+structure in the CUDA programming model and it represents the
 organization of a whole kernel execution. A grid is made of one or more
 independent blocks, and in the case of our previous snippet of code we
 have a grid composed by a single block <code>(1, 1, 1)</code>. The size
 of this block is specified by the second triplet, in our case
 <code>(size, 1, 1)</code>. While blocks are independent of each other,
-the thread composing a block are not completely independent, they share
+the threads composing a block are not completely independent, they share
 resources and can also communicate with each other.</p>
-<p>To go back to our example, we can modify che grid specification from
+<p>To go back to our example, we can modify the grid specification from
 <code>(1, 1, 1)</code> to <code>(2, 1, 1)</code>, and the block
 specification from <code>(size, 1, 1)</code> to
 <code>(size // 2, 1, 1)</code>.</p>
@@ -2498,7 +2505,7 @@ threads.</p>
 </div>
 </div>
 <p>What happens if we then run the code that we just modified to work on
-an vector of 2048 elements, and compare the results with our CPU
+a vector of 2048 elements, and compare the results with our CPU
 version?</p>
 <div class="codewrapper sourceCode" id="cb15">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2696,10 +2703,10 @@ code.</p>
 <span id="cb23-7"><a href="#cb23-7" tabindex="-1" aria-label="code-block-23-7"></a>launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)</span></code></pre>
 </div>
 <p>With these changes we always have blocks composed of 1024 threads,
-but we adapt the number of blocks so that we always have enough to
-threads to compute all elements in the vector. If we want to be able to
-easily modify the number of threads per block, we can even rewrite the
-code like the following:</p>
+but we adapt the number of blocks so that we always have enough threads
+to compute all elements in the vector. If we want to be able to easily
+modify the number of threads per block, we can even rewrite the code
+like the following:</p>
 <div class="codewrapper sourceCode" id="cb24">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -2870,8 +2877,8 @@ the CUDA <code>all_primes_to</code> inside the
 <code>check_prime_gpu_code</code> string, as we did in the examples so
 far.</p>
 <p>Be aware that the provided CUDA code is a direct port of the Python
-code, and therefore very slow. If you want to test it, user a lower
-value for <code>upper_bound</code>.</p>
+code, and therefore very slow. If you want to test it, use a lower value
+for <code>upper_bound</code>.</p>
 </div>
 </div>
 </div>
@@ -2930,6 +2937,10 @@ keyword”</li>
 <li>“Use built-in variables <code>threadIdx</code>,
 <code>blockIdx</code>, <code>gridDim</code> and <code>blockDim</code> to
 identify each thread”</li>
+<li>“The global index of a thread is
+<code>(blockIdx.x * blockDim.x) + threadIdx.x</code>”</li>
+<li>“Add a bounds check (<code>if (item &lt; size)</code>) in your
+kernel when the total number of threads may exceed the input size”</li>
 </ul>
 </div>
 </div>
@@ -3028,7 +3039,7 @@ using?</h3>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>In general, it is not possible to exactly know how many registers the
 compiler will use without examining the output generated by the compiler
@@ -3156,7 +3167,7 @@ identify where global memory is used.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>The vectors <code>A</code>, <code>B</code>, and <code>C</code> are
 stored in global memory.</p>
@@ -3227,7 +3238,7 @@ find a way to use a variable and not a constant for the size.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>We need to pass the size of the local array as a new parameter to the
 kernel, because if we just specified <code>3</code> in the code, the
@@ -4075,7 +4086,7 @@ memory</h3>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>In our case the output of this line of code is two floating point
 numbers, e.g. <code>[0.11390183 0.2585096 ]</code>. However, we are not
@@ -4164,7 +4175,7 @@ with some different input sizes.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>One of the possible solutions is the following one.</p>
 <div class="codewrapper sourceCode" id="cb5">

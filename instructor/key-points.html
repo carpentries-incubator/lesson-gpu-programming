@@ -432,6 +432,10 @@ keyword”</li>
 <li>“Use built-in variables <code>threadIdx</code>,
 <code>blockIdx</code>, <code>gridDim</code> and <code>blockDim</code> to
 identify each thread”</li>
+<li>“The global index of a thread is
+<code>(blockIdx.x * blockDim.x) + threadIdx.x</code>”</li>
+<li>“Add a bounds check (<code>if (item &lt; size)</code>) in your
+kernel when the total number of threads may exceed the input size”</li>
 </ul></section><section id="global_local_memory"><h2 class="section-heading"><a href="global_local_memory.html">Registers, Global, and Local MemoryRegisters<a class="anchor" aria-label="anchor" href="#registers"></a>Global Memory<a class="anchor" aria-label="anchor" href="#global-memory"></a>Local Memory<a class="anchor" aria-label="anchor" href="#local-memory"></a></a></h2>
 <hr class="half-width">
 <ul>
