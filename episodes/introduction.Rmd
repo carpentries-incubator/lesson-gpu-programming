@@ -7,12 +7,13 @@ exercises: 0
 :::::::::::::::::::::::::::::::::::::: questions
 - "What is a Graphics Processing Unit?"
 - "Can a GPU be used for anything other than graphics?"
-- "Are GPUs faster than CPUs?"
+- "For which kinds of tasks are GPUs faster than CPUs?"
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: objectives
-- "Understand the differences between CPU and GPU"
-- "See the possible performance benefits of GPU acceleration"
+- "Explain the key architectural differences between CPU and GPU"
+- "Estimate the performance speedup of running a computation on the GPU"
+- "Use the terms host and device to distinguish CPU and GPU in the context of GPU programming"
 ::::::::::::::::::::::::::::::::::::::
 
 # Graphics Processing Unit
@@ -117,8 +118,7 @@ With the result of the previous operation being the following.
 We can therefore say that just by using the GPU with CuPy to sort an array of size `4096 * 4096` we achieved a performance improvement of 204 times.
 
 :::::::::::::::::::::::::::::::::::::: keypoints
-- "CPUs and GPUs are both useful and each has its own place in our toolbox"
+- "GPUs achieve high throughput by running thousands of threads in parallel, unlike CPUs which prioritise low latency"
 - "In the context of GPU programming, we often refer to the GPU as the *device* and the CPU as the *host*"
 - "Using GPUs to accelerate computation can provide large performance gains"
-- "Using the GPU with Python is not particularly difficult"
 ::::::::::::::::::::::::::::::::::::::
