@@ -12,7 +12,7 @@ exercises: 60
 :::::: objectives
 - "Be able to indicate if an array, represented by a variable in an iPython shell, is stored in host or device memory."
 - "Be able to copy the contents of this array from host to device memory and vice versa."
-- "Be able to select the appropriate function to either convolve an image using either CPU or GPU compute power."
+- "Be able to select the appropriate function to convolve an image using either CPU or GPU compute power."
 - "Be able to quickly estimate the speed benefits for a simple calculation by moving it from the CPU to the GPU."
 ::::::
 
@@ -39,7 +39,7 @@ diracs = np.zeros((2048, 2048))
 diracs[8::16,8::16] = 1
 ~~~
 
-We can display the top-left corner of the input image to get a feel for how it looks like, as follows:
+We can display the top-left corner of the input image to get a feel for what it looks like, as follows:
 
 ~~~python
 import matplotlib.pyplot as plt
@@ -59,7 +59,7 @@ and you should obtain the following image:
 ## Gaussian convolutions
 
 The illustration below shows an example of convolution (courtesy of Michael Plotke, CC BY-SA 3.0, via Wikimedia Commons).
-Looking at the terminology in the illustration, be forewarned that, inconveniently, the meaning of the word *kernel* is different when talking of mathematical convolutions and of codes for programming  a GPU device.
+Looking at the terminology in the illustration, be forewarned that, inconveniently, the meaning of the word *kernel* is different when talking of mathematical convolutions and of codes for programming a GPU device.
 To know more about convolutions, we encourage you to check out [this GitHub repository](https://github.com/vdumoulin/conv_arithmetic) by Vincent Dumoulin and Francesco Visin, who show great animations.
 
 ![Example of animated convolution.](./fig/2D_Convolution_Animation.gif){alt="Example of animated convolution"}
@@ -141,7 +141,7 @@ This picture depicts the different components of CPU and GPU and how they are co
 
 ![CPU and GPU are separate entities with an own memory.](./fig/CPU_and_GPU_separated.png){alt="CPU and GPU are separate entities with an own memory"}
 
-This means that the array created with NumPy is physically stored in a memory of the host's and, therefore, is only available to the CPU.
+This means that the array created with NumPy is physically stored in the host's memory and, therefore, is only available to the CPU.
 Since our input image and convolution filter are not present in the device memory yet, we need to copy them to the GPU before executing any code on it.
 In practice, we use CuPy to copy the arrays `diracs` and `gauss` from the host's Random Access Memory (RAM) to the GPU memory as follows:
 
@@ -342,7 +342,7 @@ The last linear convolution has actually been performed on the GPU, and faster t
 0.014529 s
 ~~~
 
-With this Numpy shortcut and without much coding effort, we obtained a good 18-fold speedup.
+With this NumPy shortcut and without much coding effort, we obtained a good 18-fold speedup.
 
 # A scientific application: image processing for radio astronomy
 
@@ -398,13 +398,13 @@ mean_ = data.mean()
 median_ = np.median(data)
 stddev_ = np.std(data)
 max_ = np.amax(data)
-print(f"mean = {mean_:.3e}, median = {median_:.3e}, sttdev = {stddev_:.3e}, maximum = {max_:.3e}")
+print(f"mean = {mean_:.3e}, median = {median_:.3e}, stddev = {stddev_:.3e}, maximum = {max_:.3e}")
 ~~~
 
 This gives (in Jy/beam):
 
 ~~~output
-mean = 3.898e-04, median = 1.571e-05, sttdev = 1.993e-02, maximum = 2.506e+00
+mean = 3.898e-04, median = 1.571e-05, stddev = 1.993e-02, maximum = 2.506e+00
 ~~~
 
 The maximum flux density is 2506 mJy/beam coming from the Galactic Center, the overall standard deviation 19.9 mJy/beam, and the median 1.57e-05 mJy/beam.
@@ -468,7 +468,7 @@ mean of clipped = -1.945e-06, median of clipped = -9.796e-06
 standard deviation of clipped = 1.334e-02, maximum of clipped = 4.000e-02
 ~~~
 
-The standard deviation of the intensity in the background pixels is be the basis for the next step.
+The standard deviation of the intensity in the background pixels will be the basis for the next step.
 
 :::::::::::::::::::::::::::::::::::::: challenge
 ## Challenge: $\kappa$-$\sigma$ clipping on the GPU
@@ -708,8 +708,8 @@ def ccl_and_source_measurements_on_GPU(data_GPU, segmented_image_GPU):
     # and what we have are lists.
     # These first have to be converted to
     # Cupy arrays before they can be converted to Numpy arrays.
-    return cp.asnumpy(cp.asarray(all_positions)),
-                      cp.asnumpy(cp.asarray(all_fluxes))
+    return (cp.asnumpy(cp.asarray(all_positions)),
+            cp.asnumpy(cp.asarray(all_fluxes)))
 
 GPU_output = ccl_and_source_measurements_on_GPU(cp.asarray(data), first_two_steps_for_both_CPU_and_GPU(cp.asarray(data)))
 
@@ -726,13 +726,13 @@ all_positions_agree = np.allclose(CPU_output[0], GPU_output[0])
 print(f"The CPU and GPU positions agree: {all_positions_agree}\n")
 
 all_fluxes_agree = np.allclose(CPU_output[1], GPU_output[1])
-print(f"The CPU and GPU fluxes agree: {all_positions_agree}\n")
+print(f"The CPU and GPU fluxes agree: {all_fluxes_agree}\n")
 ~~~
 
 ~~~output
 The four steps of image processing for astronomy take 1.060e+03 ms on our CPU.
 The four steps of image processing for astronomy take 5.770e+01 ms on our GPU.
-This means that the overall speedup factor GPU vs _mCPU equals: 1.838e+01
+This means that the overall speedup factor GPU vs CPU equals: 1.838e+01
 
 The CPU and GPU positions agree: True
 
