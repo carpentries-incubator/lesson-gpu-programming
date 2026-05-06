@@ -437,13 +437,13 @@ kernel when the total number of threads may exceed the input size”</li>
 </ul></section><section id="global_local_memory"><h2 class="section-heading"><a href="global_local_memory.html">Registers, Global, and Local MemoryRegisters<a class="anchor" aria-label="anchor" href="#registers"></a>Global Memory<a class="anchor" aria-label="anchor" href="#global-memory"></a>Local Memory<a class="anchor" aria-label="anchor" href="#local-memory"></a></a></h2>
 <hr class="half-width">
 <ul>
-<li>“Registers can be used to locally store data and avoid repeated
-memory operations”</li>
+<li>“Registers are the fastest GPU memory; use them to store
+intermediate values and avoid repeated reads from global memory”</li>
 <li>“Global memory is the main memory space and it is used to share data
 between host and GPU”</li>
-<li>“Local memory is a particular type of memory that can be used to
-store data that does not fit in registers and is private to a
-thread”</li>
+<li>“Local memory is private to each thread and has similar latency to
+global memory; the compiler uses it automatically when a thread runs out
+of registers”</li>
 </ul></section><section id="shared_memory_and_synchronization"><h2 class="section-heading"><a href="shared_memory_and_synchronization.html">Shared Memory and SynchronizationShared Memory<a class="anchor" aria-label="anchor" href="#shared-memory"></a>Thread Synchronization<a class="anchor" aria-label="anchor" href="#thread-synchronization"></a></a></h2>
 <hr class="half-width">
 <ul>
