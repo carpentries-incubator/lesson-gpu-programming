@@ -5,15 +5,18 @@ exercises: 60
 ---
 
 :::::: questions
-- "How can I increase the performance of code that uses NumPy?"
+- "How can I run NumPy code on the GPU?"
 - "How can I copy NumPy arrays to the GPU?"
+- "How do I reliably measure the execution time of GPU code?"
 ::::::
 
 :::::: objectives
-- "Be able to indicate if an array, represented by a variable in an iPython shell, is stored in host or device memory."
-- "Be able to copy the contents of this array from host to device memory and vice versa."
-- "Be able to select the appropriate function to convolve an image using either CPU or GPU compute power."
-- "Be able to quickly estimate the speed benefits for a simple calculation by moving it from the CPU to the GPU."
+- "Identify whether an array is stored in host or device memory"
+- "Copy arrays between host and device memory using CuPy"
+- "Select the appropriate CuPy or cupyx function to replace a NumPy or SciPy call"
+- "Estimate the performance speedup of running a computation on the GPU"
+- "Use `benchmark()` from `cupyx.profiler` to accurately time GPU code"
+- "Validate GPU results by comparing them against CPU results"
 ::::::
 
 # Introduction to CuPy
@@ -743,6 +746,7 @@ The CPU and GPU fluxes agree: True
 ::::::::::::::::::::::::::::::::::::::
 
 :::::: keypoints
-- "CuPy provides GPU accelerated version of many NumPy and Scipy functions."
+- "CuPy provides GPU-accelerated versions of many NumPy and SciPy functions."
 - "Always have CPU and GPU versions of your code so that you can compare performance, as well as validate your code."
+- "GPU execution is asynchronous; use `cupyx.profiler.benchmark()` rather than `timeit` for accurate measurements."
 ::::::
