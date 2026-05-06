@@ -6,7 +6,7 @@ exercises: 0
 
 :::::::::::::::::::::::::::::::::::::: questions
 - "What is a Graphics Processing Unit?"
-- "Can a GPU be used for anything else than graphics?"
+- "Can a GPU be used for anything other than graphics?"
 - "Are GPUs faster than CPUs?"
 ::::::::::::::::::::::::::::::::::::::
 
@@ -29,12 +29,12 @@ One way to answer this question is to go back to the roots of what a GPU is desi
 
 An image can be seen as a matrix of points called **pixels** (a portmanteau of the words *picture* and *element*), with each pixel representing the color the image should have in that particular point, and the traditional task performed by video cards is to produce the images a user will see on the screen.
 A single 4K UHD image contains more than 8 million pixels.
-For a GPU  to render a continuous stream of 25 4K frames (images) per second, enough so that users not experience delay in a videogame, movie, or any other video output, it must process over 200 million pixels per second.
+For a GPU  to render a continuous stream of 25 4K frames (images) per second, enough so that users do not experience delay in a videogame, movie, or any other video output, it must process over 200 million pixels per second.
 So GPUs are designed to render multiple pixels at the same time, and they are designed to do it efficiently.
 This design principle results in the GPU being, from a hardware point of view, very different from a CPU.
 
-The CPU is a very general purpose device, good at different tasks, being them parallel or sequential in nature; it is also designed for interaction with the user, so it has to be responsive and guarantee minimal latency.
-In practice, we want our CPU to be available whenever we sent it a new task.
+The CPU is a very general purpose device, good at different tasks, be they parallel or sequential in nature; it is also designed for interaction with the user, so it has to be responsive and guarantee minimal latency.
+In practice, we want our CPU to be available whenever we send it a new task.
 The result is a device where most of the silicon is used for memory caches and control-flow logic, not just compute units.
 
 By contrast, most of the silicon on a GPU is actually used for compute units.
@@ -43,12 +43,12 @@ With many compute units available, the GPU can run massively parallel programs, 
 
 A high-level introduction on the differences between CPU and GPU can also be found in the following YouTube video.
 
-[![](https://img.youtube.com/vi/bZdxcHEM-uc/0.jpg){alt='Screenshot of the YoutTube video showing a GPU'}](https://www.youtube.com/watch?v=bZdxcHEM-uc)
+[![](https://img.youtube.com/vi/bZdxcHEM-uc/0.jpg){alt='Screenshot of the YouTube video showing a GPU'}](https://www.youtube.com/watch?v=bZdxcHEM-uc)
 
 # Speed Benefits
 
 So, GPUs are massively parallel devices that can execute thousands of threads at the same time.
-But what does it mean in practice for the user? Why anyone would need to use a GPU to compute something that can be easily computed on a CPU?
+But what does it mean in practice for the user? Why would anyone need to use a GPU to compute something that can be easily computed on a CPU?
 We can try to answer this question with an example.
 
 Suppose we want to sort a large array in Python.
@@ -57,13 +57,13 @@ Using NumPy, we first need to create an array of random single precision floatin
 ~~~python
 import numpy as np
 size = 4096 * 4096
-input = np.random.random(size).astype(np.float32)
+data = np.random.random(size).astype(np.float32)
 ~~~
 
 We then time the execution of the NumPy `sort()` function, to see how long sorting this array takes on the CPU.
 
 ~~~python
-%timeit -n 1 -r 1 output = np.sort(input)
+%timeit -n 1 -r 1 output = np.sort(data)
 ~~~
 
 While the timing of this operation will differ depending on the system on which you run the code, these are the results for one experiment running on a Jupyter notebook on Google Colab.
@@ -73,13 +73,14 @@ While the timing of this operation will differ depending on the system on which 
 ~~~
 
 We now perform the same sorting operation, but this time we will be using CuPy to execute the `sort()` function on the GPU.
-CuPy is an open-source library, compatible with NumPy, for GPU computing in Python.
+CuPy is an open-source library for GPU computing in Python that mirrors the NumPy API, meaning that most NumPy code can be run on the GPU simply by replacing `import numpy as np` with `import cupy as cp`.
+Under the hood, CuPy uses CUDA, NVIDIA's parallel computing platform, but users do not need to write any CUDA code themselves to take advantage of it.
 
 ~~~python
 from cupyx.profiler import benchmark
 import cupy as cp
-input_gpu = cp.asarray(input)
-execution_gpu = benchmark(cp.sort, (input_gpu,), n_repeat=10)
+data_gpu = cp.asarray(data)
+execution_gpu = benchmark(cp.sort, (data_gpu,), n_repeat=10)
 gpu_avg_time = np.average(execution_gpu.gpu_times)
 print(f"{gpu_avg_time:.6f} s")
 ~~~
@@ -99,9 +100,10 @@ From now on we may also call the GPU the *device*, while we refer to other compu
 
 Sorting an array using CuPy, and therefore using the GPU, is clearly much faster than using NumPy, but can we quantify how much faster?
 Having recorded the average execution time of both operations, we can then compute the speedup of using CuPy over NumPy.
-The speedup is defined as the ratio between the sequential (NumPy in our case) and parallel (CuPy in our case) execution times; beware that both execution times need to be in the same unit, this is why we had to convert the GPU execution time from milliseconds to seconds.
+The speedup is defined as the ratio between the sequential (NumPy in our case) and parallel (CuPy in our case) execution times.
 
 ~~~python
+# using the experiment values from above: 1.83 s (NumPy) and 0.008949 s (CuPy)
 speedup = 1.83 / 0.008949
 print(speedup)
 ~~~
