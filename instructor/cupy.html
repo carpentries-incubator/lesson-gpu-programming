@@ -364,8 +364,9 @@
 <div class="card-body">
 <div class="inner">
 <h3 class="card-title">Questions</h3>
-<ul><li>“How can I increase the performance of code that uses NumPy?”</li>
+<ul><li>“How can I run NumPy code on the GPU?”</li>
 <li>“How can I copy NumPy arrays to the GPU?”</li>
+<li>“How do I reliably measure the execution time of GPU code?”</li>
 </ul></div>
 </div>
 </div>
@@ -373,14 +374,15 @@
 <div class="card-body">
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
-<ul><li>“Be able to indicate if an array, represented by a variable in an
-iPython shell, is stored in host or device memory.”</li>
-<li>“Be able to copy the contents of this array from host to device
-memory and vice versa.”</li>
-<li>“Be able to select the appropriate function to convolve an image
-using either CPU or GPU compute power.”</li>
-<li>“Be able to quickly estimate the speed benefits for a simple
-calculation by moving it from the CPU to the GPU.”</li>
+<ul><li>“Identify whether an array is stored in host or device memory”</li>
+<li>“Copy arrays between host and device memory using CuPy”</li>
+<li>“Select the appropriate CuPy or cupyx function to replace a NumPy or
+SciPy call”</li>
+<li>“Estimate the performance speedup of running a computation on the
+GPU”</li>
+<li>“Use <code>benchmark()</code> from <code>cupyx.profiler</code> to
+accurately time GPU code”</li>
+<li>“Validate GPU results by comparing them against CPU results”</li>
 </ul></div>
 </div>
 </div>
@@ -1308,10 +1310,13 @@ The CPU and GPU fluxes agree: True</code></pre>
 <span class="callout-header">Key Points</span>
 <div class="callout-inner">
 <div class="callout-content">
-<ul><li>“CuPy provides GPU accelerated version of many NumPy and Scipy
+<ul><li>“CuPy provides GPU-accelerated versions of many NumPy and SciPy
 functions.”</li>
 <li>“Always have CPU and GPU versions of your code so that you can
 compare performance, as well as validate your code.”</li>
+<li>“GPU execution is asynchronous; use
+<code>cupyx.profiler.benchmark()</code> rather than <code>timeit</code>
+for accurate measurements.”</li>
 </ul></div>
 </div>
 </div>

@@ -408,10 +408,13 @@ gains”</li>
 </ul></section><section id="cupy"><h2 class="section-heading"><a href="cupy.html">Using your GPU with CuPyIntroduction to CuPy<a class="anchor" aria-label="anchor" href="#introduction-to-cupy"></a>Convolutions in Python<a class="anchor" aria-label="anchor" href="#convolutions-in-python"></a>A scientific application: image processing for radio astronomy<a class="anchor" aria-label="anchor" href="#a-scientific-application-image-processing-for-radio-astronomy"></a></a></h2>
 <hr class="half-width">
 <ul>
-<li>“CuPy provides GPU accelerated version of many NumPy and Scipy
+<li>“CuPy provides GPU-accelerated versions of many NumPy and SciPy
 functions.”</li>
 <li>“Always have CPU and GPU versions of your code so that you can
 compare performance, as well as validate your code.”</li>
+<li>“GPU execution is asynchronous; use
+<code>cupyx.profiler.benchmark()</code> rather than <code>timeit</code>
+for accurate measurements.”</li>
 </ul></section><section id="numba"><h2 class="section-heading"><a href="numba.html">Accelerate your Python code with NumbaUsing Numba to execute Python code on the GPU<a class="anchor" aria-label="anchor" href="#using-numba-to-execute-python-code-on-the-gpu"></a></a></h2>
 <hr class="half-width">
 <ul>
