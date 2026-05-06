@@ -400,7 +400,7 @@
         
 <section id="aio-introduction"><p>Content from <a href="introduction.html">Introduction</a></p>
 <hr>
-<p>Last updated on 2026-04-22 |
+<p>Last updated on 2026-05-06 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/introduction.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 15 minutes</p>
@@ -416,7 +416,7 @@
 <h3 class="card-title">Questions</h3>
 <ul>
 <li>“What is a Graphics Processing Unit?”</li>
-<li>“Can a GPU be used for anything else than graphics?”</li>
+<li>“Can a GPU be used for anything other than graphics?”</li>
 <li>“Are GPUs faster than CPUs?”</li>
 </ul>
 </div>
@@ -464,16 +464,17 @@ should have in that particular point, and the traditional task performed
 by video cards is to produce the images a user will see on the screen. A
 single 4K UHD image contains more than 8 million pixels. For a GPU to
 render a continuous stream of 25 4K frames (images) per second, enough
-so that users not experience delay in a videogame, movie, or any other
-video output, it must process over 200 million pixels per second. So
-GPUs are designed to render multiple pixels at the same time, and they
-are designed to do it efficiently. This design principle results in the
-GPU being, from a hardware point of view, very different from a CPU.</p>
-<p>The CPU is a very general purpose device, good at different tasks,
-being them parallel or sequential in nature; it is also designed for
+so that users do not experience delay in a videogame, movie, or any
+other video output, it must process over 200 million pixels per second.
+So GPUs are designed to render multiple pixels at the same time, and
+they are designed to do it efficiently. This design principle results in
+the GPU being, from a hardware point of view, very different from a
+CPU.</p>
+<p>The CPU is a very general purpose device, good at different tasks, be
+they parallel or sequential in nature; it is also designed for
 interaction with the user, so it has to be responsive and guarantee
 minimal latency. In practice, we want our CPU to be available whenever
-we sent it a new task. The result is a device where most of the silicon
+we send it a new task. The result is a device where most of the silicon
 is used for memory caches and control-flow logic, not just compute
 units.</p>
 <p>By contrast, most of the silicon on a GPU is actually used for
@@ -487,14 +488,14 @@ thousands more are ready for execution to hide the cost of memory
 operations.</p>
 <p>A high-level introduction on the differences between CPU and GPU can
 also be found in the following YouTube video.</p>
-<p><a href="https://www.youtube.com/watch?v=bZdxcHEM-uc" class="external-link"><img src="https://img.youtube.com/vi/bZdxcHEM-uc/0.jpg" alt="Screenshot of the YoutTube video showing a GPU" class="figure"></a></p>
+<p><a href="https://www.youtube.com/watch?v=bZdxcHEM-uc" class="external-link"><img src="https://img.youtube.com/vi/bZdxcHEM-uc/0.jpg" alt="Screenshot of the YouTube video showing a GPU" class="figure"></a></p>
 </div>
 <div class="section level1">
 <h1 id="speed-benefits">Speed Benefits<a class="anchor" aria-label="anchor" href="#speed-benefits"></a>
 </h1>
 <p>So, GPUs are massively parallel devices that can execute thousands of
 threads at the same time. But what does it mean in practice for the
-user? Why anyone would need to use a GPU to compute something that can
+user? Why would anyone need to use a GPU to compute something that can
 be easily computed on a CPU? We can try to answer this question with an
 example.</p>
 <p>Suppose we want to sort a large array in Python. Using NumPy, we
@@ -505,14 +506,14 @@ numbers.</p>
 </h3>
 <pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1" aria-label="code-block-1-2"></a>size <span class="op">=</span> <span class="dv">4096</span> <span class="op">*</span> <span class="dv">4096</span></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1" aria-label="code-block-1-3"></a><span class="bu">input</span> <span class="op">=</span> np.random.random(size).astype(np.float32)</span></code></pre>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1" aria-label="code-block-1-3"></a>data <span class="op">=</span> np.random.random(size).astype(np.float32)</span></code></pre>
 </div>
 <p>We then time the execution of the NumPy <code>sort()</code> function,
 to see how long sorting this array takes on the CPU.</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> output <span class="op">=</span> np.sort(<span class="bu">input</span>)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">1</span> <span class="op">-</span>r <span class="dv">1</span> output <span class="op">=</span> np.sort(data)</span></code></pre>
 </div>
 <p>While the timing of this operation will differ depending on the
 system on which you run the code, these are the results for one
@@ -524,15 +525,19 @@ experiment running on a Jupyter notebook on Google Colab.</p>
 </div>
 <p>We now perform the same sorting operation, but this time we will be
 using CuPy to execute the <code>sort()</code> function on the GPU. CuPy
-is an open-source library, compatible with NumPy, for GPU computing in
-Python.</p>
+is an open-source library for GPU computing in Python that mirrors the
+NumPy API, meaning that most NumPy code can be run on the GPU simply by
+replacing <code>import numpy as np</code> with
+<code>import cupy as cp</code>. Under the hood, CuPy uses CUDA, NVIDIA’s
+parallel computing platform, but users do not need to write any CUDA
+code themselves to take advantage of it.</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a><span class="im">from</span> cupyx.profiler <span class="im">import</span> benchmark</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1" aria-label="code-block-4-2"></a><span class="im">import</span> cupy <span class="im">as</span> cp</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1" aria-label="code-block-4-3"></a>input_gpu <span class="op">=</span> cp.asarray(<span class="bu">input</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1" aria-label="code-block-4-4"></a>execution_gpu <span class="op">=</span> benchmark(cp.sort, (input_gpu,), n_repeat<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1" aria-label="code-block-4-3"></a>data_gpu <span class="op">=</span> cp.asarray(data)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1" aria-label="code-block-4-4"></a>execution_gpu <span class="op">=</span> benchmark(cp.sort, (data_gpu,), n_repeat<span class="op">=</span><span class="dv">10</span>)</span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1" aria-label="code-block-4-5"></a>gpu_avg_time <span class="op">=</span> np.average(execution_gpu.gpu_times)</span>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1" aria-label="code-block-4-6"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>gpu_avg_time<span class="sc">:.6f}</span><span class="ss"> s"</span>)</span></code></pre>
 </div>
@@ -568,14 +573,13 @@ much faster than using NumPy, but can we quantify how much faster?
 Having recorded the average execution time of both operations, we can
 then compute the speedup of using CuPy over NumPy. The speedup is
 defined as the ratio between the sequential (NumPy in our case) and
-parallel (CuPy in our case) execution times; beware that both execution
-times need to be in the same unit, this is why we had to convert the GPU
-execution time from milliseconds to seconds.</p>
+parallel (CuPy in our case) execution times.</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a>speedup <span class="op">=</span> <span class="fl">1.83</span> <span class="op">/</span> <span class="fl">0.008949</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1" aria-label="code-block-6-2"></a><span class="bu">print</span>(speedup)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="co"># using the experiment values from above: 1.83 s (NumPy) and 0.008949 s (CuPy)</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1" aria-label="code-block-6-2"></a>speedup <span class="op">=</span> <span class="fl">1.83</span> <span class="op">/</span> <span class="fl">0.008949</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1" aria-label="code-block-6-3"></a><span class="bu">print</span>(speedup)</span></code></pre>
 </div>
 <p>With the result of the previous operation being the following.</p>
 <div class="codewrapper">
@@ -2319,7 +2323,7 @@ following line:</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>The correct answer is number 3, only the element <code>C[1]</code> is
 written, and we do not even know by which thread!</p>
@@ -2477,7 +2481,7 @@ kernel?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>The content of <code>blockDim</code> is <code>(512, 1, 1)</code> and
 the content of <code>gridDim</code> is <code>(4, 1, 1)</code>, for all
@@ -2545,7 +2549,7 @@ are larger than the largest CUDA block (i.e. 1024).</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>The correct answer is
 <code>(blockIdx.x * blockDim.x) + threadIdx.x</code>. The following code
@@ -2606,7 +2610,7 @@ now. Can you rewrite the code to make it work?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
 <div class="accordion-body">
 <p>The correct way to modify the <code>vector_add</code> to work on
 vectors of arbitrary size is to first compute the coordinates of each
@@ -2869,7 +2873,7 @@ value for <code>upper_bound</code>.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution5" aria-expanded="false" aria-controls="collapseSolution5">
   <h4 class="accordion-header" id="headingSolution5"> Show me the solution </h4>
 </button>
-<div id="collapseSolution5" class="accordion-collapse collapse" aria-labelledby="headingSolution5" data-bs-parent="#accordionSolution5">
+<div id="collapseSolution5" class="accordion-collapse collapse" data-bs-parent="#accordionSolution5" aria-labelledby="headingSolution5">
 <div class="accordion-body">
 <p>One possible solution for the CUDA kernel is provided in the
 following code.</p>
@@ -3371,7 +3375,7 @@ shared memory.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>To use shared memory for the <code>temp</code> array add the
 identifier <code>__shared__</code> to its definition, like in the
@@ -3421,7 +3425,7 @@ the result of its execution will be?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>The result is non deterministic, and definitely not the same as the
 previous versions of <code>vector_add</code>. Threads will overwrite
@@ -3621,7 +3625,7 @@ find it?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>The GPU is a highly parallel device, executing multiple threads at
 the same time. In the previous code different threads could be updating
@@ -3757,7 +3761,7 @@ memory.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
 <div class="accordion-body">
 <p>The following code shows one of the possible solutions.</p>
 <div class="codewrapper sourceCode" id="cb15">
