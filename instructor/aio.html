@@ -417,7 +417,7 @@
 <ul>
 <li>“What is a Graphics Processing Unit?”</li>
 <li>“Can a GPU be used for anything other than graphics?”</li>
-<li>“Are GPUs faster than CPUs?”</li>
+<li>“For which kinds of tasks are GPUs faster than CPUs?”</li>
 </ul>
 </div>
 </div>
@@ -427,8 +427,11 @@
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
 <ul>
-<li>“Understand the differences between CPU and GPU”</li>
-<li>“See the possible performance benefits of GPU acceleration”</li>
+<li>“Explain the key architectural differences between CPU and GPU”</li>
+<li>“Estimate the performance speedup of running a computation on the
+GPU”</li>
+<li>“Use the terms host and device to distinguish CPU and GPU in the
+context of GPU programming”</li>
 </ul>
 </div>
 </div>
@@ -598,13 +601,12 @@ improvement of 204 times.</p>
 <div class="callout-inner">
 <div class="callout-content">
 <ul>
-<li>“CPUs and GPUs are both useful and each has its own place in our
-toolbox”</li>
+<li>“GPUs achieve high throughput by running thousands of threads in
+parallel, unlike CPUs which prioritise low latency”</li>
 <li>“In the context of GPU programming, we often refer to the GPU as the
 <em>device</em> and the CPU as the <em>host</em>”</li>
 <li>“Using GPUs to accelerate computation can provide large performance
 gains”</li>
-<li>“Using the GPU with Python is not particularly difficult”</li>
 </ul>
 </div>
 </div>
@@ -2323,7 +2325,7 @@ following line:</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>The correct answer is number 3, only the element <code>C[1]</code> is
 written, and we do not even know by which thread!</p>
@@ -2481,7 +2483,7 @@ kernel?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>The content of <code>blockDim</code> is <code>(512, 1, 1)</code> and
 the content of <code>gridDim</code> is <code>(4, 1, 1)</code>, for all
@@ -2549,7 +2551,7 @@ are larger than the largest CUDA block (i.e. 1024).</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>The correct answer is
 <code>(blockIdx.x * blockDim.x) + threadIdx.x</code>. The following code
@@ -2610,7 +2612,7 @@ now. Can you rewrite the code to make it work?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
 <div class="accordion-body">
 <p>The correct way to modify the <code>vector_add</code> to work on
 vectors of arbitrary size is to first compute the coordinates of each
@@ -2873,7 +2875,7 @@ value for <code>upper_bound</code>.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution5" aria-expanded="false" aria-controls="collapseSolution5">
   <h4 class="accordion-header" id="headingSolution5"> Show me the solution </h4>
 </button>
-<div id="collapseSolution5" class="accordion-collapse collapse" aria-labelledby="headingSolution5" data-bs-parent="#accordionSolution5">
+<div id="collapseSolution5" class="accordion-collapse collapse" data-bs-parent="#accordionSolution5" aria-labelledby="headingSolution5">
 <div class="accordion-body">
 <p>One possible solution for the CUDA kernel is provided in the
 following code.</p>
