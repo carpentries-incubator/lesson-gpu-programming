@@ -16,6 +16,6 @@
 "episodes/streams.Rmd" "46bc230192477a52f28323d15198d4b2" "site/built/streams.md" "2026-04-22"
 "instructors/instructor-notes.md" "5cf113fd22defb29d17b64597f3c9bc0" "site/built/instructor-notes.md" "2026-04-22"
 "learners/reference.md" "527a12e217602daae51c5fd9ef8958df" "site/built/reference.md" "2026-04-22"
-"learners/setup.md" "f4245de3bbc80a56c8c9cdacc1beafdc" "site/built/setup.md" "2026-05-06"
+"learners/setup.md" "ac59ad54ece843702e285cffd9076298" "site/built/setup.md" "2026-05-06"
 "profiles/learner-profiles.md" "5fe5bf7537072422b91ed393ada03f9a" "site/built/learner-profiles.md" "2026-04-22"
 "renv/profiles/lesson-requirements/renv.lock" "7e7237487095299d2f992110df4571d5" "site/built/renv.lock" "2026-04-22"
