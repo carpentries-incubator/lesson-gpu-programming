@@ -347,6 +347,13 @@ The last linear convolution has actually been performed on the GPU, and faster t
 
 With this NumPy shortcut and without much coding effort, we obtained a good 18-fold speedup.
 
+::::::::::::::::::::::::::::::::::::::::::::::::: instructor
+
+The "A scientific application: image processing for radio astronomy" section is substantial and assumes some familiarity with radio astronomy concepts.
+If time is limited or the audience has no astronomy background, this section can be skipped without loss of continuity, as the core CuPy concepts are fully covered in the preceding sections.
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 # A scientific application: image processing for radio astronomy
 
 In this section, we will perform four classical steps in image processing for radio astronomy: determination of the background characteristics, segmentation, connected component labeling, and source measurements.
