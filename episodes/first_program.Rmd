@@ -5,16 +5,18 @@ exercises: 25
 ---
 
 :::::::::::::::::::::::::::::::::::::: questions
-- "How can I parallelize a Python application on a GPU?"
-- "How to write a GPU program?"
+- "How do I identify data parallelism in my code?"
+- "How do I write a GPU program?"
 - "What is CUDA?"
+- "How are CUDA threads organised into blocks and grids?"
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: objectives
 - "Recognize possible data parallelism in Python code"
-- "Understand the structure of a CUDA program"
-- "Execute a CUDA program in Python using CuPy"
-- "Measure the execution time of a CUDA kernel with CuPy"
+- "Describe the role of the `__global__`, `__host__`, and `__device__` keywords in a CUDA program"
+- "Use `threadIdx`, `blockIdx`, and `blockDim` to compute the global index of a thread"
+- "Write a CUDA kernel that handles input arrays of arbitrary size"
+- "Execute a CUDA program in Python and measure its execution time"
 ::::::::::::::::::::::::::::::::::::::
 
 # Summing Two Vectors in Python
@@ -27,7 +29,7 @@ def vector_add(A, B, C, size):
         C[item] = A[item] + B[item]
 ~~~
 
-One of the characteristics of this program is that each iteration of the `for` loop is independent from the other iterations.
+One of the characteristics of this program is that each iteration of the `for` loop is independent of the other iterations.
 In other words, we could reorder the iterations and still produce the same output, or even compute each iteration in parallel or on a different device, and still come up with the same output.
 These are the kind of programs that we would call *naturally parallel*, and they are perfect candidates for being executed on a GPU.
 
@@ -185,7 +187,7 @@ The correct answer is number 3, only the element `C[1]` is written, and we do no
 
 # Computing Hierarchy in CUDA
 
-In the previous example we had a small vector of size 1024, and each of the 1024 threads we generated was working on one of the element.
+In the previous example we had a small vector of size 1024, and each of the 1024 threads we generated was working on one of the elements.
 
 What would happen if we changed the size of the vector to a larger number, such as 2048?
 We modify the value of the variable size and try again.
@@ -203,7 +205,7 @@ config = LaunchConfig(grid=(1, 1, 1), block=(size, 1, 1))
 launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 ~~~
 
-This is how the output should look like when running the code in a Jupyter Notebook:
+This is how the output should look when running the code in a Jupyter Notebook:
 
 ~~~output
 ---------------------------------------------------------------------------
@@ -232,12 +234,12 @@ config = LaunchConfig(grid=(1, 1, 1), block=(size, 1, 1))
 ~~~
 
 The first triplet specifies the size of the CUDA **grid**, while the second triplet specifies the size of the CUDA **block**.
-The grid is a three-dimensional structure in the CUDA programming model and it represent the organization of a whole kernel execution.
+The grid is a three-dimensional structure in the CUDA programming model and it represents the organization of a whole kernel execution.
 A grid is made of one or more independent blocks, and in the case of our previous snippet of code we have a grid composed by a single block `(1, 1, 1)`.
 The size of this block is specified by the second triplet, in our case `(size, 1, 1)`.
-While blocks are independent of each other, the thread composing a block are not completely independent, they share resources and can also communicate with each other.
+While blocks are independent of each other, the threads composing a block are not completely independent, they share resources and can also communicate with each other.
 
-To go back to our example, we can modify che grid specification from `(1, 1, 1)` to `(2, 1, 1)`, and the block specification from `(size, 1, 1)` to `(size // 2, 1, 1)`.
+To go back to our example, we can modify the grid specification from `(1, 1, 1)` to `(2, 1, 1)`, and the block specification from `(size, 1, 1)` to `(size // 2, 1, 1)`.
 
 ~~~python
 config = LaunchConfig(grid=(2, 1, 1), block=(size // 2, 1, 1))
@@ -281,7 +283,7 @@ The content of `blockDim` is `(512, 1, 1)` and the content of `gridDim` is `(4, 
 :::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::
 
-What happens if we then run the code that we just modified to work on an vector of 2048 elements, and compare the results with our CPU version?
+What happens if we then run the code that we just modified to work on a vector of 2048 elements, and compare the results with our CPU version?
 
 ~~~python
 # reallocate the CPU arrays
@@ -431,7 +433,7 @@ config = LaunchConfig(grid=grid_size, block=block_size)
 launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 ~~~
 
-With these changes we always have blocks composed of 1024 threads, but we adapt the number of blocks so that we always have enough to threads to compute all elements in the vector.
+With these changes we always have blocks composed of 1024 threads, but we adapt the number of blocks so that we always have enough threads to compute all elements in the vector.
 If we want to be able to easily modify the number of threads per block, we can even rewrite the code like the following:
 
 ~~~python
@@ -590,7 +592,7 @@ else:
 
 There is no need to modify anything in the code, except the body of the CUDA `all_primes_to` inside the `check_prime_gpu_code` string, as we did in the examples so far.
 
-Be aware that the provided CUDA code is a direct port of the Python code, and therefore very slow. If you want to test it, user a lower value for `upper_bound`.
+Be aware that the provided CUDA code is a direct port of the Python code, and therefore very slow. If you want to test it, use a lower value for `upper_bound`.
 
 ::::::::::::::::::::::::::::::::::::: solution
 
@@ -629,4 +631,6 @@ Having one number assigned to each thread via its ID, the kernel implements the 
 :::::::::::::::::::::::::::::::::::::: keypoints
 - "Precede your kernel definition with the `__global__` keyword"
 - "Use built-in variables `threadIdx`, `blockIdx`, `gridDim` and `blockDim` to identify each thread"
+- "The global index of a thread is `(blockIdx.x * blockDim.x) + threadIdx.x`"
+- "Add a bounds check (`if (item < size)`) in your kernel when the total number of threads may exceed the input size"
 ::::::::::::::::::::::::::::::::::::::
