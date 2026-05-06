@@ -26,7 +26,7 @@ To create a virtual environment using `pip`, you need to install the `virtualenv
 
 ~~~bash
 cd /path/to/workshop/dir
-python3.11 -m virtualenv --prompt gpu-workshop venv
+python3 -m virtualenv --prompt gpu-workshop venv
 source venv/bin/activate
 pip install -U pip  # update pip to the latest version
 pip install cupy-cuda12x numba jupyterlab matplotlib scipy astropy
