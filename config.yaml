@@ -62,6 +62,7 @@ episodes:
 - introduction.Rmd
 - cupy.Rmd
 - numba.Rmd
+- pytorch.Rmd
 - gpu_introduction.Rmd
 - first_program.Rmd
 - global_local_memory.Rmd
