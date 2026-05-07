@@ -14,7 +14,7 @@ exercises: 20
 
 # Concurrently execute two kernels on the same GPU
 
-So far we only focused on completing one operation at the time on the GPU, writing and executing a single CUDA kernel each time.
+So far we only focused on completing one operation at a time on the GPU, writing and executing a single CUDA kernel each time.
 However the GPU has enough resources to perform more than one task at the same time.
 
 Let us assume that, for our program, we need to compute both a list of prime numbers, and a histogram, two kernels that we developed in this same lesson.
@@ -89,7 +89,7 @@ mod = prog.compile("cubin", name_expressions=("all_primes_to",))
 all_primes_to_gpu = mod.get_kernel("all_primes_to")
 grid_size = (int(math.ceil(upper_bound / 1024)), 1, 1)
 block_size = (1024, 1, 1)
-config = LaunchConfig(grid=grid_size, block=block_size)
+config_primes = LaunchConfig(grid=grid_size, block=block_size)
 
 # Compile and setup the grid for histogram
 prog = Program(histogram_cuda_code, code_type="c++", options=program_options)
@@ -97,11 +97,11 @@ mod = prog.compile("cubin", name_expressions=("histogram",))
 histogram_gpu = mod.get_kernel("histogram")
 grid_size = (int(math.ceil(histogram_size / 256)), 1, 1)
 block_size = (256, 1, 1)
-config = LaunchConfig(grid=grid_size, block=block_size)
+config_histogram = LaunchConfig(grid=grid_size, block=block_size)
 
 # Execute the kernels
-launch(stream, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
-launch(stream, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)
+launch(stream, config_primes, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
+launch(stream, config_histogram, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)
 stream.sync()
 
 # Save results to do something else later
@@ -116,7 +116,7 @@ This is technically correct, but there is no reason why one kernel should be exe
 Therefore, while this is fine in our example, in a real application we may want to run the two kernels concurrently on the GPU to reduce the total execution time.
 To achieve this in CUDA we need to use CUDA *streams*.
 
-A stream is a sequence of GPU operations that is executed in order, and so far we have been implicitly using the defaul stream.
+A stream is a sequence of GPU operations that is executed in order, and so far we have been implicitly using the default stream.
 This is the reason why all the operations we issued, such as data transfers and kernel invocations, are performed in the order we specify them in the Python code, and not in any other.
 
 Have you wondered why after requesting data transfers to and from the GPU, we do not stop to check if they are complete before performing operations on such data?
@@ -132,8 +132,8 @@ stream_two = gpu.create_stream()
 We can then execute the kernels in different streams by passing the stream object to the `launch` function.
 
 ~~~python
-launch(stream_one, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
-launch(stream_two, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)
+launch(stream_one, config_primes, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
+launch(stream_two, config_histogram, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)
 ~~~
 
 The result of doing this is that the second kernel, i.e. `histogram_gpu`, does not need to wait for `all_primes_to_gpu` to finish before being executed.
@@ -149,7 +149,7 @@ stream_one.sync()
 
 This synchronization primitive is useful when we need to be sure that all operations on a stream are finished, before continuing.
 It is, however, a bit coarse grained.
-Imagine to have a stream with a whole sequence of operations enqueued, and another stream with one data dependency on one of these operations.
+Imagine having a stream with a whole sequence of operations enqueued, and another stream with one data dependency on one of these operations.
 If we use `sync`, we wait until all operations of said stream are completed before executing the other stream, thus negating the whole reason of using streams in the first place.
 
 A possible solution is to insert a CUDA *event* at a certain position in the stream, and then wait specifically for that event.
@@ -160,18 +160,18 @@ interesting_event = gpu.create_event()
 ~~~
 
 And can then be added to a stream by using the `record` method.
-In the following example we will create two streams: in the first we will execute `histogram_gpu` twice, while in the second one we will execute `all_primes_to_gpu` with the condition that the kernel in the second stream is executed only after the first histogram is computed.
+In the following example we will create two streams: in the first we will execute `all_primes_to_gpu` twice, while in the second one we will execute `histogram_gpu` with the condition that the kernel in the second stream is executed only after the first prime number computation is complete.
 
 ~~~python
 stream_one = gpu.create_stream()
 stream_two = gpu.create_stream()
 sync_point = gpu.create_event()
 
-launch(stream_one, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
+launch(stream_one, config_primes, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
 stream_one.record(sync_point)
-launch(stream_one, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
+launch(stream_one, config_primes, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)
 stream_two.wait(sync_point)
-launch(stream_two, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)
+launch(stream_two, config_histogram, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)
 ~~~
 
 With streams and events, it is possible to build up arbitrary execution graphs for complex operations on the GPU.
@@ -252,5 +252,7 @@ else:
 ~~~
 
 :::::::::::::::::::::::::::::::::::::: keypoints
-- ""
+- "Use CUDA streams to run kernels concurrently on the same GPU"
+- "Use events to synchronize between streams at a fine-grained level"
+- "Use events with timing enabled to measure kernel execution time"
 ::::::::::::::::::::::::::::::::::::::
