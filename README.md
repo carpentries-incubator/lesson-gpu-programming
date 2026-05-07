@@ -1,17 +1,39 @@
 # GPU Programming
 
-Carpentries style lesson about programming with Graphics Processing Units (GPUs).
+A [Carpentries Incubator](https://github.com/carpentries-incubator) lesson on programming Graphics Processing Units (GPUs) in Python.
+
+The rendered lesson is available at: https://carpentries-incubator.github.io/lesson-gpu-programming/
+
+## Lesson Content
+
+The lesson covers the following topics:
+
+- **Introduction**: overview of GPU architecture and when to use a GPU
+- **CuPy**: GPU-accelerated NumPy-like arrays
+- **PyTorch**: tensor operations and `@torch.compile` for general-purpose GPU computing
+- **Numba**: JIT-compiling Python functions for the GPU
+- **CUDA fundamentals**: writing and launching GPU kernels using CUDA and Python
+- **Memory hierarchy**: global, local, shared, and constant memory
+- **Streams and events**: concurrent kernel execution and fine-grained synchronization
+
+## Prerequisites
+
+Learners are expected to have:
+
+- Basic Python programming skills
+- Familiarity with NumPy arrays
+
+No prior GPU or parallel programming experience is required.
 
 ## Teaching this lesson?
-Do you want to teach GPU programming? This material is open-source and freely available. 
-Are you planning on using our material in your teaching? 
-We would love to help you prepare to teach the lesson and receive feedback on how it could be further improved, based on your experience in the workshop.
 
-You can notify us that you plan to teach this lesson by creating an issue in this repository. Also, it would great if you can update [this overview of all workshops taught with this lesson material](workshops.md). This helps us show the impact of developing open-source lessons to our funders.
+This material is open-source and freely available. If you are planning to use it in your teaching, please get in touch at [training@esciencecenter.nl](mailto:training@esciencecenter.nl). We would love to help you prepare and receive feedback based on your experience.
 
-## Maintainer(s)
+## Contributing
 
-Current maintainers of this lesson are 
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request or issue.
 
-* Alessio Sclocco [@isazi](https://github.com/isazi)
-* Hanno Spreeuw [@HannoSpreeuw](https://github.com/HannoSpreeuw)
+## Current maintainer(s)
+
+- Alessio Sclocco [@isazi](https://github.com/isazi)
+
