@@ -140,7 +140,7 @@ y = torch.rand((3, 3), device=device)
 z = torch.rand((3, 3, 3), device=device)
 ~~~
 
-Slicing is also supported, similar to NumPy. For example, `m[i,:]` gives the $i$-th row and `m[:,j] gives the $j$-th column of a matrix `m`. The result of slicing a tensor returns again a tensor. Note that modifying this slice will also modify the original tensor, as it is a view. 
+Slicing is also supported, similar to NumPy. For example, `m[i,:]` gives the $i$-th row and `m[:,j]` gives the $j$-th column of a matrix `m`. The result of slicing a tensor returns again a tensor. Note that modifying this slice will also modify the original tensor, as it is a view.
 
 ~~~python
 x = torch.rand(2, 3, device=device)
