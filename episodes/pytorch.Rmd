@@ -12,7 +12,7 @@ exercises: 10
 
 :::::: objectives
 - "Create PyTorch tensors and apply operations."
-- "Understanding the `@torch.compile` decorator and its limitations."
+- "Understand the `@torch.compile` decorator and its limitations."
 - "Compare the performance of PyTorch against other solutions."
 ::::::
 
@@ -32,7 +32,7 @@ First, we need to import `torch`:
 import torch
 ~~~
 
-Next, we can check whether PyTorch detected a GPU:
+Next, we can check whether PyTorch detects a GPU:
 
 ~~~python
 print("GPU available:", torch.cuda.is_available())
@@ -72,7 +72,7 @@ This should print `4` and `torch.float32`. Notice that PyTorch’s default float
 
 ## Working with tensors
 
-To convert a NumPy array into a PyTorch tensor, we can use `torch.from_numpy`. Note that the resulting PyTorch tensor will not copy the data, instead it shares the same memory with the NumPy array. This means that modifying the PyTorch tensor will also change the contents of the returned NumPy array.
+To convert a NumPy array into a PyTorch tensor, we can use `torch.from_numpy`. Note that the resulting PyTorch tensor will not copy the data, instead, it shares the same memory with the NumPy array. This means that modifying the PyTorch tensor will also change the contents of the original NumPy array.
 
 The resulting tensor shares memory with the NumPy array.
 
@@ -140,7 +140,7 @@ y = torch.rand((3, 3), device=device)
 z = torch.rand((3, 3, 3), device=device)
 ~~~
 
-Slicing is also supported, similar to NumPy. For example, `m[i,:]` gives the $i$-th row and `m[:,j]` gives the $j$-th column of a matrix `m`. The result of slicing a tensor returns again a tensor. Note that modifying this slice will also modify the original tensor, as it is a view.
+Slicing is also supported, similar to NumPy. For example, `m[i, :]` gives the $i$-th row and `m[:, j]` gives the $j$-th column of a matrix `m`. The result of slicing a tensor is again a tensor. Note that modifying this slice will also modify the original tensor, as it is a view.
 
 ~~~python
 x = torch.rand(2, 3, device=device)
@@ -149,7 +149,7 @@ x = torch.rand(2, 3, device=device)
 print("before:", x)
 
 # Modify the first row
-x[0,:] = 0
+x[0, :] = 0
 
 # Print the matrix
 print("after:", x)
@@ -188,8 +188,8 @@ sin: tensor([ 0.0000,  0.8415,  0.9093,  0.1411, -0.7568], device='cuda:0')
 Be aware that you cannot mix NumPy arrays and GPU tensors in these operations. To do this, you either need to use `.cpu()` to convert your GPU tensor into a CPU tensor or, alternatively, copy your NumPy array into a GPU tensor.
 
 ~~~python
-x = torch.rand(10, device=device)
-y = np.arange(10)
+x = torch.rand(5, device=device)
+y = np.arange(5)
 
 # This is not allowed
 try:
@@ -211,11 +211,11 @@ GPU: tensor([0.6511, 1.7587, 2.4972, 3.3509, 4.5963], device='cuda:0')
 ~~~
 
 
-## Example using Gravitational Forces
+## Example Using N-Body Simulation
 
-Now, we will consider a larger example of how to use PyTorch. For this example, we generate `n` random planetary bodies. Next, we calculate the total gravitational force that each body experiences from the other bodies using [Newton's law of universal gravitation](https://en.wikipedia.org/wiki/Newton%27s_law_of_universal_gravitation).
+Now, we will consider a larger example of how to use PyTorch. For this example, we consider `n` random planetary bodies and calculate the total gravitational force that each body experiences from the other bodies using [Newton's law of universal gravitation](https://en.wikipedia.org/wiki/Newton%27s_law_of_universal_gravitation).
 
-First, we generate `n` random planets in a 2 dimensional plane. The `x` and `y` coordinates are randomly in the range [0, 1].
+First, we generate `n` random planets in a 2D plane. The `x` and `y` coordinates are chosen randomly in the range $[0, 1]$.
 
 ~~~python
 n = 10
@@ -360,11 +360,11 @@ This part shows how PyTorch has _traced_ our function `compute` as a graph of op
 ...
 ~~~
 
-This part shows that PyTorch automatically generated a GPU _kernel_ named `triton_poi_fused_add_cos_mul_sin_0` that performs all operations in one go, instead of having separate functions for each operation. The generated kernel uses [Triton](https://triton-lang.org/main/index.html), a Python-based programming language for GPU computing.
+This part shows that PyTorch automatically generated a GPU _kernel_ named `triton_poi_fused_add_cos_mul_sin_0` that performs all operations in one go, instead of having separate functions for each operation. The generated kernel uses [Triton](https://triton-lang.org/main/index.html), a Python-based language and compiler for GPU programming.
 
-There are certain limitations `@torch.compile`. For example, the inputs and outputs can only be PyTorch tensors, and you must be careful with loops (`for` statements) and conditionals (`if` statements). For more information, see the [guide](https://docs.pytorch.org/docs/stable/user_guide/torch_compiler/compile/programming_model.html) on the `torch.compile` programming model.
+There are certain limitations to `@torch.compile`. For example, the inputs and outputs can only be PyTorch tensors, and you must be careful with loops (`for` statements) and conditionals (`if` statements). For more information, see the [guide](https://docs.pytorch.org/docs/stable/user_guide/torch_compiler/compile/programming_model.html) on the `torch.compile` programming model.
 
-As an example, consider the following function that scales a tensor by `2` if the sum is positive and `-2` otherwise. Note that we pass the `fullgraph=True` option to force PyTorch to raise an error if it could not compile.
+As an example, consider the following function that scales a tensor by `2` if the sum is positive and `-2` otherwise. Note that we pass the `fullgraph=True` option to force PyTorch to raise an error if it cannot compile.
 
 ~~~python
 import torch
@@ -374,7 +374,7 @@ def fail_example(x):
     if x.sum() > 0:
         return x * 2
     else:
-        return x - 2
+        return x * -2
 
 fail_example(torch.rand(100, device=device))
 ~~~
@@ -392,7 +392,7 @@ Unsupported: Data-dependent branching
  For more details about this graph break, please visit: https://meta-pytorch.github.io/compile-graph-break-site/gb/gb0170.html
 ~~~
 
-The problem here is that PyTorch cannot statically determine whether to execute the `x * 2` operation or the `x * -2` operation, as this is dependent on the runtime value of `x.sum()`. 
+The problem here is that PyTorch cannot statically determine whether to execute `x * 2` or `x * -2`, as this is dependent on the runtime value of `x.sum()`. 
 
 Instead, for this example, we can use `torch.where` to select between them instead of having an if statement.
 
@@ -402,7 +402,7 @@ import torch
 @torch.compile(fullgraph=True)
 def correct_example(x):
     condition = x.sum() > 0
-    return torch.where(condition, x * 2, x - 2)
+    return torch.where(condition, x * 2, x * -2)
 
 correct_example(torch.rand(100, device=device))
 ~~~
@@ -410,9 +410,9 @@ correct_example(torch.rand(100, device=device))
 
 ## Comparison of performance
 
-Let measure the time of our `calculate_forces` function with and without `@torch.compile` to compare the performance.
+Let's measure the time of our `calculate_forces` function with and without `@torch.compile` to compare the performance.
 
-First, we must import the `%gpu_timeit` from `cupyx`
+First, we import `%gpu_timeit` from `cupyx`.
 
 ~~~python
 %load_ext cupyx.profiler
@@ -473,10 +473,10 @@ The CPU takes 608.563 milliseconds, meaning our GPU is around 152x faster than o
 
 
 ::::::::::::::::::::::::::::::::::::::: challenge
-Measure the performance of `calculate_forces_fast` for different number of planets. For example, `n=2500`, `n=5000`, `n=10_000`, and `n=20_000`. What timings do you expect? What do you get?
+Measure the performance of `calculate_forces_fast` for different numbers of planets. For example, `n = 2500`, `n = 5000`, `n = 10_000`, and `n = 20_000`. What timings do you expect? What do you get?
 
 :::::::::::::::::::::::::::::::::::::: solution
-The following times where measured (on you system it might be different!).
+The following times were measured (on your system they might be different!).
 
 ~~~output
 421.274 us
@@ -485,6 +485,6 @@ The following times where measured (on you system it might be different!).
 18965.095 us
 ~~~
 
-The results show that each time we double `n`, the execution time quadrupples. This happens as the number of pair-wise interactions between $n$ planets equals $n^2$.
+The results show that each time we double `n`, the execution time quadruples. This happens as the number of pairwise interactions between $n$ planets equals $n^2$.
 ::::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::
