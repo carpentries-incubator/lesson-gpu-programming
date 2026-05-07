@@ -72,9 +72,7 @@ This should print `4` and `torch.float32`. Notice that PyTorch’s default float
 
 ## Working with tensors
 
-To convert a NumPy array into a PyTorch tensor, we can use `torch.from_numpy`. Note that the resulting PyTorch tensor will not copy the data, instead, it shares the same memory with the NumPy array. This means that modifying the PyTorch tensor will also change the contents of the original NumPy array.
-
-The resulting tensor shares memory with the NumPy array.
+To convert a NumPy array into a PyTorch tensor, we can use `torch.from_numpy`. Note that the resulting PyTorch tensor will not copy the data; instead, it shares the same memory with the NumPy array. This means that modifying the PyTorch tensor will also change the contents of the original NumPy array.
 
 To convert a tensor back into a NumPy array, we can use `tensor.cpu().numpy()`. Since NumPy arrays always live in CPU memory, CUDA tensors must first be copied back to the CPU using `.cpu()`.
 
@@ -250,16 +248,16 @@ Now, we can define a function that computes these forces between the planets.
 G = 6.67e-11
 
 def calculate_forces(pos, mass):
-    # r[:, i, j] = pos_j - pos_i
+    # diff[:, i, j] = pos_j - pos_i
     diff = pos[:, None, :] - pos[:, :, None] # (2, N, N)
 
     # dist[i, j] = ||pos_j - pos_i||
     dist = diff.norm(dim=0)        # (N, N)
-    dir = diff / dist
+    direction = diff / dist
 
     # Force on i from j: F_ij = G * m_i * m_j * r_ij / |r_ij|^2
     forces = G * mass[:, None] * mass[None, :] / dist**2
-    return (dir * forces[None, :, :]).nansum(dim=2)  # (2, N)
+    return (direction * forces[None, :, :]).nansum(dim=2)  # (2, N)
 ~~~
 
 Finally, we can plot the results.
@@ -487,4 +485,10 @@ The following times were measured (on your system they might be different!).
 
 The results show that each time we double `n`, the execution time quadruples. This happens as the number of pairwise interactions between $n$ planets equals $n^2$.
 ::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::: keypoints
+- "PyTorch tensors can be created and manipulated directly on the GPU"
+- "Use `.to(device)` to move data between CPU and GPU, and `.cpu().numpy()` to convert back to NumPy"
+- "The `@torch.compile` decorator can significantly speed up tensor operations by fusing them into optimized GPU kernels"
 ::::::::::::::::::::::::::::::::::::::
