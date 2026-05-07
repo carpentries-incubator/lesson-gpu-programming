@@ -5,13 +5,14 @@ exercises: 25
 ---
 
 :::::::::::::::::::::::::::::::::::::: questions
-- "Is there a way to share data between threads of a same block?"
-- "Can threads inside a block wait for other threads?"
+- "How can threads in the same block collaborate by sharing data?"
+- "Why would threads in a block ever need to wait for each other?"
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: objectives
-- "Learn how to share data between threads"
-- "Learn how to synchronize threads"
+- "Use `__shared__` to allocate shared memory in a CUDA kernel"
+- "Use `__syncthreads()` to synchronize threads within a block"
+- "Explain when shared memory can improve performance over global memory"
 ::::::::::::::::::::::::::::::::::::::
 
 So far we looked at how to use CUDA to accelerate the computation, but a common pattern in all the examples we encountered so far is that threads worked in isolation.
@@ -57,7 +58,7 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 {
   int item = (blockIdx.x * blockDim.x) + threadIdx.x;
   __shared__ float temp[3];
->
+
   if ( item < size )
   {
       temp[0] = A[item];
@@ -82,7 +83,7 @@ The previous code example is functionally wrong. Can you guess what the result o
 ::::::::::::::::::::::::::::::::::::: solution
 
 The result is non deterministic, and definitely not the same as the previous versions of `vector_add`.
-Threads will overwrite each other temporary values,and there will be no guarantee on which value is visible by each thread.
+Threads will overwrite each other's temporary values, and there will be no guarantee on which value is visible by each thread.
 :::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::
 
@@ -108,7 +109,7 @@ And then instruct CUDA about how much shared memory, in bytes, each thread block
 This can be done by setting a value for the parameter `shmem_size` to the kernel configuration.
 
 ~~~python
-config = LaunchConfig(grid=grid_size, block=block_size, shmem_size=((size // 2) * 3 * cp.dtype(cp.float32).itemsize))
+config = LaunchConfig(grid=grid_size, block=block_size, shmem_size=(threads_per_block) * 3 * cp.dtype(cp.float32).itemsize))
 ~~~
 
 As you may have noticed, we had to retrieve the size in bytes of the data type `cp.float32`, and this is done with `cp.dtype(cp.float32).itemsize`.
@@ -191,7 +192,7 @@ vector_add_gpu = mod.get_kernel("vector_add")
 threads_per_block = 1024
 grid_size = (int(math.ceil(size / threads_per_block)), 1, 1)
 block_size = (threads_per_block, 1, 1)
-config = LaunchConfig(grid=grid_size, block=block_size, shmem_size=((size // 2) * 3 * cp.dtype(cp.float32).itemsize))
+config = LaunchConfig(grid=grid_size, block=block_size, shmem_size=(threads_per_block * 3 * cp.dtype(cp.float32).itemsize))
 launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)
 
 # Execute Python code and compare results
@@ -237,7 +238,7 @@ __global__ void histogram(const int * input, int * output)
 :::::::::::::::::::::::::::::::::::::: challenge
 ## Challenge: error in the histogram
 
-If you look at the CUDA `histogram` code, there is a logical error that prevents it to produce the correct results.
+If you look at the CUDA `histogram` code, there is a logical error that prevents it from producing the correct results.
 Can you find it?
 
 ~~~c
@@ -333,7 +334,7 @@ else:
 The CUDA code is now correct, and computes the same result as the Python code; it is also faster than the Python code, as you can see from measuring the execution time.
 However, we are accumulating the results directly in global memory, and the more conflicts we have in global memory, the lower the performance of our `histogram` will be.
 Moreover, the access pattern to the output array is very irregular, being dependent on the content of the input array.
-GPUs are designed for very regular computations, and so if we can make the histogram more regular we can hope in a further improvement in performance.
+GPUs are designed for very regular computations, and so if we can make the histogram more regular we can hope for a further improvement in performance.
 
 As you may expect, we can improve the memory access pattern by using shared memory.
 
@@ -497,9 +498,8 @@ On a NVIDIA Tesla T4 accessed via Google Colab, the shared memory version is ten
 
 :::::::::::::::::::::::::::::::::::::: keypoints
 - "Shared memory is faster than global memory and local memory"
-- "Shared memory can be used as a user-controlled cache to speedup code"
-- "Size of shared memory arrays must be known at compile time if allocated inside a thread"
-- "It is possible to declare `extern` shared memory arrays and pass the size during kernel invocation"
-- "Use `__shared__` to allocate memory in the shared memory space"
+- "Shared memory can be used as a user-controlled cache to speed up code"
+- "Size of shared memory arrays must be known at compile time, unless declared as `extern`"
+- "Use `__shared__` to allocate shared memory; use `extern __shared__` with `shmem_size` for dynamically-sized arrays"
 - "Use `__syncthreads()` to wait for shared memory operations to be visible to all threads in a block"
 ::::::::::::::::::::::::::::::::::::::
