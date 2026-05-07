@@ -3332,7 +3332,7 @@ any links that you are not going to use.
  -->
 </div></section><section id="aio-shared_memory_and_synchronization"><p>Content from <a href="shared_memory_and_synchronization.html">Shared Memory and Synchronization</a></p>
 <hr>
-<p>Last updated on 2026-04-22 |
+<p>Last updated on 2026-05-07 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/shared_memory_and_synchronization.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 55 minutes</p>
@@ -3347,8 +3347,10 @@ any links that you are not going to use.
 <div class="inner">
 <h3 class="card-title">Questions</h3>
 <ul>
-<li>“Is there a way to share data between threads of a same block?”</li>
-<li>“Can threads inside a block wait for other threads?”</li>
+<li>“How can threads in the same block collaborate by sharing
+data?”</li>
+<li>“Why would threads in a block ever need to wait for each
+other?”</li>
 </ul>
 </div>
 </div>
@@ -3358,8 +3360,12 @@ any links that you are not going to use.
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
 <ul>
-<li>“Learn how to share data between threads”</li>
-<li>“Learn how to synchronize threads”</li>
+<li>“Use <code>__shared__</code> to allocate shared memory in a CUDA
+kernel”</li>
+<li>“Use <code>__syncthreads()</code> to synchronize threads within a
+block”</li>
+<li>“Explain when shared memory can improve performance over global
+memory”</li>
 </ul>
 </div>
 </div>
@@ -3433,7 +3439,7 @@ following code.</p>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1" aria-label="code-block-2-3"></a><span class="op">{</span></span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1" aria-label="code-block-2-4"></a>  <span class="dt">int</span> item <span class="op">=</span> <span class="op">(</span>blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1" aria-label="code-block-2-5"></a>  __shared__ <span class="dt">float</span> temp<span class="op">[</span><span class="dv">3</span><span class="op">];</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1" aria-label="code-block-2-6"></a><span class="op">&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1" aria-label="code-block-2-6"></a></span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1" aria-label="code-block-2-7"></a>  <span class="cf">if</span> <span class="op">(</span> item <span class="op">&lt;</span> size <span class="op">)</span></span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1" aria-label="code-block-2-8"></a>  <span class="op">{</span></span>
 <span id="cb2-9"><a href="#cb2-9" tabindex="-1" aria-label="code-block-2-9"></a>      temp<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>item<span class="op">];</span></span>
@@ -3474,7 +3480,7 @@ the result of its execution will be?</p>
 <div class="accordion-body">
 <p>The result is non deterministic, and definitely not the same as the
 previous versions of <code>vector_add</code>. Threads will overwrite
-each other temporary values,and there will be no guarantee on which
+each other’s temporary values, and there will be no guarantee on which
 value is visible by each thread.</p>
 </div>
 </div>
@@ -3509,7 +3515,7 @@ parameter <code>shmem_size</code> to the kernel configuration.</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a>config <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>grid_size, block<span class="op">=</span>block_size, shmem_size<span class="op">=</span>((size <span class="op">//</span> <span class="dv">2</span>) <span class="op">*</span> <span class="dv">3</span> <span class="op">*</span> cp.dtype(cp.float32).itemsize))</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a>config <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>grid_size, block<span class="op">=</span>block_size, shmem_size<span class="op">=</span>(threads_per_block) <span class="op">*</span> <span class="dv">3</span> <span class="op">*</span> cp.dtype(cp.float32).itemsize))</span></code></pre>
 </div>
 <p>As you may have noticed, we had to retrieve the size in bytes of the
 data type <code>cp.float32</code>, and this is done with
@@ -3594,7 +3600,7 @@ use the right indices:</p>
 <span id="cb7-53"><a href="#cb7-53" tabindex="-1" aria-label="code-block-7-53"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
 <span id="cb7-54"><a href="#cb7-54" tabindex="-1" aria-label="code-block-7-54"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb7-55"><a href="#cb7-55" tabindex="-1" aria-label="code-block-7-55"></a>block_size <span class="op">=</span> (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb7-56"><a href="#cb7-56" tabindex="-1" aria-label="code-block-7-56"></a>config <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>grid_size, block<span class="op">=</span>block_size, shmem_size<span class="op">=</span>((size <span class="op">//</span> <span class="dv">2</span>) <span class="op">*</span> <span class="dv">3</span> <span class="op">*</span> cp.dtype(cp.float32).itemsize))</span>
+<span id="cb7-56"><a href="#cb7-56" tabindex="-1" aria-label="code-block-7-56"></a>config <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>grid_size, block<span class="op">=</span>block_size, shmem_size<span class="op">=</span>(threads_per_block <span class="op">*</span> <span class="dv">3</span> <span class="op">*</span> cp.dtype(cp.float32).itemsize))</span>
 <span id="cb7-57"><a href="#cb7-57" tabindex="-1" aria-label="code-block-7-57"></a>launch(stream, config, vector_add_gpu, a_gpu.data.ptr, b_gpu.data.ptr, c_gpu.data.ptr, size)</span>
 <span id="cb7-58"><a href="#cb7-58" tabindex="-1" aria-label="code-block-7-58"></a></span>
 <span id="cb7-59"><a href="#cb7-59" tabindex="-1" aria-label="code-block-7-59"></a><span class="co"># Execute Python code and compare results</span></span>
@@ -3649,8 +3655,8 @@ CUDA.</p>
 <h3 class="callout-title">Challenge: error in the histogram</h3>
 <div class="callout-content">
 <p>If you look at the CUDA <code>histogram</code> code, there is a
-logical error that prevents it to produce the correct results. Can you
-find it?</p>
+logical error that prevents it from producing the correct results. Can
+you find it?</p>
 <div class="codewrapper sourceCode" id="cb11">
 <h3 class="code-label">C<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -3763,7 +3769,7 @@ memory, the lower the performance of our <code>histogram</code> will be.
 Moreover, the access pattern to the output array is very irregular,
 being dependent on the content of the input array. GPUs are designed for
 very regular computations, and so if we can make the histogram more
-regular we can hope in a further improvement in performance.</p>
+regular we can hope for a further improvement in performance.</p>
 <p>As you may expect, we can improve the memory access pattern by using
 shared memory.</p>
 <div id="challenge-use-shared-memory-to-speed-up-the-histogram" class="callout challenge">
@@ -3968,14 +3974,13 @@ version doing atomic operations on global memory.</p>
 <div class="callout-content">
 <ul>
 <li>“Shared memory is faster than global memory and local memory”</li>
-<li>“Shared memory can be used as a user-controlled cache to speedup
+<li>“Shared memory can be used as a user-controlled cache to speed up
 code”</li>
-<li>“Size of shared memory arrays must be known at compile time if
-allocated inside a thread”</li>
-<li>“It is possible to declare <code>extern</code> shared memory arrays
-and pass the size during kernel invocation”</li>
-<li>“Use <code>__shared__</code> to allocate memory in the shared memory
-space”</li>
+<li>“Size of shared memory arrays must be known at compile time, unless
+declared as <code>extern</code>”</li>
+<li>“Use <code>__shared__</code> to allocate shared memory; use
+<code>extern __shared__</code> with <code>shmem_size</code> for
+dynamically-sized arrays”</li>
 <li>“Use <code>__syncthreads()</code> to wait for shared memory
 operations to be visible to all threads in a block”</li>
 </ul>
@@ -4113,7 +4118,7 @@ memory</h3>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>In our case the output of this line of code is two floating point
 numbers, e.g. <code>[0.11390183 0.2585096 ]</code>. However, we are not
@@ -4202,7 +4207,7 @@ with some different input sizes.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>One of the possible solutions is the following one.</p>
 <div class="codewrapper sourceCode" id="cb5">
@@ -4644,8 +4649,8 @@ any links that you are not going to use.
   "url": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/aio.html",
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/aio.html",
   "dateCreated": "2020-09-25",
-  "dateModified": "2026-05-06",
-  "datePublished": "2026-05-06"
+  "dateModified": "2026-05-07",
+  "datePublished": "2026-05-07"
 }
 
   </script><script>

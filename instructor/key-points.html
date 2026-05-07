@@ -450,14 +450,13 @@ of registers”</li>
 <hr class="half-width">
 <ul>
 <li>“Shared memory is faster than global memory and local memory”</li>
-<li>“Shared memory can be used as a user-controlled cache to speedup
+<li>“Shared memory can be used as a user-controlled cache to speed up
 code”</li>
-<li>“Size of shared memory arrays must be known at compile time if
-allocated inside a thread”</li>
-<li>“It is possible to declare <code>extern</code> shared memory arrays
-and pass the size during kernel invocation”</li>
-<li>“Use <code>__shared__</code> to allocate memory in the shared memory
-space”</li>
+<li>“Size of shared memory arrays must be known at compile time, unless
+declared as <code>extern</code>”</li>
+<li>“Use <code>__shared__</code> to allocate shared memory; use
+<code>extern __shared__</code> with <code>shmem_size</code> for
+dynamically-sized arrays”</li>
 <li>“Use <code>__syncthreads()</code> to wait for shared memory
 operations to be visible to all threads in a block”</li>
 </ul></section><section id="constant_memory"><h2 class="section-heading"><a href="constant_memory.html">Constant MemoryConstant Memory<a class="anchor" aria-label="anchor" href="#constant-memory"></a></a></h2>
@@ -520,8 +519,8 @@ identifier”</li>
   "url": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/key-points.html",
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/key-points.html",
   "dateCreated": "2020-09-25",
-  "dateModified": "2026-05-06",
-  "datePublished": "2026-05-06"
+  "dateModified": "2026-05-07",
+  "datePublished": "2026-05-07"
 }
 
   </script><script>
