@@ -12,13 +12,13 @@ exercises: 10
 
 :::::: objectives
 - "Create PyTorch tensors and apply operations."
-- "Understanding `@torch.compile`"
-- "Compare the performance of PyTorch against other solutions"
+- "Understanding the `@torch.compile` decorator and its limitations."
+- "Compare the performance of PyTorch against other solutions."
 ::::::
 
 # Introduction to PyTorch
 
-PyTorch, often imported as `torch`, is a popular open-source Python library commonly used for machine learning and AI. It provides many features for working with tensors, automatic differentiation, neural networks, and GPU acceleration. PyTorch was originally developed by Meta and is now maintained by the PyTorch Foundation, which is part of the Linux Foundation.
+PyTorch, often referred to as just _torch_, is a popular open-source Python library commonly used for machine learning and AI. It provides many features for working with N-dimensional arrays (called _tensors_), automatic differentiation, neural networks, and GPU acceleration. PyTorch was originally developed by Meta and is now maintained by the PyTorch Foundation, which is part of the Linux Foundation.
 
 You can read more about PyTorch here: https://pytorch.org/
 
@@ -72,7 +72,9 @@ This should print `4` and `torch.float32`. Notice that PyTorch’s default float
 
 ## Working with tensors
 
-To convert a NumPy array into a PyTorch tensor, we can use `torch.from_numpy`. The resulting tensor shares memory with the NumPy array.
+To convert a NumPy array into a PyTorch tensor, we can use `torch.from_numpy`. Note that the resulting PyTorch tensor will not copy the data, instead it shares the same memory with the NumPy array. This means that modifying the PyTorch tensor will also change the contents of the returned NumPy array.
+
+The resulting tensor shares memory with the NumPy array.
 
 To convert a tensor back into a NumPy array, we can use `tensor.cpu().numpy()`. Since NumPy arrays always live in CPU memory, CUDA tensors must first be copied back to the CPU using `.cpu()`.
 
@@ -125,7 +127,7 @@ f = torch.arange(10, device=device)
 g = torch.linspace(0, 1, 10, device=device)
 ~~~
 
-Tensors can be multi-dimensional. They can be 1-dimensional (vectors), 2-dimensional (matrices), 3-dimensional, and so on.
+Tensors can be multi-dimensional. They can be 1-dimensional (vectors), 2-dimensional (matrices), 3-dimensional (cubes), and so on.
 
 ~~~python
 # This is a vector of length 3
@@ -138,24 +140,25 @@ y = torch.rand((3, 3), device=device)
 z = torch.rand((3, 3, 3), device=device)
 ~~~
 
-Slicing is also supported, similar to NumPy.
+Slicing is also supported, similar to NumPy. For example, `m[i,:]` gives the $i$-th row and `m[:,j] gives the $j$-th column of a matrix `m`. The result of slicing a tensor returns again a tensor. Note that modifying this slice will also modify the original tensor, as it is a view. 
 
 ~~~python
-x = torch.rand(5, 5, device=device)
+x = torch.rand(2, 3, device=device)
 
-# Print the first row
-print(x[0, :])
+# Print the matrix
+print("before:", x)
 
-# Print the first column
-print(x[:, 0])
+# Modify the first row
+x[0,:] = 0
+
+# Print the matrix
+print("after:", x)
 ~~~
 
 ~~~output
-tensor([0.6239, 0.7711, 0.9718, 0.5485, 0.9743], device='cuda:0')
-tensor([0.6239, 0.9538, 0.6850, 0.3817, 0.3251], device='cuda:0')
+before: tensor([[0.9707, 0.2220, 0.9106], [0.2907, 0.4936, 0.1780]], device='cuda:0')
+after: tensor([[0.0000, 0.0000, 0.0000], [0.2907, 0.4936, 0.1780]], device='cuda:0')
 ~~~
-
-Notice how, after slicing, the results are again tensors, as slices are views. Modifying the slice will also modify the original tensor.
 
 Tensors also support many mathematical operations.
 
@@ -208,9 +211,9 @@ GPU: tensor([0.6511, 1.7587, 2.4972, 3.3509, 4.5963], device='cuda:0')
 ~~~
 
 
-## Larger Example
+## Example using Gravitational Forces
 
-Now, we will consider a larger example of how to use PyTorch. For this example, we generate `n` random planetary bodies. Next, we calculate the gravitational force that each body experiences from the other bodies using [Newton's law of universal gravitation](https://en.wikipedia.org/wiki/Newton%27s_law_of_universal_gravitation).
+Now, we will consider a larger example of how to use PyTorch. For this example, we generate `n` random planetary bodies. Next, we calculate the total gravitational force that each body experiences from the other bodies using [Newton's law of universal gravitation](https://en.wikipedia.org/wiki/Newton%27s_law_of_universal_gravitation).
 
 First, we generate `n` random planets in a 2 dimensional plane. The `x` and `y` coordinates are randomly in the range [0, 1].
 
@@ -235,9 +238,13 @@ plt.scatter(
 plt.show()
 ~~~
 
-![Example of planets on a 2D plane.](fig/torch_planets.png)
+![Figure: Example of planets on a 2D plane.](fig/torch_planets.png)
 
-Now, we can define a function that computes the forces between the planets.
+The force on planet $i$ is given by the following equation:
+
+$\mathbf{F}_i = \sum_{j=1, j \neq i}^{N} G \frac{m_i m_j}{\|\mathbf{p}_j - \mathbf{p}_i\|^2} \left(\frac{\mathbf{p}_j - \mathbf{p}_i}{\|\mathbf{p}_j - \mathbf{p}_i\|}\right)$
+
+Now, we can define a function that computes these forces between the planets.
 
 ~~~python
 G = 6.67e-11
@@ -255,7 +262,7 @@ def calculate_forces(pos, mass):
     return (dir * forces[None, :, :]).nansum(dim=2)  # (2, N)
 ~~~
 
-Finally, we can plot the results
+Finally, we can plot the results.
 
 ~~~python
 forces = calculate_forces(position, mass)
@@ -275,12 +282,12 @@ plt.quiver(
 )
 ~~~
 
-![Example of planets and the gravitational forces on a 2D plane.](fig/torch_planets_forces.png)
+![Figure: Example of planets and the gravitational forces on a 2D plane.](fig/torch_planets_forces.png)
 
 
 ## Using `torch.compile`
 
-An important feature introduced in PyTorch 2.0 is the `@torch.compile` decorator. This decorator can be applied to a Python function and tells PyTorch to compile the tensor operations inside the function into a more optimized version before executing it. Instead of running the function line by line in Python, PyTorch analyzes the operations inside the function and builds a more efficient computation graph. It can then apply various optimizations, such as fusing multiple operations together, reducing memory usage, and generating more efficient GPU kernels.
+An important feature introduced in PyTorch 2.0 is the [`@torch.compile`](https://docs.pytorch.org/tutorials/intermediate/torch_compile_tutorial.html) decorator. This decorator can be applied to a Python function and tells PyTorch to compile the tensor operations inside the function into a more optimized version before executing it. Instead of running the function line by line in Python, PyTorch analyzes the operations inside the function and builds a more efficient computation graph. It can then apply various optimizations, such as fusing multiple operations together, reducing memory usage, and generating more efficient GPU kernels.
 
 This process can significantly improve performance, especially for functions that perform many tensor operations. The compiled function can therefore run much faster than the original Python version while keeping the code easy to read and write.
 
@@ -298,24 +305,43 @@ c = compute(a, b)
 print("result:", c)
 ~~~
 
-This lets PyTorch optimize the `compute` function as a whole and makes the code faster than running the operations separately. It accomplishes this by tracing through your Python code and looking for PyTorch operations. For example, to see what PyTorch is doing internally, we can use `set_logs`, which prints what happens under the hood.
+This lets PyTorch optimize the `compute` function as a whole and makes the code faster than running the operations separately. It accomplishes this by tracing through your Python code and looking for PyTorch operations.
+
+::::::::::::::::::::::::::::: instructor
+The following section demonstrates how PyTorch compiles and fuses the operations in the computation graph. Instructors may choose to demonstrate this information to the class if time permits. However, it can also be skipped as it may be too advanced for learners new to GPU concepts.
+::::::::::::::::::::::::::::::::::::::::
+
+For example, to see what PyTorch is doing internally, we can use `set_logs`, which prints what happens under the hood.
 
 ~~~python
 torch._logging.set_logs(graph_code=True)
 compute(a, b)
 ~~~
 
-This gives us:
+This generates a large amount of output about the internals of PyTorch. You do not need to understand all the output. However, among this output is the following:
 
 ~~~output
-[__kernel_code] import triton
-[__kernel_code] import triton.language as tl
-[__kernel_code]
-[__kernel_code] from torch._inductor.runtime import triton_helpers, triton_heuristics
-[__kernel_code] from torch._inductor.runtime.triton_helpers import libdevice, math as tl_math
-[__kernel_code] from torch._inductor.runtime.hints import AutotuneHint, ReductionHint, TileHint, DeviceProperties
-[__kernel_code] triton_helpers.set_driver_to_gpu()
-[__kernel_code]
+...
+[__graph_code] TRACED GRAPH
+[__graph_code]  ===== __compiled_fn_139_120d693e_cd49_4b9d_8ed2_fa7094feea70 =====
+[__graph_code]  /home/user/.local/lib/python3.13/site-packages/torch/fx/_lazy_graph_module.py class GraphModule(torch.nn.Module):
+[__graph_code]     def forward(self, L_a_: "f64[1000000][1]cuda:0", L_b_: "f64[1000000][1]cuda:0"):
+[__graph_code]         l_a_ = L_a_
+[__graph_code]         l_b_ = L_b_
+[__graph_code]         torch.sin(a) * torch.cos(b)
+[__graph_code]         add: "f64[1000000][1]cuda:0" = l_a_ + l_b_
+[__graph_code]         sin: "f64[1000000][1]cuda:0" = torch.sin(l_a_);  l_a_ = None
+[__graph_code]         cos: "f64[1000000][1]cuda:0" = torch.cos(l_b_);  l_b_ = None
+[__graph_code]         mul: "f64[1000000][1]cuda:0" = sin * cos;  sin = cos = None
+[__graph_code]         add_1: "f64[1000000][1]cuda:0" = add + mul;  add = mul = None
+[__graph_code]         return (add_1,)
+...
+~~~
+
+This part shows how PyTorch has _traced_ our function `compute` as a graph of operations.
+
+~~~output
+...
 [__kernel_code] @triton.jit
 [__kernel_code] def triton_poi_fused_add_cos_mul_sin_0(in_ptr0, in_ptr1, out_ptr0, xnumel, XBLOCK : tl.constexpr):
 [__kernel_code]     xnumel = 1000000
@@ -331,13 +357,14 @@ This gives us:
 [__kernel_code]     tmp5 = tmp3 * tmp4
 [__kernel_code]     tmp6 = tmp2 + tmp5
 [__kernel_code]     tl.store(out_ptr0 + (x0), tmp6, xmask)
+...
 ~~~
 
-This shows that PyTorch automatically generates a GPU kernel named `triton_poi_fused_add_cos_mul_sin_0` that performs all operations in one go, instead of having separate kernels for each operation. The generated kernel uses [Triton](https://triton-lang.org/main/index.html), a Python-based programming language for GPU computing.
+This part shows that PyTorch automatically generated a GPU _kernel_ named `triton_poi_fused_add_cos_mul_sin_0` that performs all operations in one go, instead of having separate functions for each operation. The generated kernel uses [Triton](https://triton-lang.org/main/index.html), a Python-based programming language for GPU computing.
 
 There are certain limitations `@torch.compile`. For example, the inputs and outputs can only be PyTorch tensors, and you must be careful with loops (`for` statements) and conditionals (`if` statements). For more information, see the [guide](https://docs.pytorch.org/docs/stable/user_guide/torch_compiler/compile/programming_model.html) on the `torch.compile` programming model.
 
-As an example, consider the following function that scales a tensor by `2` if the sum is positive and `-2` otherwise. Note that we pass the `fullgraph=True` option to force PyTorch to raise an error if it could not compile. 
+As an example, consider the following function that scales a tensor by `2` if the sum is positive and `-2` otherwise. Note that we pass the `fullgraph=True` option to force PyTorch to raise an error if it could not compile.
 
 ~~~python
 import torch
@@ -365,9 +392,9 @@ Unsupported: Data-dependent branching
  For more details about this graph break, please visit: https://meta-pytorch.github.io/compile-graph-break-site/gb/gb0170.html
 ~~~
 
-The problem here is that PyTorch cannot statically determine whether to execute the `x * 2` operation or the `x * -2` operation, as this is dependent on the runtime data of `x`. 
+The problem here is that PyTorch cannot statically determine whether to execute the `x * 2` operation or the `x * -2` operation, as this is dependent on the runtime value of `x.sum()`. 
 
-Instead, for this example, we can use `torch.where` to select between them instead of an if statement.
+Instead, for this example, we can use `torch.where` to select between them instead of having an if statement.
 
 ~~~python
 import torch
@@ -383,7 +410,7 @@ correct_example(torch.rand(100, device=device))
 
 ## Comparison of performance
 
-Let measure the time of our function with and without `@torch.compile` to compare the performance.
+Let measure the time of our `calculate_forces` function with and without `@torch.compile` to compare the performance.
 
 First, we must import the `%gpu_timeit` from `cupyx`
 
@@ -391,25 +418,26 @@ First, we must import the `%gpu_timeit` from `cupyx`
 %load_ext cupyx.profiler
 ~~~
 
-Next, we call our `calculate_forces` function, but for 10,000 planets.
+Next, we call our function with 10,000 planets.
 
 ~~~python
-n = 10000
+n = 10_000
 pos = torch.rand(2, n, device=device)
 mass = torch.rand(n, device=device)
 
 %gpu_timeit -n50 calculate_forces(pos, mass)
 ~~~
 ~~~output
-run:    CPU:   177.674 us   +/-  9.926 (min:   171.843 / max:   241.492) us     GPU-0: 21880.586 us   +/- 11.218 (min: 21849.089 / max: 21906.431) us
+run:    CPU:   177.674 us   +/-  9.926 (min:   171.843 / max:   241.492) us
+      GPU-0: 21880.586 us   +/- 11.218 (min: 21849.089 / max: 21906.431) us
 ~~~
 
 The execution time on the GPU is around 21.880 milliseconds.
 
-We can use `@torch.compile` to speed things up!
+We can use `@torch.compile` to speed things up! Note how `@torch.compile` works recursively: if a function is compiled, all called functions are also compiled.
 
 ~~~python
-n = 10000
+n = 10_000
 pos = torch.rand(2, n, device=device)
 mass = torch.rand(n, device=device)
 
@@ -422,7 +450,8 @@ forces = calculate_forces_fast(pos, mass);
 %gpu_timeit -n50 calculate_forces_fast(pos, mass)
 ~~~
 ~~~output
-run:    CPU:   114.750 us   +/- 23.757 (min:   106.006 / max:   277.980) us     GPU-0:  4008.182 us   +/- 22.778 (min:  3997.696 / max:  4164.608) us
+run:    CPU:   114.750 us   +/- 23.757 (min:   106.006 / max:   277.980) us
+      GPU-0:  4008.182 us   +/- 22.778 (min:  3997.696 / max:  4164.608) us
 ~~~
 
 This time it takes around 4.008 milliseconds, a speedup of 5.5x over the original version!
@@ -430,7 +459,7 @@ This time it takes around 4.008 milliseconds, a speedup of 5.5x over the origina
 As a comparison, we can also run the same function on the CPU using PyTorch:
 
 ~~~python
-n = 10000
+n = 10_000
 pos = torch.rand(2, n, device="cpu")
 mass = torch.rand(n, device="cpu")
 
@@ -444,10 +473,10 @@ The CPU takes 608.563 milliseconds, meaning our GPU is around 152x faster than o
 
 
 ::::::::::::::::::::::::::::::::::::::: challenge
-Measure the performance of `calculate_forces_fast` for different number of planets. For example, `n=2500`, `n=5000`, `n=10000`, and `n=20000`. What timings do you expect? What do you get? 
+Measure the performance of `calculate_forces_fast` for different number of planets. For example, `n=2500`, `n=5000`, `n=10_000`, and `n=20_000`. What timings do you expect? What do you get?
 
 :::::::::::::::::::::::::::::::::::::: solution
-The following times where measured (on you system it might be different!). 
+The following times where measured (on you system it might be different!).
 
 ~~~output
 421.274 us
