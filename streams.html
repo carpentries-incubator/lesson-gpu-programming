@@ -343,7 +343,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Concurrent access to the GPU</h1>
-        <p>Last updated on 2026-04-22 |
+        <p>Last updated on 2026-05-07 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/streams.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -379,7 +379,7 @@ single GPU?”</li>
 </div>
 <div class="section level1">
 <h1 id="concurrently-execute-two-kernels-on-the-same-gpu">Concurrently execute two kernels on the same GPU<a class="anchor" aria-label="anchor" href="#concurrently-execute-two-kernels-on-the-same-gpu"></a></h1>
-<p>So far we only focused on completing one operation at the time on the
+<p>So far we only focused on completing one operation at a time on the
 GPU, writing and executing a single CUDA kernel each time. However the
 GPU has enough resources to perform more than one task at the same
 time.</p>
@@ -458,7 +458,7 @@ on the GPU, as shown in the following code.</p>
 <span id="cb1-66"><a href="#cb1-66" tabindex="-1" aria-label="code-block-1-66"></a>all_primes_to_gpu <span class="op">=</span> mod.get_kernel(<span class="st">"all_primes_to"</span>)</span>
 <span id="cb1-67"><a href="#cb1-67" tabindex="-1" aria-label="code-block-1-67"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(upper_bound <span class="op">/</span> <span class="dv">1024</span>)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb1-68"><a href="#cb1-68" tabindex="-1" aria-label="code-block-1-68"></a>block_size <span class="op">=</span> (<span class="dv">1024</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb1-69"><a href="#cb1-69" tabindex="-1" aria-label="code-block-1-69"></a>config <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>grid_size, block<span class="op">=</span>block_size)</span>
+<span id="cb1-69"><a href="#cb1-69" tabindex="-1" aria-label="code-block-1-69"></a>config_primes <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>grid_size, block<span class="op">=</span>block_size)</span>
 <span id="cb1-70"><a href="#cb1-70" tabindex="-1" aria-label="code-block-1-70"></a></span>
 <span id="cb1-71"><a href="#cb1-71" tabindex="-1" aria-label="code-block-1-71"></a><span class="co"># Compile and setup the grid for histogram</span></span>
 <span id="cb1-72"><a href="#cb1-72" tabindex="-1" aria-label="code-block-1-72"></a>prog <span class="op">=</span> Program(histogram_cuda_code, code_type<span class="op">=</span><span class="st">"c++"</span>, options<span class="op">=</span>program_options)</span>
@@ -466,11 +466,11 @@ on the GPU, as shown in the following code.</p>
 <span id="cb1-74"><a href="#cb1-74" tabindex="-1" aria-label="code-block-1-74"></a>histogram_gpu <span class="op">=</span> mod.get_kernel(<span class="st">"histogram"</span>)</span>
 <span id="cb1-75"><a href="#cb1-75" tabindex="-1" aria-label="code-block-1-75"></a>grid_size <span class="op">=</span> (<span class="bu">int</span>(math.ceil(histogram_size <span class="op">/</span> <span class="dv">256</span>)), <span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb1-76"><a href="#cb1-76" tabindex="-1" aria-label="code-block-1-76"></a>block_size <span class="op">=</span> (<span class="dv">256</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb1-77"><a href="#cb1-77" tabindex="-1" aria-label="code-block-1-77"></a>config <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>grid_size, block<span class="op">=</span>block_size)</span>
+<span id="cb1-77"><a href="#cb1-77" tabindex="-1" aria-label="code-block-1-77"></a>config_histogram <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>grid_size, block<span class="op">=</span>block_size)</span>
 <span id="cb1-78"><a href="#cb1-78" tabindex="-1" aria-label="code-block-1-78"></a></span>
 <span id="cb1-79"><a href="#cb1-79" tabindex="-1" aria-label="code-block-1-79"></a><span class="co"># Execute the kernels</span></span>
-<span id="cb1-80"><a href="#cb1-80" tabindex="-1" aria-label="code-block-1-80"></a>launch(stream, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)</span>
-<span id="cb1-81"><a href="#cb1-81" tabindex="-1" aria-label="code-block-1-81"></a>launch(stream, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)</span>
+<span id="cb1-80"><a href="#cb1-80" tabindex="-1" aria-label="code-block-1-80"></a>launch(stream, config_primes, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)</span>
+<span id="cb1-81"><a href="#cb1-81" tabindex="-1" aria-label="code-block-1-81"></a>launch(stream, config_histogram, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)</span>
 <span id="cb1-82"><a href="#cb1-82" tabindex="-1" aria-label="code-block-1-82"></a>stream.sync()</span>
 <span id="cb1-83"><a href="#cb1-83" tabindex="-1" aria-label="code-block-1-83"></a></span>
 <span id="cb1-84"><a href="#cb1-84" tabindex="-1" aria-label="code-block-1-84"></a><span class="co"># Save results to do something else later</span></span>
@@ -488,7 +488,7 @@ we may want to run the two kernels concurrently on the GPU to reduce the
 total execution time. To achieve this in CUDA we need to use CUDA
 <em>streams</em>.</p>
 <p>A stream is a sequence of GPU operations that is executed in order,
-and so far we have been implicitly using the defaul stream. This is the
+and so far we have been implicitly using the default stream. This is the
 reason why all the operations we issued, such as data transfers and
 kernel invocations, are performed in the order we specify them in the
 Python code, and not in any other.</p>
@@ -511,8 +511,8 @@ stream object to the <code>launch</code> function.</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a>launch(stream_one, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a>launch(stream_two, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)</span></code></pre>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a>launch(stream_one, config_primes, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a>launch(stream_two, config_histogram, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)</span></code></pre>
 </div>
 <p>The result of doing this is that the second kernel,
 i.e. <code>histogram_gpu</code>, does not need to wait for
@@ -531,7 +531,7 @@ example, in the following Python snippet we wait for the execution of
 </div>
 <p>This synchronization primitive is useful when we need to be sure that
 all operations on a stream are finished, before continuing. It is,
-however, a bit coarse grained. Imagine to have a stream with a whole
+however, a bit coarse grained. Imagine having a stream with a whole
 sequence of operations enqueued, and another stream with one data
 dependency on one of these operations. If we use <code>sync</code>, we
 wait until all operations of said stream are completed before executing
@@ -547,10 +547,10 @@ Events are created in Python in the following way.</p>
 </div>
 <p>And can then be added to a stream by using the <code>record</code>
 method. In the following example we will create two streams: in the
-first we will execute <code>histogram_gpu</code> twice, while in the
-second one we will execute <code>all_primes_to_gpu</code> with the
-condition that the kernel in the second stream is executed only after
-the first histogram is computed.</p>
+first we will execute <code>all_primes_to_gpu</code> twice, while in the
+second one we will execute <code>histogram_gpu</code> with the condition
+that the kernel in the second stream is executed only after the first
+prime number computation is complete.</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -558,11 +558,11 @@ the first histogram is computed.</p>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1" aria-label="code-block-6-2"></a>stream_two <span class="op">=</span> gpu.create_stream()</span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1" aria-label="code-block-6-3"></a>sync_point <span class="op">=</span> gpu.create_event()</span>
 <span id="cb6-4"><a href="#cb6-4" tabindex="-1" aria-label="code-block-6-4"></a></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1" aria-label="code-block-6-5"></a>launch(stream_one, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1" aria-label="code-block-6-5"></a>launch(stream_one, config_primes, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)</span>
 <span id="cb6-6"><a href="#cb6-6" tabindex="-1" aria-label="code-block-6-6"></a>stream_one.record(sync_point)</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1" aria-label="code-block-6-7"></a>launch(stream_one, config, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1" aria-label="code-block-6-7"></a>launch(stream_one, config_primes, all_primes_to_gpu, upper_bound, all_primes_gpu.data.ptr)</span>
 <span id="cb6-8"><a href="#cb6-8" tabindex="-1" aria-label="code-block-6-8"></a>stream_two.wait(sync_point)</span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1" aria-label="code-block-6-9"></a>launch(stream_two, config, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)</span></code></pre>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1" aria-label="code-block-6-9"></a>launch(stream_two, config_histogram, histogram_gpu, input_gpu.data.ptr, output_gpu.data.ptr)</span></code></pre>
 </div>
 <p>With streams and events, it is possible to build up arbitrary
 execution graphs for complex operations on the GPU.</p>
@@ -651,7 +651,11 @@ execution time.</p>
 <span class="callout-header">Key Points</span>
 <div class="callout-inner">
 <div class="callout-content">
-<ul><li>“”</li>
+<ul><li>“Use CUDA streams to run kernels concurrently on the same GPU”</li>
+<li>“Use events to synchronize between streams at a fine-grained
+level”</li>
+<li>“Use events with timing enabled to measure kernel execution
+time”</li>
 </ul></div>
 </div>
 </div>
@@ -723,7 +727,7 @@ any links that you are not going to use.
   "url": "https://carpentries-incubator.github.io/lesson-gpu-programming/streams.html",
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/streams.html",
   "dateCreated": "2020-09-25",
-  "dateModified": "2026-04-22",
+  "dateModified": "2026-05-07",
   "datePublished": "2026-05-07"
 }
 
