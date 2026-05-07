@@ -227,7 +227,7 @@
 <div class="accordion accordion-flush" id="accordionFlush5">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading5">
-        <a href="gpu_introduction.html">4. A Better Look at the GPU</a>
+        <a href="pytorch.html">4. Using PyTorch for GPU Computing</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -236,7 +236,7 @@
 <div class="accordion accordion-flush" id="accordionFlush6">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading6">
-        <a href="first_program.html">5. Your First GPU Kernel</a>
+        <a href="gpu_introduction.html">5. A Better Look at the GPU</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -245,7 +245,7 @@
 <div class="accordion accordion-flush" id="accordionFlush7">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading7">
-        <a href="global_local_memory.html">6. Registers, Global, and Local Memory</a>
+        <a href="first_program.html">6. Your First GPU Kernel</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -254,7 +254,7 @@
 <div class="accordion accordion-flush" id="accordionFlush8">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading8">
-        <a href="shared_memory_and_synchronization.html">7. Shared Memory and Synchronization</a>
+        <a href="global_local_memory.html">7. Registers, Global, and Local Memory</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -263,7 +263,7 @@
 <div class="accordion accordion-flush" id="accordionFlush9">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading9">
-        <a href="constant_memory.html">8. Constant Memory</a>
+        <a href="shared_memory_and_synchronization.html">8. Shared Memory and Synchronization</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -272,7 +272,16 @@
 <div class="accordion accordion-flush" id="accordionFlush10">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading10">
-        <a href="streams.html">9. Concurrent access to the GPU</a>
+        <a href="constant_memory.html">9. Constant Memory</a>
+    </div><!--/div.accordion-header-->
+
+  </div><!--/div.accordion-item-->
+</div><!--/div.accordion-flush-->
+
+<div class="accordion accordion-flush" id="accordionFlush11">
+  <div class="accordion-item">
+    <div class="accordion-header" id="flush-heading11">
+        <a href="streams.html">10. Concurrent access to the GPU</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -389,16 +398,27 @@ GPU?”<br>::::::::::::::::::::::::::::::::::::::
 <span class="visually-hidden">Duration: </span>05h 45m
 </td>
 <td>
- 4. <a href="gpu_introduction.html">A Better Look at the GPU</a>
+ 4. <a href="pytorch.html">Using PyTorch for GPU Computing</a>
+</td>
+<td>
+“How can we create and manipulate PyTorch tensors on a GPU?”<br>“How
+can we move data between NumPy, CPU tensors, and GPU tensors?”<br>“Why
+can PyTorch be useful for general-purpose GPU computing?”<br>::::::
+</td>
+</tr><tr><td>
+<span class="visually-hidden">Duration: </span>06h 55m
+</td>
+<td>
+ 5. <a href="gpu_introduction.html">A Better Look at the GPU</a>
 </td>
 <td>
 “How does a GPU work?”<br>::::::::::::::::::::::::::::::::::::::
 </td>
 </tr><tr><td>
-<span class="visually-hidden">Duration: </span>06h 05m
+<span class="visually-hidden">Duration: </span>07h 15m
 </td>
 <td>
- 5. <a href="first_program.html">Your First GPU Kernel</a>
+ 6. <a href="first_program.html">Your First GPU Kernel</a>
 </td>
 <td>
 “How do I identify data parallelism in my code?”<br>“How do I write a
@@ -406,10 +426,10 @@ GPU program?”<br>“What is CUDA?”<br>“How are CUDA threads organised
 into blocks and grids?”<br>::::::::::::::::::::::::::::::::::::::
 </td>
 </tr><tr><td>
-<span class="visually-hidden">Duration: </span>07h 15m
+<span class="visually-hidden">Duration: </span>08h 25m
 </td>
 <td>
- 6. <a href="global_local_memory.html">Registers, Global, and Local
+ 7. <a href="global_local_memory.html">Registers, Global, and Local
 Memory</a>
 </td>
 <td>
@@ -419,10 +439,10 @@ in CUDA?”<br>“What happens when a thread uses more variables than there
 are available registers?”<br>::::::::::::::::::::::::::::::::::::::
 </td>
 </tr><tr><td>
-<span class="visually-hidden">Duration: </span>08h 00m
+<span class="visually-hidden">Duration: </span>09h 10m
 </td>
 <td>
- 7. <a href="shared_memory_and_synchronization.html">Shared Memory and
+ 8. <a href="shared_memory_and_synchronization.html">Shared Memory and
 Synchronization</a>
 </td>
 <td>
@@ -431,27 +451,27 @@ data?”<br>“Why would threads in a block ever need to wait for each
 other?”<br>::::::::::::::::::::::::::::::::::::::
 </td>
 </tr><tr><td>
-<span class="visually-hidden">Duration: </span>08h 55m
+<span class="visually-hidden">Duration: </span>10h 05m
 </td>
 <td>
- 8. <a href="constant_memory.html">Constant Memory</a>
+ 9. <a href="constant_memory.html">Constant Memory</a>
 </td>
 <td>
 “Is there a way to have a read-only cache in
 CUDA?”<br>::::::::::::::::::::::::::::::::::::::
 </td>
 </tr><tr><td>
-<span class="visually-hidden">Duration: </span>09h 35m
+<span class="visually-hidden">Duration: </span>10h 45m
 </td>
 <td>
- 9. <a href="streams.html">Concurrent access to the GPU</a>
+10. <a href="streams.html">Concurrent access to the GPU</a>
 </td>
 <td>
 “Is it possible to concurrently execute more than one kernel on a single
 GPU?”<br>::::::::::::::::::::::::::::::::::::::
 </td>
 </tr><tr><td>
-<span class="visually-hidden">Duration: </span>10h 15m
+<span class="visually-hidden">Duration: </span>11h 25m
 </td>
 <td>
 Finish

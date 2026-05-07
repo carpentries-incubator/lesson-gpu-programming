@@ -82,6 +82,9 @@
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/profiles.html</loc>
   </url>
   <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/pytorch.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/reference.html</loc>
   </url>
   <url>
@@ -107,6 +110,9 @@
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/profiles.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/pytorch.html</loc>
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/lesson-gpu-programming/reference.html</loc>

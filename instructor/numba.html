@@ -117,11 +117,11 @@
     -->
     <a id="search-button" class="btn btn-primary" href="../instructor/aio.html" role="button" aria-label="Search the All In One page">Search the All In One page</a>
   </div><!--/div.container-fluid -->
-</nav><aside class="col-md-12 lesson-progress"><div style="width: 46%" class="percentage">
-    46%
+</nav><aside class="col-md-12 lesson-progress"><div style="width: 42%" class="percentage">
+    42%
   </div>
   <div class="progress incubator">
-    <div class="progress-bar incubator" role="progressbar" aria-label="Lesson Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="46" style="width: 46%">
+    <div class="progress-bar incubator" role="progressbar" aria-label="Lesson Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="42" style="width: 42%">
     </div>
   </div>
 </aside><div class="container">
@@ -234,7 +234,7 @@
 <div class="accordion accordion-flush" id="accordionFlush5">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading5">
-        <a href="gpu_introduction.html">4. A Better Look at the GPU</a>
+        <a href="pytorch.html">4. Using PyTorch for GPU Computing</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -243,7 +243,7 @@
 <div class="accordion accordion-flush" id="accordionFlush6">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading6">
-        <a href="first_program.html">5. Your First GPU Kernel</a>
+        <a href="gpu_introduction.html">5. A Better Look at the GPU</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -252,7 +252,7 @@
 <div class="accordion accordion-flush" id="accordionFlush7">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading7">
-        <a href="global_local_memory.html">6. Registers, Global, and Local Memory</a>
+        <a href="first_program.html">6. Your First GPU Kernel</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -261,7 +261,7 @@
 <div class="accordion accordion-flush" id="accordionFlush8">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading8">
-        <a href="shared_memory_and_synchronization.html">7. Shared Memory and Synchronization</a>
+        <a href="global_local_memory.html">7. Registers, Global, and Local Memory</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -270,7 +270,7 @@
 <div class="accordion accordion-flush" id="accordionFlush9">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading9">
-        <a href="constant_memory.html">8. Constant Memory</a>
+        <a href="shared_memory_and_synchronization.html">8. Shared Memory and Synchronization</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -279,7 +279,16 @@
 <div class="accordion accordion-flush" id="accordionFlush10">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading10">
-        <a href="streams.html">9. Concurrent access to the GPU</a>
+        <a href="constant_memory.html">9. Constant Memory</a>
+    </div><!--/div.accordion-header-->
+
+  </div><!--/div.accordion-item-->
+</div><!--/div.accordion-flush-->
+
+<div class="accordion accordion-flush" id="accordionFlush11">
+  <div class="accordion-item">
+    <div class="accordion-header" id="flush-heading11">
+        <a href="streams.html">10. Concurrent access to the GPU</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -328,7 +337,7 @@
   <div class="col-xl-8 col-lg-12 primary-content">
     <nav class="lesson-content mx-md-4" aria-label="Previous and Next Chapter Top"><!-- content for small screens --><div class="d-block d-sm-block d-md-none">
         <a class="chapter-link" href="../instructor/cupy.html"><i aria-hidden="true" class="small-arrow" data-feather="arrow-left"></i>Previous</a>
-        <a class="chapter-link float-end" href="../instructor/gpu_introduction.html">Next<i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i></a>
+        <a class="chapter-link float-end" href="../instructor/pytorch.html">Next<i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i></a>
       </div>
       <!-- content for large screens -->
       <div class="d-none d-sm-none d-md-block">
@@ -336,8 +345,8 @@
           <i aria-hidden="true" class="small-arrow" data-feather="arrow-left"></i>
           Previous: Using your GPU with
         </a>
-        <a class="chapter-link float-end" href="../instructor/gpu_introduction.html" rel="next">
-          Next: A Better Look at the...
+        <a class="chapter-link float-end" href="../instructor/pytorch.html" rel="next">
+          Next: Using PyTorch for...
           <i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i>
         </a>
       </div>
@@ -539,7 +548,7 @@ to find all primes up to 10000?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>One possible implementation of this function is the following
 one.</p>
@@ -647,7 +656,7 @@ any links that you are not going to use.
       </div> <!-- / div.lesson-content -->
     </main><!-- / main#main-content.main-content --><nav class="bottom-pagination mx-md-4" aria-label="Previous and Next Chapter Bottom"><div class="d-block d-sm-block d-md-none">
         <a class="chapter-link" href="../instructor/cupy.html"><i aria-hidden="true" class="small-arrow" data-feather="arrow-left"></i>Previous</a>
-        <a class="chapter-link float-end" href="../instructor/gpu_introduction.html">Next<i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i></a>
+        <a class="chapter-link float-end" href="../instructor/pytorch.html">Next<i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i></a>
       </div>
       <!-- content for large screens -->
       <div class="d-none d-sm-none d-md-block">
@@ -655,8 +664,8 @@ any links that you are not going to use.
           <i aria-hidden="true" class="small-arrow" data-feather="arrow-left"></i>
           Previous: Using your GPU with
         </a>
-        <a class="chapter-link float-end" href="../instructor/gpu_introduction.html" rel="next">
-          Next: A Better Look at the...
+        <a class="chapter-link float-end" href="../instructor/pytorch.html" rel="next">
+          Next: Using PyTorch for...
           <i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i>
         </a>
       </div>
