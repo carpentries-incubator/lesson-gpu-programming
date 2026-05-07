@@ -14,7 +14,7 @@ exercises: 20
 
 # Constant Memory
 
-Constant memory is a read-only cache which content can be broadcasted to multiple threads in a block.
+Constant memory is a read-only cache whose content can be broadcast to multiple threads in a block.
 A variable allocated in constant memory needs to be declared in CUDA by using the special `__constant__` identifier, and it must be a global variable, i.e. it must be declared in the scope that contains the kernel, not inside the kernel itself.
 If all of this sounds complex do not worry, we are going to see how this works with an example.
 
@@ -35,7 +35,7 @@ __global__ void sum_and_multiply(const float * A, const float * B, float * C, co
 In the previous code snippet we implemented a kernel that, given two vectors `A` and `B`, stores their element-wise sum in a third vector, `C`, scaled by a certain factor; this factor is the same for all threads in the same thread block.
 Because these factors are shared, i.e. all threads in the same thread block use the same factor for scaling their sums, it is a good idea to use constant memory for the `factors` array.
 In fact you can see that the definition of `factors` is preceded by the `__constant__` keyword, and said definition is in the global scope.
-It is important to note that the size of the constant array needs to be known at compile time, therefore the use of the `define` preprocessor statement.
+It is important to note that the size of the constant array needs to be known at compile time, therefore the use of the `#define` preprocessor statement.
 On the kernel side there is no need to do more, the `factors` vector can be normally accessed inside the code as any other vector, and because it is a global variable it does not need to be passed to the kernel as a function argument.
 
 The initialization of constant memory happens on the host side, and we show how this is done in the next code snippet.
@@ -56,7 +56,7 @@ First, we need to compile the code, that in this case is contained in a Python s
 This is necessary because constant memory is defined in the CUDA code, so we need CUDA to allocate the necessary memory, and then provide us with a pointer to this memory.
 By calling the method `get_global` we ask the CUDA subsystem to provide us with the location of a global object, in this case the array `factors`.
 We can then create our own CuPy array and point that to the object returned by `get_global`, so that we can use it in Python as we would normally do.
-Note that we use the constant `2` for the size of the array, the same number we are using in the CUDA code; it is important that we use the same number or we may end up accessing memory that is outside the bound of the array.
+Note that we use the constant `2` for the size of the array, the same number we are using in the CUDA code; it is important that we use the same number or we may end up accessing memory that is outside the bounds of the array.
 Lastly, we initialize the array with some random floating point numbers.
 
 :::::::::::::::::::::::::::::::::::::: challenge
@@ -122,7 +122,7 @@ block_size = (threads_per_block, 1, 1)
 config = LaunchConfig(grid=grid_size, block=block_size)
 
 # Allocate and copy constant memory
-# TODO: cuda.code does not expose constant memory, cuda.bindings should be used instead
+# TODO: cuda.core does not expose constant memory, cuda.bindings should be used instead
 # The episode will be updated in the future
 factors_ptr = mod.get_global("factors")
 factors_gpu = cp.ndarray(2, cp.float32, factors_ptr)
@@ -148,9 +148,9 @@ One of the possible solutions is the following one.
 size = 10**6
 
 # allocating and populating the vectors
-a_gpu = cupy.random.rand(size, dtype=cupy.float32)
-b_gpu = cupy.random.rand(size, dtype=cupy.float32)
-c_gpu = cupy.zeros(size, dtype=cupy.float32)
+a_gpu = cp.random.rand(size, dtype=cp.float32)
+b_gpu = cp.random.rand(size, dtype=cp.float32)
+c_gpu = cp.zeros(size, dtype=cp.float32)
 # prepare arguments
 args = (a_gpu, b_gpu, c_gpu, size)
 
@@ -173,15 +173,15 @@ __global__ void sum_and_multiply(const float * A, const float * B, float * C, co
 # compute the number of blocks and replace "BLOCKS" in the CUDA code
 threads_per_block = 1024
 num_blocks = int(math.ceil(size / threads_per_block))
-cuda_code = cuda_code.replace("BLOCKS", f"{num_blocks}") 
+cuda_code = cuda_code.replace("BLOCKS", f"{num_blocks}")
 
 # compile and access the code
-module = cupy.RawModule(code=cuda_code)
+module = cp.RawModule(code=cuda_code)
 sum_and_multiply = module.get_function("sum_and_multiply")
 # allocate and copy constant memory
 factors_ptr = module.get_global("factors")
-factors_gpu = cupy.ndarray(num_blocks, cupy.float32, factors_ptr)
-factors_gpu[...] = cupy.random.random(num_blocks, dtype=cupy.float32)
+factors_gpu = cp.ndarray(num_blocks, cp.float32, factors_ptr)
+factors_gpu[...] = cp.random.random(num_blocks, dtype=cp.float32)
 
 sum_and_multiply((num_blocks, 1, 1), (threads_per_block, 1, 1), args)
 ~~~
@@ -189,5 +189,5 @@ sum_and_multiply((num_blocks, 1, 1), (threads_per_block, 1, 1), args)
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: keypoints
-- "Globally scoped arrays, which size is known at compile time, can be stored in constant memory using the `__constant__` identifier"
+- "Globally scoped arrays, whose size is known at compile time, can be stored in constant memory using the `__constant__` identifier"
 ::::::::::::::::::::::::::::::::::::::
