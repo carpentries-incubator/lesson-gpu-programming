@@ -343,7 +343,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Constant Memory</h1>
-        <p>Last updated on 2026-04-22 |
+        <p>Last updated on 2026-05-07 |
 
         <a href="https://github.com/carpentries-incubator/lesson-gpu-programming/edit/main/episodes/constant_memory.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -380,7 +380,7 @@
 </div>
 <div class="section level1">
 <h1 id="constant-memory">Constant Memory<a class="anchor" aria-label="anchor" href="#constant-memory"></a></h1>
-<p>Constant memory is a read-only cache which content can be broadcasted
+<p>Constant memory is a read-only cache whose content can be broadcast
 to multiple threads in a block. A variable allocated in constant memory
 needs to be declared in CUDA by using the special
 <code>__constant__</code> identifier, and it must be a global variable,
@@ -413,7 +413,7 @@ that the definition of <code>factors</code> is preceded by the
 <code>__constant__</code> keyword, and said definition is in the global
 scope. It is important to note that the size of the constant array needs
 to be known at compile time, therefore the use of the
-<code>define</code> preprocessor statement. On the kernel side there is
+<code>#define</code> preprocessor statement. On the kernel side there is
 no need to do more, the <code>factors</code> vector can be normally
 accessed inside the code as any other vector, and because it is a global
 variable it does not need to be passed to the kernel as a function
@@ -445,7 +445,7 @@ that to the object returned by <code>get_global</code>, so that we can
 use it in Python as we would normally do. Note that we use the constant
 <code>2</code> for the size of the array, the same number we are using
 in the CUDA code; it is important that we use the same number or we may
-end up accessing memory that is outside the bound of the array. Lastly,
+end up accessing memory that is outside the bounds of the array. Lastly,
 we initialize the array with some random floating point numbers.</p>
 <div id="challenge-print-the-content-of-constant-memory" class="callout challenge">
 <div class="callout-square">
@@ -470,7 +470,7 @@ memory</h3>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>In our case the output of this line of code is two floating point
 numbers, e.g. <code>[0.11390183 0.2585096 ]</code>. However, we are not
@@ -529,7 +529,7 @@ CuPy.</p>
 <span id="cb4-42"><a href="#cb4-42" tabindex="-1" aria-label="code-block-4-42"></a>config <span class="op">=</span> LaunchConfig(grid<span class="op">=</span>grid_size, block<span class="op">=</span>block_size)</span>
 <span id="cb4-43"><a href="#cb4-43" tabindex="-1" aria-label="code-block-4-43"></a></span>
 <span id="cb4-44"><a href="#cb4-44" tabindex="-1" aria-label="code-block-4-44"></a><span class="co"># Allocate and copy constant memory</span></span>
-<span id="cb4-45"><a href="#cb4-45" tabindex="-1" aria-label="code-block-4-45"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: cuda.code does not expose constant memory, cuda.bindings should be used instead</span></span>
+<span id="cb4-45"><a href="#cb4-45" tabindex="-1" aria-label="code-block-4-45"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: cuda.core does not expose constant memory, cuda.bindings should be used instead</span></span>
 <span id="cb4-46"><a href="#cb4-46" tabindex="-1" aria-label="code-block-4-46"></a><span class="co"># The episode will be updated in the future</span></span>
 <span id="cb4-47"><a href="#cb4-47" tabindex="-1" aria-label="code-block-4-47"></a>factors_ptr <span class="op">=</span> mod.get_global(<span class="st">"factors"</span>)</span>
 <span id="cb4-48"><a href="#cb4-48" tabindex="-1" aria-label="code-block-4-48"></a>factors_gpu <span class="op">=</span> cp.ndarray(<span class="dv">2</span>, cp.float32, factors_ptr)</span>
@@ -559,7 +559,7 @@ with some different input sizes.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>One of the possible solutions is the following one.</p>
 <div class="codewrapper sourceCode" id="cb5">
@@ -569,9 +569,9 @@ with some different input sizes.</p>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a>size <span class="op">=</span> <span class="dv">10</span><span class="op">**</span><span class="dv">6</span></span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a></span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="co"># allocating and populating the vectors</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a>a_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1" aria-label="code-block-5-6"></a>b_gpu <span class="op">=</span> cupy.random.rand(size, dtype<span class="op">=</span>cupy.float32)</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1" aria-label="code-block-5-7"></a>c_gpu <span class="op">=</span> cupy.zeros(size, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a>a_gpu <span class="op">=</span> cp.random.rand(size, dtype<span class="op">=</span>cp.float32)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1" aria-label="code-block-5-6"></a>b_gpu <span class="op">=</span> cp.random.rand(size, dtype<span class="op">=</span>cp.float32)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1" aria-label="code-block-5-7"></a>c_gpu <span class="op">=</span> cp.zeros(size, dtype<span class="op">=</span>cp.float32)</span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1" aria-label="code-block-5-8"></a><span class="co"># prepare arguments</span></span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1" aria-label="code-block-5-9"></a>args <span class="op">=</span> (a_gpu, b_gpu, c_gpu, size)</span>
 <span id="cb5-10"><a href="#cb5-10" tabindex="-1" aria-label="code-block-5-10"></a></span>
@@ -594,15 +594,15 @@ with some different input sizes.</p>
 <span id="cb5-27"><a href="#cb5-27" tabindex="-1" aria-label="code-block-5-27"></a><span class="co"># compute the number of blocks and replace "BLOCKS" in the CUDA code</span></span>
 <span id="cb5-28"><a href="#cb5-28" tabindex="-1" aria-label="code-block-5-28"></a>threads_per_block <span class="op">=</span> <span class="dv">1024</span></span>
 <span id="cb5-29"><a href="#cb5-29" tabindex="-1" aria-label="code-block-5-29"></a>num_blocks <span class="op">=</span> <span class="bu">int</span>(math.ceil(size <span class="op">/</span> threads_per_block))</span>
-<span id="cb5-30"><a href="#cb5-30" tabindex="-1" aria-label="code-block-5-30"></a>cuda_code <span class="op">=</span> cuda_code.replace(<span class="st">"BLOCKS"</span>, <span class="ss">f"</span><span class="sc">{</span>num_blocks<span class="sc">}</span><span class="ss">"</span>) </span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1" aria-label="code-block-5-30"></a>cuda_code <span class="op">=</span> cuda_code.replace(<span class="st">"BLOCKS"</span>, <span class="ss">f"</span><span class="sc">{</span>num_blocks<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb5-31"><a href="#cb5-31" tabindex="-1" aria-label="code-block-5-31"></a></span>
 <span id="cb5-32"><a href="#cb5-32" tabindex="-1" aria-label="code-block-5-32"></a><span class="co"># compile and access the code</span></span>
-<span id="cb5-33"><a href="#cb5-33" tabindex="-1" aria-label="code-block-5-33"></a>module <span class="op">=</span> cupy.RawModule(code<span class="op">=</span>cuda_code)</span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1" aria-label="code-block-5-33"></a>module <span class="op">=</span> cp.RawModule(code<span class="op">=</span>cuda_code)</span>
 <span id="cb5-34"><a href="#cb5-34" tabindex="-1" aria-label="code-block-5-34"></a>sum_and_multiply <span class="op">=</span> module.get_function(<span class="st">"sum_and_multiply"</span>)</span>
 <span id="cb5-35"><a href="#cb5-35" tabindex="-1" aria-label="code-block-5-35"></a><span class="co"># allocate and copy constant memory</span></span>
 <span id="cb5-36"><a href="#cb5-36" tabindex="-1" aria-label="code-block-5-36"></a>factors_ptr <span class="op">=</span> module.get_global(<span class="st">"factors"</span>)</span>
-<span id="cb5-37"><a href="#cb5-37" tabindex="-1" aria-label="code-block-5-37"></a>factors_gpu <span class="op">=</span> cupy.ndarray(num_blocks, cupy.float32, factors_ptr)</span>
-<span id="cb5-38"><a href="#cb5-38" tabindex="-1" aria-label="code-block-5-38"></a>factors_gpu[...] <span class="op">=</span> cupy.random.random(num_blocks, dtype<span class="op">=</span>cupy.float32)</span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1" aria-label="code-block-5-37"></a>factors_gpu <span class="op">=</span> cp.ndarray(num_blocks, cp.float32, factors_ptr)</span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1" aria-label="code-block-5-38"></a>factors_gpu[...] <span class="op">=</span> cp.random.random(num_blocks, dtype<span class="op">=</span>cp.float32)</span>
 <span id="cb5-39"><a href="#cb5-39" tabindex="-1" aria-label="code-block-5-39"></a></span>
 <span id="cb5-40"><a href="#cb5-40" tabindex="-1" aria-label="code-block-5-40"></a>sum_and_multiply((num_blocks, <span class="dv">1</span>, <span class="dv">1</span>), (threads_per_block, <span class="dv">1</span>, <span class="dv">1</span>), args)</span></code></pre>
 </div>
@@ -617,7 +617,7 @@ with some different input sizes.</p>
 <span class="callout-header">Key Points</span>
 <div class="callout-inner">
 <div class="callout-content">
-<ul><li>“Globally scoped arrays, which size is known at compile time, can be
+<ul><li>“Globally scoped arrays, whose size is known at compile time, can be
 stored in constant memory using the <code>__constant__</code>
 identifier”</li>
 </ul></div>
@@ -691,7 +691,7 @@ any links that you are not going to use.
   "url": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/constant_memory.html",
   "identifier": "https://carpentries-incubator.github.io/lesson-gpu-programming/instructor/constant_memory.html",
   "dateCreated": "2020-09-25",
-  "dateModified": "2026-04-22",
+  "dateModified": "2026-05-07",
   "datePublished": "2026-05-07"
 }
 
