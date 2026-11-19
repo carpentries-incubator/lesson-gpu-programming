@@ -5,14 +5,18 @@ exercises: 25
 ---
 
 :::::::::::::::::::::::::::::::::::::: questions
+
 - "How can threads in the same block collaborate by sharing data?"
 - "Why would threads in a block ever need to wait for each other?"
+
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: objectives
+
 - "Use `__shared__` to allocate shared memory in a CUDA kernel"
 - "Use `__syncthreads()` to synchronize threads within a block"
 - "Explain when shared memory can improve performance over global memory"
+
 ::::::::::::::::::::::::::::::::::::::
 
 So far we looked at how to use CUDA to accelerate the computation, but a common pattern in all the examples we encountered so far is that threads worked in isolation.
@@ -27,6 +31,7 @@ In this case *shared* means that all threads in a thread block can write and rea
 To allocate an array in shared memory we need to preface the definition with the identifier `__shared__`.
 
 :::::::::::::::::::::::::::::::::::::: challenge
+
 ## Challenge: use of shared memory
 
 Modify the following code to allocate the `temp` array in shared memory.
@@ -69,6 +74,7 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 }
 ~~~
 :::::::::::::::::::::::::::::::::::::
+
 ::::::::::::::::::::::::::::::::::::::
 
 
@@ -76,6 +82,7 @@ While syntactically correct, the previous example is functionally wrong.
 The reason is that the `temp` array is not anymore private to the thread allocating it, but it is now shared by the whole thread block.
 
 :::::::::::::::::::::::::::::::::::::: challenge
+
 ## Challenge: what is the result of the previous code block?
 
 The previous code example is functionally wrong. Can you guess what the result of its execution will be?
@@ -84,7 +91,9 @@ The previous code example is functionally wrong. Can you guess what the result o
 
 The result is non deterministic, and definitely not the same as the previous versions of `vector_add`.
 Threads will overwrite each other's temporary values, and there will be no guarantee on which value is visible by each thread.
+
 :::::::::::::::::::::::::::::::::::::
+
 ::::::::::::::::::::::::::::::::::::::
 
 To fix the previous kernel we should allocate enough shared memory for each thread to store three values, so that each thread has its own section of the shared memory array to work with.
@@ -236,6 +245,7 @@ __global__ void histogram(const int * input, int * output)
 ~~~
 
 :::::::::::::::::::::::::::::::::::::: challenge
+
 ## Challenge: error in the histogram
 
 If you look at the CUDA `histogram` code, there is a logical error that prevents it from producing the correct results.
@@ -256,6 +266,7 @@ __global__ void histogram(const int * input, int * output)
 The GPU is a highly parallel device, executing multiple threads at the same time.
 In the previous code different threads could be updating the same output item at the same time, producing wrong results.
 :::::::::::::::::::::::::::::::::::::
+
 ::::::::::::::::::::::::::::::::::::::
 
 To solve this problem, we need to use a function from the CUDA library named `atomicAdd`.
@@ -339,6 +350,7 @@ GPUs are designed for very regular computations, and so if we can make the histo
 As you may expect, we can improve the memory access pattern by using shared memory.
 
 :::::::::::::::::::::::::::::::::::::: challenge
+
 ## Challenge: use shared memory to speed up the histogram
 
 Implement a new version of the CUDA `histogram` function that uses shared memory to reduce conflicts in global memory.
@@ -382,7 +394,9 @@ __global__ void histogram(const int * input, int * output)
 The idea behind this solution is to reduce the expensive conflicts in global memory by having a temporary histogram in shared memory.
 After a block has finished processing its fraction of the input array, and the local histogram is populated, threads collaborate to update the global histogram.
 Not only this solution potentially reduces the conflicts in global memory, it also produces a better access pattern because threads read adjacent items of the `input` array, and write to adjacent elements of the `output` array during the second call to `atomicAdd`.
+
 :::::::::::::::::::::::::::::::::::::
+
 ::::::::::::::::::::::::::::::::::::::
 
 # Thread Synchronization
@@ -497,9 +511,11 @@ While both versions of the GPU histogram are correct, the one using shared memor
 On a NVIDIA Tesla T4 accessed via Google Colab, the shared memory version is ten times faster than the version doing atomic operations on global memory.
 
 :::::::::::::::::::::::::::::::::::::: keypoints
+
 - "Shared memory is faster than global memory and local memory"
 - "Shared memory can be used as a user-controlled cache to speed up code"
 - "Size of shared memory arrays must be known at compile time, unless declared as `extern`"
 - "Use `__shared__` to allocate shared memory; use `extern __shared__` with `shmem_size` for dynamically-sized arrays"
 - "Use `__syncthreads()` to wait for shared memory operations to be visible to all threads in a block"
+
 ::::::::::::::::::::::::::::::::::::::

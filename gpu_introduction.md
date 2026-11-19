@@ -5,12 +5,16 @@ exercises: 0
 ---
 
 :::::::::::::::::::::::::::::::::::::: questions
+
 - "How does a GPU work?"
+
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: objectives
+
 - "Understand how the GPU is organized."
 - "Understand the building blocks of the general GPU programming model."
+
 ::::::::::::::::::::::::::::::::::::::
 
 So far we have learned how to replace calls to NumPy and SciPy functions to equivalent ones running on the GPU using CuPy, and how to run some of our own Python functions on the GPU using Numba.

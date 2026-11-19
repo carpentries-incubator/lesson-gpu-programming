@@ -5,15 +5,19 @@ exercises: 10
 ---
 
 :::::: questions
+
 - "How can we create and manipulate PyTorch tensors on a GPU?"
 - "How can we move data between NumPy, CPU tensors, and GPU tensors?"
 - "Why can PyTorch be useful for general-purpose GPU computing?"
+
 ::::::
 
 :::::: objectives
+
 - "Create PyTorch tensors and apply operations."
 - "Understand the `@torch.compile` decorator and its limitations."
 - "Compare the performance of PyTorch against other solutions."
+
 ::::::
 
 # Introduction to PyTorch
@@ -306,7 +310,9 @@ print("result:", c)
 This lets PyTorch optimize the `compute` function as a whole and makes the code faster than running the operations separately. It accomplishes this by tracing through your Python code and looking for PyTorch operations.
 
 ::::::::::::::::::::::::::::: instructor
+
 The following section demonstrates how PyTorch compiles and fuses the operations in the computation graph. Instructors may choose to demonstrate this information to the class if time permits. However, it can also be skipped as it may be too advanced for learners new to GPU concepts.
+
 ::::::::::::::::::::::::::::::::::::::::
 
 For example, to see what PyTorch is doing internally, we can use `set_logs`, which prints what happens under the hood.
@@ -471,9 +477,11 @@ The CPU takes 608.563 milliseconds, meaning our GPU is around 152x faster than o
 
 
 ::::::::::::::::::::::::::::::::::::::: challenge
+
 Measure the performance of `calculate_forces_fast` for different numbers of planets. For example, `n = 2500`, `n = 5000`, `n = 10_000`, and `n = 20_000`. What timings do you expect? What do you get?
 
 :::::::::::::::::::::::::::::::::::::: solution
+
 The following times were measured (on your system they might be different!).
 
 ~~~output
@@ -484,11 +492,15 @@ The following times were measured (on your system they might be different!).
 ~~~
 
 The results show that each time we double `n`, the execution time quadruples. This happens as the number of pairwise interactions between $n$ planets equals $n^2$.
+
 ::::::::::::::::::::::::::::::::::::::
+
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: keypoints
+
 - "PyTorch tensors can be created and manipulated directly on the GPU"
 - "Use `.to(device)` to move data between CPU and GPU, and `.cpu().numpy()` to convert back to NumPy"
 - "The `@torch.compile` decorator can significantly speed up tensor operations by fusing them into optimized GPU kernels"
+
 ::::::::::::::::::::::::::::::::::::::

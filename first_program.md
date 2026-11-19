@@ -5,18 +5,22 @@ exercises: 25
 ---
 
 :::::::::::::::::::::::::::::::::::::: questions
+
 - "How do I identify data parallelism in my code?"
 - "How do I write a GPU program?"
 - "What is CUDA?"
 - "How are CUDA threads organised into blocks and grids?"
+
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: objectives
+
 - "Recognize possible data parallelism in Python code"
 - "Describe the role of the `__global__`, `__host__`, and `__device__` keywords in a CUDA program"
 - "Use `threadIdx`, `blockIdx`, and `blockDim` to compute the global index of a thread"
 - "Write a CUDA kernel that handles input arrays of arbitrary size"
 - "Execute a CUDA program in Python and measure its execution time"
+
 ::::::::::::::::::::::::::::::::::::::
 
 # Summing Two Vectors in Python
@@ -52,8 +56,10 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 ~~~
 
 ::: callout
+
 We are aware that CUDA is a proprietary solution, and that there are more open and portable solutions, however CUDA is also the most used platform for GPU programming and therefore we decided to use it for our teaching material.
 Nevertheless, almost everything we cover in this lesson does also apply to HIP, a portable language that can run on both NVIDIA and AMD GPUs.
+
 :::
 
 # Running Code on the GPU
@@ -157,6 +163,7 @@ In fact, while in Python the content of `item` is the result of the `range` func
 In this particular case we are working on a one dimensional vector, and therefore only interested in the first dimension, that is stored in the `x` field of this variable.
 
 :::::::::::::::::::::::::::::::::::::: challenge
+
 ## Challenge: loose threads
 
 We know enough now to pause for a moment and do a little exercise.
@@ -182,7 +189,9 @@ What will the result of this change be?
 ::::::::::::::::::::::::::::::::::::: solution
 
 The correct answer is number 3, only the element `C[1]` is written, and we do not even know by which thread!
+
 :::::::::::::::::::::::::::::::::::::
+
 ::::::::::::::::::::::::::::::::::::::
 
 # Computing Hierarchy in CUDA
@@ -266,6 +275,7 @@ The following table offers a recapitulation of the keywords we just introduced.
 | `gridDim` | the size of the grid, i.e. the number of blocks per dimension |
 
 :::::::::::::::::::::::::::::::::::::: challenge
+
 ## Challenge: hidden variables
 Given the following snippet of code:
 
@@ -281,6 +291,7 @@ What is the content of the `blockDim` and `gridDim` variables inside the CUDA `v
 
 The content of `blockDim` is `(512, 1, 1)` and the content of `gridDim` is `(4, 1, 1)`, for all threads.
 :::::::::::::::::::::::::::::::::::::
+
 ::::::::::::::::::::::::::::::::::::::
 
 What happens if we then run the code that we just modified to work on a vector of 2048 elements, and compare the results with our CPU version?
@@ -312,6 +323,7 @@ The results are wrong!
 In fact, while we increased the number of threads we launch, we did not modify the kernel code to compute the correct results using the new builtin variables we just introduced.
 
 :::::::::::::::::::::::::::::::::::::: challenge
+
 ## Challenge: scaling up
 
 In the following code, fill in the blank to work with vectors that are larger than the largest CUDA block (i.e. 1024).
@@ -347,6 +359,7 @@ So far we have worked with a number of threads that is the same as the elements 
 However, in a real world scenario we may have to process vectors of arbitrary size, and to do this we need to modify both the kernel and the way it is launched.
 
 :::::::::::::::::::::::::::::::::::::: challenge
+
 ## Challenge: more work than necessary
 
 We modified the `vector_add` kernel to include a check for the size of the vector, so that we only compute elements that are within the vector boundaries.
@@ -366,6 +379,7 @@ __global__ void vector_add(const float * A, const float * B, float * C, const in
 ~~~
 
 ::::::::::::::::::::::::::::::::::::: solution
+
 The correct way to modify the `vector_add` to work on vectors of arbitrary size is to first compute the coordinates of each thread, and then perform the sum only on elements that are within the vector boundaries, as shown in the following snippet of code.
 
 ~~~c
@@ -516,6 +530,7 @@ Correct results!
 ~~~
 
 :::::::::::::::::::::::::::::::::::::: challenge
+
 ## Challenge: compute prime numbers with CUDA
 
 Given the following Python code, similar to what we have seen in the previous episode about Numba, write the missing CUDA kernel that computes all the prime numbers up to a certain upper bound.
@@ -626,11 +641,14 @@ The outermost loop in Python is replaced by having each thread testing for prime
 Having one number assigned to each thread via its ID, the kernel implements the innermost loop the same way it is implemented in Python.
 
 :::::::::::::::::::::::::::::::::::::
+
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: keypoints
+
 - "Precede your kernel definition with the `__global__` keyword"
 - "Use built-in variables `threadIdx`, `blockIdx`, `gridDim` and `blockDim` to identify each thread"
 - "The global index of a thread is `(blockIdx.x * blockDim.x) + threadIdx.x`"
 - "Add a bounds check (`if (item < size)`) in your kernel when the total number of threads may exceed the input size"
+
 ::::::::::::::::::::::::::::::::::::::

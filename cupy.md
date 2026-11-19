@@ -5,18 +5,22 @@ exercises: 60
 ---
 
 :::::: questions
+
 - "How can I run NumPy code on the GPU?"
 - "How can I copy NumPy arrays to the GPU?"
 - "How do I reliably measure the execution time of GPU code?"
+
 ::::::
 
 :::::: objectives
+
 - "Identify whether an array is stored in host or device memory"
 - "Copy arrays between host and device memory using CuPy"
 - "Select the appropriate CuPy or cupyx function to replace a NumPy or SciPy call"
 - "Estimate the performance speedup of running a computation on the GPU"
 - "Use `benchmark()` from `cupyx.profiler` to accurately time GPU code"
 - "Validate GPU results by comparing them against CPU results"
+
 ::::::
 
 # Introduction to CuPy
@@ -665,6 +669,7 @@ Fastest CPU set of source measurements = 7.838e+02 ms.
 ~~~
 
 :::::::::::::::::::::::::::::::::::::: challenge
+
 ## Challenge: putting it all together
 Combine the first two steps of image processing for astronomy, i.e. determining background characteristics e.g. through $\kappa$-$\sigma$ clipping and segmentation into a single function, that works for both CPU and GPU.
 Next, write a function for connected component labeling and source measurements on the GPU and calculate the overall speedup factor for the combined four steps of image processing in astronomy on the GPU relative to the CPU.
@@ -750,10 +755,13 @@ The CPU and GPU fluxes agree: True
 ~~~
 
 :::::::::::::::::::::::::::::::::::::
+
 ::::::::::::::::::::::::::::::::::::::
 
 :::::: keypoints
+
 - "CuPy provides GPU-accelerated versions of many NumPy and SciPy functions."
 - "Always have CPU and GPU versions of your code so that you can compare performance, as well as validate your code."
 - "GPU execution is asynchronous; use `cupyx.profiler.benchmark()` rather than `timeit` for accurate measurements."
+
 ::::::
