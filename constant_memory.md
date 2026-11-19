@@ -5,11 +5,15 @@ exercises: 20
 ---
 
 :::::::::::::::::::::::::::::::::::::: questions
+
 - "Is there a way to have a read-only cache in CUDA?"
+
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: objectives
+
 - "Understanding when and how to use constant memory"
+
 ::::::::::::::::::::::::::::::::::::::
 
 # Constant Memory
@@ -189,5 +193,7 @@ sum_and_multiply((num_blocks, 1, 1), (threads_per_block, 1, 1), args)
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: keypoints
+
 - "Globally scoped arrays, whose size is known at compile time, can be stored in constant memory using the `__constant__` identifier"
+
 ::::::::::::::::::::::::::::::::::::::
