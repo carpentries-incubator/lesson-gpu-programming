@@ -5,12 +5,16 @@ exercises: 15
 ---
 
 :::::::::::::::::::::::::::::::::::::: questions
+
 - "How can I run my own Python functions on the GPU?"
+
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: objectives
+
 - "Learn how to use Numba decorators to improve the performance of your Python code."
 - "Run your first application on the GPU."
+
 ::::::::::::::::::::::::::::::::::::::
 
 # Using Numba to execute Python code on the GPU
@@ -124,6 +128,7 @@ Note the extra arguments in square brackets - `[1, 1]` - that are added to the c
 While this is an important argument, we will explain it later and for now we can keep using `1`.
 
 :::::::::::::::::::::::::::::::::::::: challenge
+
 ## Challenge: compute prime numbers
 
 Write a new function `find_all_primes_cpu_and_gpu` that uses `check_prime_gpu_kernel` instead of the inner loop of `find_all_primes_cpu`.
@@ -153,7 +158,9 @@ def find_all_primes_cpu_and_gpu(upper):
 As you may have noticed, `find_all_primes_cpu_and_gpu` is much slower than the original `find_all_primes_cpu`.
 The reason is that the overhead of calling the GPU, and transferring data to and from it, for each number of the sequence is too large.
 To be efficient the GPU needs enough work to keep all of its cores busy.
+
 :::::::::::::::::::::::::::::::::::::
+
 ::::::::::::::::::::::::::::::::::::::
 
 Let us give the GPU a work load large enough to compensate for the overhead of data transfers to and from the GPU. For this example of computing primes we can best use the `vectorize` decorator for a new `check_prime_gpu` function that takes an array as input instead of `upper` in order to increase the work load. This is the array we have to use as input for our new `check_prime_gpu` function, instead of upper, a single integer:
@@ -192,6 +199,8 @@ which should show you a significant speedup:
 This amounts to a speedup of our code of a factor 11 compared to the `jit(nopython=True)` decorated code on the CPU.
 
 :::::::::::::::::::::::::::::::::::::: keypoints
+
 - "Numba can be used to run your own Python functions on the GPU."
 - "Functions may need to be changed to run correctly on a GPU."
+
 ::::::::::::::::::::::::::::::::::::::

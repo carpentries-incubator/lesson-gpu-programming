@@ -5,11 +5,15 @@ exercises: 20
 ---
 
 :::::::::::::::::::::::::::::::::::::: questions
+
 - "Is it possible to concurrently execute more than one kernel on a single GPU?"
+
 ::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::: objectives
+
 - "Understand how to use CUDA streams and events"
+
 ::::::::::::::::::::::::::::::::::::::
 
 # Concurrently execute two kernels on the same GPU
@@ -252,7 +256,9 @@ else:
 ~~~
 
 :::::::::::::::::::::::::::::::::::::: keypoints
+
 - "Use CUDA streams to run kernels concurrently on the same GPU"
 - "Use events to synchronize between streams at a fine-grained level"
 - "Use events with timing enabled to measure kernel execution time"
+
 ::::::::::::::::::::::::::::::::::::::
